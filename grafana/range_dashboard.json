@@ -140,7 +140,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
         "text": {},
@@ -153,7 +153,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n round(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS output_sum_hrs\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'self_improving' OR\n    label_detail_table.label_detail->>'type' = 'work';",
+          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n),\nsum_table AS (\n\tSELECT\n \t\tround(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS output_sum_hrs\n \tFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'self_improving' OR\n    label_detail_table.label_detail->>'type' = 'work'\n)\nSELECT FORMAT('%s/%s', output_sum_hrs, round(output_sum_hrs * 3600 * 24::numeric / ($__unixEpochTo() - $__unixEpochFrom()), 2)\n) \nFROM sum_table;",
           "refId": "billable_sum_hrs",
           "select": [
             [
@@ -179,7 +179,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Output Hrs",
+      "title": "Output Total/Daily Hrs",
       "type": "stat"
     },
     {
@@ -222,7 +222,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
         "text": {},
@@ -235,7 +235,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n round(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS billable_sum_hrs\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'billable' = 'True';",
+          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n),\nsum_table AS (\n\tSELECT\n \t\tround(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS billable_sum_hrs\n \tFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'billable' = 'True'\n)\nSELECT FORMAT('%s/%s', billable_sum_hrs, round(billable_sum_hrs * 3600 * 24::numeric / ($__unixEpochTo() - $__unixEpochFrom()), 2)\n) \nFROM sum_table;\n",
           "refId": "billable_sum_hrs",
           "select": [
             [
@@ -386,7 +386,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
         "text": {},
@@ -399,7 +399,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n round(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS billable_sum_hrs\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'routine';",
+          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n),\nsum_table AS (\n\tSELECT\n \t\tround(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS routine_sum_hrs\n \tFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'routine'\n)\nSELECT FORMAT('%s/%s', routine_sum_hrs, round(routine_sum_hrs * 3600 * 24::numeric / ($__unixEpochTo() - $__unixEpochFrom()), 2)\n) \nFROM sum_table;",
           "refId": "billable_sum_hrs",
           "select": [
             [
@@ -425,7 +425,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Routine Hrs",
+      "title": "Routine Total/Daily Hrs",
       "type": "stat"
     },
     {
@@ -468,7 +468,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
         "text": {},
@@ -481,7 +481,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n round(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS billable_sum_hrs\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'project' = 'sports';",
+          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n),\nsum_table AS (\n\tSELECT\n \t\tround(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS sports_sum_hrs\n \tFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'project' = 'sports'\n)\nSELECT FORMAT('%s/%s', sports_sum_hrs, round(sports_sum_hrs * 3600 * 24::numeric / ($__unixEpochTo() - $__unixEpochFrom()), 2)\n) \nFROM sum_table;",
           "refId": "billable_sum_hrs",
           "select": [
             [
@@ -550,7 +550,7 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
         "text": {},
@@ -563,7 +563,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n round(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS billable_sum_hrs\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'distracted' OR\n    label_detail_table.label_detail->>'type' = 'dispute' OR\n    label_detail_table.label_detail->>'type' = 'pmo'\n    ;",
+          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n),\nsum_table AS (\n\tSELECT\n \t\tround(sum(COALESCE(value, 0))::numeric / 60.0::numeric, 2) AS bad_sum_hrs\n \tFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'distracted' OR\n    label_detail_table.label_detail->>'type' = 'dispute' OR\n    label_detail_table.label_detail->>'type' = 'pmo'\n)\nSELECT FORMAT('%s/%s', bad_sum_hrs, round(bad_sum_hrs * 3600 * 24::numeric / ($__unixEpochTo() - $__unixEpochFrom()), 2)\n) \nFROM sum_table;",
           "refId": "billable_sum_hrs",
           "select": [
             [
@@ -706,6 +706,35 @@
           "rawQuery": true,
           "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n time_bucket_gapfill('1 day', time, $__timeFrom(), $__timeTo()) AS \"time\",\n COALESCE(sum(value), 0) as work_sum\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'work'\nGROUP BY 1\nORDER BY 1;",
           "refId": "work_daily_sum",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "event_log",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "WITH label_detail_table AS (\n    SELECT time AT TIME ZONE 'AEST' AS \"time\", value, jsonb(labels) AS label_detail \n    FROM event_log\n    WHERE $__timeFilter(\"time\")\n)\nSELECT\n time_bucket_gapfill('1 day', time, $__timeFrom(), $__timeTo()) AS \"time\",\n COALESCE(sum(value), 0) as output_sum\nFROM label_detail_table\nWHERE\n    label_detail_table.label_detail->>'type' = 'self_improving' OR\n    label_detail_table.label_detail->>'type' = 'work'\nGROUP BY 1\nORDER BY 1;",
+          "refId": "output_daily_sum",
           "select": [
             [
               {
@@ -1396,8 +1425,8 @@
     "list": []
   },
   "time": {
-    "from": "2021-06-06T14:00:00.000Z",
-    "to": "2021-06-12T13:59:59.000Z"
+    "from": "2021-06-12T14:00:00.000Z",
+    "to": "2021-06-19T13:59:59.000Z"
   },
   "timepicker": {},
   "timezone": "",

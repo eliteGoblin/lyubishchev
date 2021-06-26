@@ -143,6 +143,7 @@ def validate_timeentry(series_day_bucket: List[metric.TimeSeriesEntry]) -> None:
         date: str = get_local_datestr_from_unixsec(entry.TimeUnixSec + int(entry.Value) * 60)
         assert cur_date != date, "time entry{entry} across day".format(entry=entry)
         assert entry.Value < 8 * 60  # single time entry less than 8 rs, value in mins
+        assert entry.type() != "", "entry tag is empty: {entry}".format(entry=entry)
 
 def get_local_datestr_from_unixsec(unix_sec: int) -> str:
     return arrow.get(unix_sec, tzinfo='local').date().isoformat()
