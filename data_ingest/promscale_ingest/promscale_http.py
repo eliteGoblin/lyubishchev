@@ -15,6 +15,7 @@ class TranslateIter(object):
 
     def __iter__(self):
         for attr, value in self.__dict__.items():
+            # 没有translate?
             if attr != "translateName":
                 yield attr, value
 
