@@ -11,13 +11,18 @@ def validate_getup_sleep(series_day_bucket: List[metric.TimeSeriesEntry]) -> Non
     cur_date: str = get_local_datestr_from_unixsec(series_day_bucket[0].TimeUnixSec)
 
     if metric.EventTag.GETUP.value != series_day_bucket[0].event():
-        raise Exception("get up tag missing in first record, local date: {date}".format(
+        err_msg = "{date}: get up tag missing in first record".format(
             date=cur_date
-        ))
+        )
+        logging.warning(err_msg)
+        x = input("ignore?")
+        if x != "yes":
+            raise Exception(err_msg)
 
     if metric.EventTag.SLEEP.value != series_day_bucket[-1].event():
-        raise Exception("sleep tag missing in last record, local date: {date}".format(
-            date=cur_date
+        raise Exception("{date} sleep tag missing in last record, local date: {evt}".format(
+            date=cur_date,
+            evt=series_day_bucket[-1],
         ))
 
     for entry in series_day_bucket:
@@ -33,8 +38,11 @@ def validate_getup_sleep(series_day_bucket: List[metric.TimeSeriesEntry]) -> Non
 
 
 def validate_total_duration(series_day_bucket: List[metric.TimeSeriesEntry]) -> None:
-    expected_mins: int = 14 * 60
+    expected_mins: int = 12 * 60
+    expected_max: int = 18.5 * 60
     duration_count_mins: int = 0
+
+    cur_date: str = get_local_datestr_from_unixsec(series_day_bucket[0].TimeUnixSec)
 
     for entry in series_day_bucket:
         if entry.Unit != metric.ValueUnit.MIN:
@@ -42,13 +50,26 @@ def validate_total_duration(series_day_bucket: List[metric.TimeSeriesEntry]) -> 
         duration_count_mins += int(entry.Value)
 
     if duration_count_mins < expected_mins:
-        raise Exception("daily record {record} lower than expectation {expected} (mins)".format(
+        raise Exception("{date} daily record {record} lower than expectation {expected} (mins)".format(
+            date=cur_date,
             record=duration_count_mins,
             expected=expected_mins,
         ))
+    
+    if duration_count_mins > expected_max:
+        err_msg = "{date} daily record {record} larger than expectation {expected} (mins)".format(
+            date=cur_date,
+            record=duration_count_mins,
+            expected=expected_max,
+        )
+        logging.warning(err_msg)
+        x = input("ignore?")
+        if x != "yes":
+            raise Exception(err_msg)
 
     if duration_count_mins >= 24 * 60:
-        raise Exception("daily record {record} larger than a day {expected} (mins)".format(
+        raise Exception("{date} daily record {record} larger than a day {expected} (mins)".format(
+            date=cur_date,
             record=duration_count_mins,
             expected=24 * 60,
         ))

@@ -14,11 +14,11 @@ X-Api-Key:
 content-type: application/json
 
 ### Time entries
-@start = 2021-06-13T00:00:00Z
-@end = 2021-06-20T00:00:00Z
-@hydrated = true
+@start = 2021-07-28T00:00:00Z
+@end = 2021-07-29T00:00:00Z
+@hydrated = false
 @page = 1
-@page-size = 50
+@page-size = 100
 GET  {{host}}/api/v1/workspaces/{{workspaceID}}/user/{{userID}}/time-entries?start={{start}}&end={{end}}&hydrated={{hydrated}}&page-size={{page-size}}&&page={{page}}
-X-Api-Key: xxx
+X-Api-Key: XohhxM0r+CUbqWpK
 

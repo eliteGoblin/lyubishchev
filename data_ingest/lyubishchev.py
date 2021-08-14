@@ -206,9 +206,10 @@ if __name__ == "__main__":
 
     if arrow.get(dedup_ts[-1].TimeUnixSec, tzinfo='local').date().isoformat() > '2021-06-01':
         # gap between last record and records to be ingested can not be more than 12hrs
+        lastDt = arrow.get(dedup_ts[-1].TimeUnixSec, tzinfo='local').date().isoformat()
         gap: int = dedup_ts[0].TimeUnixSec - last_record_timestamp
         expect: int = 12 * 3600
-        assert gap < expect, "gap:{gap} should be less than {expect}".format(gap=gap, expect=expect)
+        assert gap < expect, "{date} gap:{gap} should be less than {expect}".format(date=lastDt, gap=gap, expect=expect)
 
         logging.debug("last timestamp: {last}, first timestamp to ingest: {first}, gap since last ingested is {gap} hrs".format(
             first=arrow.get(dedup_ts[0].TimeUnixSec, tzinfo='local').isoformat(),
