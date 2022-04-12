@@ -1,34 +1,18 @@
-# lyubishchev
+# Lyubishchev
 
-<img src="https://raw.githubusercontent.com/eliteGoblin/images/master/blog/img/picgo/20210617160613.png" alt="20210617160613" style="width:800px"/>  
+Personal T
 
-
-personal time log, metric analysis tool 
-
-# Run backend locally
-
-```
-make run
-```
-
-# Ingest 
-
-```
-source ./init.sh
-make ingest-xx
+Local development:
+```s
+sudo rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+which python
 ```
 
-# Access Timescale data 
+
+Run all CI scripts:
 
 ```sh
-docker exec -it timescaledb psql postgres postgres
+scripts/ci/ci
 ```
-
-# View in Grafana
-
-
-
-# TODO
-
-* add step to ingest
-* record design idea: use postgres to record all data, create separate tool to generate plot, reports. then automatically generate Markdown report.
