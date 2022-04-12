@@ -17,6 +17,7 @@ class EntryType(Enum):
     ROUTINE = "routine"
     SELF_IMPROVING = "self_improving"
     WORK = "work"
+    SOCIAL = "social"
 
 
 class EventTag(Enum):

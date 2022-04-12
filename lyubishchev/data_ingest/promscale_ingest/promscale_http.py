@@ -1,11 +1,9 @@
-import sys
-sys.path.append("..")
-from model import metric
 import requests
 import json
+import logging
 from typing import List
-import logging, arrow
 
+from lyubishchev.model import metric
 
 class TranslateIter(object):
     translateName: dict
@@ -18,7 +16,6 @@ class TranslateIter(object):
             # 没有translate?
             if attr != "translateName":
                 yield attr, value
-
 
 def toDictItem(obj):
     if isinstance(obj, TranslateIter):
@@ -52,7 +49,6 @@ class Sample:
     def toDictItem(self) -> list:
         return [self.unixTimeInMilliSec, self.value]
 
-
 class PromscaleRequest(TranslateIter):
     labels: dict
     samples: List[Sample]
@@ -71,7 +67,6 @@ class PromscaleRequest(TranslateIter):
             raise Exception(self, "__name__ must be present in labels")
         if len(self.samples) == 0:
             raise Exception(self, "samples must not be empty")
-
 
 class PromscaleIngester:
     promscaleURL: str
@@ -95,7 +90,6 @@ class PromscaleIngester:
             # save to end of last entry, not start of last time entry, value in DurationInMins
             assert v.Unit == metric.ValueUnit.MIN
             self.dedup.save_latest_timestamp(v.TimeUnixSec + int(v.Value) * 60)
-
 
 def TimeSeriesEntryToPromscaleRequest(te: metric.TimeSeriesEntry) -> PromscaleRequest:
     """

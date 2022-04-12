@@ -5,18 +5,17 @@
 
 personal time log, metric analysis tool 
 
-# Setup
-
-Need to first create external docker volume for Prometheus: 
-
-```sh
-docker volume create timescale_pgdata
-```
-
-# Run locally
+# Run backend locally
 
 ```
-docker-compose up
+make run
+```
+
+# Ingest 
+
+```
+source ./init.sh
+make ingest-xx
 ```
 
 # Access Timescale data 
@@ -25,5 +24,11 @@ docker-compose up
 docker exec -it timescaledb psql postgres postgres
 ```
 
+# View in Grafana
 
 
+
+# TODO
+
+* add step to ingest
+* record design idea: use postgres to record all data, create separate tool to generate plot, reports. then automatically generate Markdown report.

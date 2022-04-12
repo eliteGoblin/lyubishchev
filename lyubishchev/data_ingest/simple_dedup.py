@@ -1,7 +1,9 @@
 import os
 
-
 class Dedup:
+    """
+    check point of time record saved last time
+    """
     dedup_file_path: str
 
     def __init__(self, dedup_file_path: str) -> None:

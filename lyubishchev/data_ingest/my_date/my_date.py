@@ -23,7 +23,7 @@ weekday() - Monday is 0 and Sunday is 6
 
 def firstLastDayOfWeek(year: int, week: int) -> Tuple[datetime, datetime]:
     """
-    firstDay is Sunday, timezone aware
+    firstDay is Sunday, timezone agnostic
     week [firstDay, lastDay) i.e Sunday to next Sunday
     """
     if week < 0 or week > 52:

@@ -1,7 +1,7 @@
 import arrow
 import logging
 from typing import List, Callable
-from . import metric
+from lyubishchev.model import metric
 
 
 def validate_getup_sleep(series_day_bucket: List[metric.TimeSeriesEntry]) -> None:

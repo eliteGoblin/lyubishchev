@@ -1,23 +1,14 @@
-import sys
-sys.path.append("..")
-from model import metric
-from promscale_ingest import promscale_http
-
 import requests
 from typing import List
 import arrow
-
 import urllib
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
 import logging
 import os
 
-
-"""
-数据质检放在哪里? 一天超出24小时等明显的metric.
-"""
-
+from lyubishchev.model import metric
+from lyubishchev.data_ingest.promscale_ingest import promscale_http
 
 def Exist(self, id: str, te: metric.TimeSeriesEntry) -> bool:
     """
@@ -28,7 +19,6 @@ def Exist(self, id: str, te: metric.TimeSeriesEntry) -> bool:
     发现重复数据: reimport
     """
     raise
-
 
 retries = Retry(total=5, backoff_factor=0.1, status_forcelist=[500, 502, 503, 504])
 
@@ -114,15 +104,14 @@ class ClockifyFetcher:
 
 def clockifyToTimeSeriesEntry(clockifyEntry: dict) -> metric.TimeSeriesEntry:
 
-    entryID = clockifyEntry["id"]
     timeIntervals = clockifyEntry["timeInterval"]
     startUTC = arrow.get(timeIntervals["start"], tzinfo='utc')
     endUTC = arrow.get(timeIntervals["end"], tzinfo='utc')
 
     if endUTC is None:
         raise Exception("incomplete time entry found, desc: {desc}, happened: {time}".format(
-            desc = clockifyEntry["description"],
-            time = startUTC.isoformat(),
+            desc=clockifyEntry["description"],
+            time=startUTC.isoformat(),
         ))
 
     unixSec = int(startUTC.timestamp())
@@ -133,7 +122,7 @@ def clockifyToTimeSeriesEntry(clockifyEntry: dict) -> metric.TimeSeriesEntry:
     te = metric.TimeSeriesEntry(
         metricName=EVENT_LOG,
         timeUnixSec=unixSec,
-        valueUnit=metric.ValueUnit.MIN,
+        valueUnit=metric.ValueUnit.MIN,  # all value unit is minute now
         value=durationInMins,
         labels=labels,
     )

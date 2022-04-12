@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 
-import model.validation
-from clockify_fetcher import clockify
-from promscale_ingest import promscale_http
-import argparse
-from typing import Tuple, List
 import os
 import sys
 import arrow
+import argparse
+import logging
+
+from typing import Tuple, List
 from my_date import my_date
 from datetime import datetime
-import simple_dedup
-from model import metric
 
-
-import logging
+from lyubishchev.data_ingest import simple_dedup
+from lyubishchev.model import validation
+from lyubishchev.model import metric
+from lyubishchev.data_ingest.clockify_fetcher import clockify
+from lyubishchev.data_ingest.promscale_ingest import promscale_http
 
 """
 python lyubishchev.py --clockify-host=api.clockify.me \
@@ -105,9 +105,9 @@ if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
 
     """
-    ./lyubishchev -s=6-1 -e=6-3 [start, end), 以00:00起始
-    ./lyubishchev -w=16  week来指定: SUN-SAT
-    ./lyubishchev -od=12 不算今天, 前12天
+    ./ingest.py -s=6-1 -e=6-3 [start, end), 以00:00起始
+    ./data_ingest -w=16  week来指定: SUN-SAT
+    ./data_ingest -od=12 不算今天, 前12天
     """
     parser = argparse.ArgumentParser(
         description="Personal time tracking system"
@@ -158,6 +158,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    logging.info("args: {args}".format(args=args))
+
     startUnixSec, endUnixSex = timeRangeFromArgs(args)
 
     fetcher = clockify.ClockifyFetcher(
@@ -178,12 +180,12 @@ if __name__ == "__main__":
     time_series = fetcher.Fetch(startUnixSec, endUnixSex)
     time_series.sort(key=lambda entry: entry.TimeUnixSec)
     # validate time series by applying check functions
-    model.validation.validate_time_series(time_series,
-                                          model.validation.validate_getup_sleep,
-                                          model.validation.validate_total_duration,
-                                          model.validation.validate_labels,
-                                          model.validation.validate_billable,
-                                          model.validation.validate_project,
+    validation.validate_time_series(time_series,
+                                          validation.validate_getup_sleep,
+                                          validation.validate_total_duration,
+                                          validation.validate_labels,
+                                          validation.validate_billable,
+                                          validation.validate_project,
                                           )
 
     # bypass record already ingested
@@ -204,7 +206,7 @@ if __name__ == "__main__":
         logging.info("no record to be ingested, exit...")
         sys.exit(0)
 
-    if arrow.get(dedup_ts[-1].TimeUnixSec, tzinfo='local').date().isoformat() > '2021-06-01':
+    if arrow.get(dedup_ts[-1].TimeUnixSec, tzinfo='local').date().isoformat() > '2022-06-01':
         # gap between last record and records to be ingested can not be more than 12hrs
         lastDt = arrow.get(dedup_ts[-1].TimeUnixSec, tzinfo='local').date().isoformat()
         gap: int = dedup_ts[0].TimeUnixSec - last_record_timestamp

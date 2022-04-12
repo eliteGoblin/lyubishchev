@@ -2,7 +2,7 @@ import unittest
 from dataclasses import dataclass
 import logging
 
-from lyubishchev import timeRangeFromStartEnd, timeRangeFromWeek, timeRangeFromOffsetDays
+from data_ingest import timeRangeFromStartEnd, timeRangeFromWeek, timeRangeFromOffsetDays
 
 
 class TestRange(unittest.TestCase):
