@@ -1,29 +1,19 @@
-# lyubishchev
+# Lyubishchev
 
-<img src="https://raw.githubusercontent.com/eliteGoblin/images/master/blog/img/picgo/20210617160613.png" alt="20210617160613" style="width:800px"/>  
-
-
-personal time log, metric analysis tool 
+Personal Time data management tool
 
 # Setup
 
-Need to first create external docker volume for Prometheus: 
+Setup venv:
+```sh
+sudo rm -rf .venv
+python3 -m venv .venv
+source .venv/bin/activate
+which python
+```
+
+Run all CI scripts:
 
 ```sh
-docker volume create timescale_pgdata
+scripts/ci/ci
 ```
-
-# Run locally
-
-```
-docker-compose up
-```
-
-# Access Timescale data 
-
-```sh
-docker exec -it timescaledb psql postgres postgres
-```
-
-
-
