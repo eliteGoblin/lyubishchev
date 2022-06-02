@@ -21,7 +21,7 @@ Running on Python3.
 ## Definition
 
 *  Project: where each atomic work belong, 对应于Kanban中的Epic.
-*  Billable: 根据自己的life ultimate goal, 提升自己的时间: 即是否在学习
+*  self-improving: 根据自己的life ultimate goal, 提升自己的时间: 即是否在学习
    *  被动学习: 读书
    *  主动学习: blog, 练习demo, take notes.
 
@@ -44,7 +44,7 @@ Time entry type:
 
 类型排他标签, 只能有一种类型
 
-*  区分是否是有效个人主动学习时间: self-improvement
+*  区分是否是有效个人主动学习时间: self-improvement: 后续可以增加其他info tag, 如是否是主动学习, 子类别: blog
 *  区分是否是在工作
 *  区分是否是routine: 维持day to day life, 基本需要.
 *  区分exercise time
@@ -71,7 +71,8 @@ Distracted可标记为:
 *  Game
 *  Youtube
 
-? tag可以是松散的? 比如只有tag key, 还是严格定义 key=value.  允许仅定义tag key(等同于miss tag value, treat like empty string""?)
+*  支持key only, means `tag`
+*  输入的label, annotation, tag必须被程序verify.
 
 ### Event
 
@@ -86,7 +87,7 @@ Distracted可标记为:
 Time investment: 
 
 *  Project时间分配
-*  billable比例: 相当于柳牛的"有效时间": 
+*  柳牛的"有效时间": 真正用于自我提升的时间.
 > 柳比歇夫非常有兴致统计自己每日时间清单里真正用于工作的有效时间长度，这是从3个半小时到5个半小时之间浮动的一个值。柳比歇夫发现，即便是自己这样珍惜和擅长利用时间的人，能够做出如此高产成果的人，每天用于有效工作的时间也很难超过5小时
 > 了不起！每天有5小时13分钟搞纯学术工作，天天如此。整整一年没有休假，没有节假日！5小时的纯工作时间，这可是一个客观的数字。
 *  Exercise time
