@@ -1,11 +1,17 @@
-import click
+import sys
+from pprint import pprint
+
+from lyubishchev.data_model import Metadata, TimeInterval
 
 
-@click.command()
-def hello() -> None:
-    click.echo("Hello World!")
+def main() -> int:
+    print(sys.path)
+    m = Metadata()
+    pprint(m)
+    e = TimeInterval()
+    pprint(e)
+    return 0
 
 
 if __name__ == "__main__":
-    # execute only if run as the entry point into the program
-    hello()
+    sys.exit(main())
