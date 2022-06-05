@@ -45,16 +45,6 @@ Model层只关心string tag. Model不关心数据持久化的事情， 只管拿
 *  sex
 *  sleep: 包括日间nap, 和夜晚sleep
 *  work
-
-
-
-
-
-
-
-
-
-
 ## Tags 
 
 Tags = key only (value=="")
@@ -65,7 +55,7 @@ Tags = key only (value=="")
    *  social: 朋友， 同事. 
    *  family: family时光，如一起dinner, talking. 
    *  intimacy: 无sex的举动
-   *  recreation: 做truely happy的事: fine-dinning, walking, 音乐会等
+   *  happy: 做truely happy的事: fine-dinning, walking, 音乐会等
 * `intervalType==distracted`:
    * news
    * porn: no m, just watching. 如果是失去控制: 连续watch, 然后m 标记为pmo.
@@ -74,7 +64,8 @@ Tags = key only (value=="")
 * `intervalType==routine`:
   * cook
   * housework
-* `interval_type==self-improving`
+* `interval_type==self-improving`:
+  * deep: math, computer vision
 
 ### Event tag
 
