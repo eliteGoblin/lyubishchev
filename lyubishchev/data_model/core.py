@@ -38,6 +38,13 @@ def validate_time_interval_label_and_tag(label: Label) -> None:
     if label[TYPE] not in VALID_INTERVAL_TYPES:
         raise InvalidLabelTag("invalid type value {value}".format(value=label[TYPE]))
 
+    if PROJECT in label:
+        project_value: str = label[PROJECT]
+        if project_value == "" or project_value not in VALID_PROJECTS:
+            raise InvalidLabelTag(
+                "invalid project value {value}".format(value=project_value)
+            )
+
     # check tags
     for label_key, value in label.items():
         if value != "":  # it's a label, not a tag
@@ -71,7 +78,7 @@ def validate_time_interval_label_and_tag(label: Label) -> None:
                 continue
         else:
             raise InvalidLabelTag(
-                "tag {tag} must be specified with valid type, pls add it in data.py".format(
+                "tag {tag} must be specified with valid type, or pls add it in data.py".format(
                     tag=label_key
                 )
             )
