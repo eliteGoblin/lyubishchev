@@ -48,7 +48,7 @@ def test_validate_time_internal() -> None:
             expect_is_valid=False,
         ),
         TestCase(
-            name="relax, not a tag, should error",
+            name="relax, with key not a tag, should error",
             input={
                 "type": "relax",
                 "intimacy": "true",
@@ -61,7 +61,6 @@ def test_validate_time_internal() -> None:
         try:
             validate_time_interval_label_and_tag(case.input)
         except InvalidLabelTag as e:
-            print("got error!!!!", e)
             assert not case.expect_is_valid
         else:
             assert case.expect_is_valid
