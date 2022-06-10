@@ -67,19 +67,6 @@ Tags = key only (value=="")
 * `interval_type==self-improving`:
   * deep: math, computer vision
 
-### Event tag
-
-目前只支持tag; 
-
-*  wakeup: 已清醒, 不准备睡的时刻
-*  getup:  起床时间
-*  gobed: 准备入睡时间
-
-## Validation
-
-*  interval_type合法
-*  有extra_info
-
 # annotation
 
 v0.1.0 不实现

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from lyubishchev.data_model import *
 
 
-def test_validate_time_internal() -> None:
+def test_validate_time_interval() -> None:
     @dataclass
     class TestCase:
         name: str
