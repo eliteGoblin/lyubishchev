@@ -1,6 +1,7 @@
 from .core import *
 from .core import Metadata
-from .time_interval import TimeInterval
+from .event import Event, validate_event_label_and_tag
+from .time_interval import TimeInterval, validate_time_interval_label_and_tag
 
 __all__ = [
     "Annotation",
@@ -9,4 +10,5 @@ __all__ = [
     "InvalidLabelTag",
     "TimeInterval",
     "validate_time_interval_label_and_tag",
+    "validate_event_label_and_tag",
 ]

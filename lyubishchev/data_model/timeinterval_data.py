@@ -1,9 +1,4 @@
-from typing import Dict, List, Union
-
-Annotation = Dict[str, Union[str, int, float]]
-Label = Dict[str, str]
-
-# TimeInterval
+from typing import List
 
 # PROJECT is for measuring output, similar to EPIC, and better to link with one
 PROJECT: str = "project"
