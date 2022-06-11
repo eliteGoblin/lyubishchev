@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from lyubishchev.data_model import *
+from lyubishchev.data_model import *  # pylint: disable=wildcard-import,unused-wildcard-import)
 
 
 def test_validate_time_interval() -> None:
@@ -60,7 +60,7 @@ def test_validate_time_interval() -> None:
     for case in testcases:
         try:
             validate_time_interval_label_and_tag(case.input)
-        except InvalidLabelTag as e:
+        except InvalidLabelTag:
             assert not case.expect_is_valid
         else:
             assert case.expect_is_valid

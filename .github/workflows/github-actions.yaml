@@ -1,5 +1,5 @@
 ---
-name: python skeleton tests
+name: lyubishchev ci tests
 on: [push]
 jobs:
   run-format-checker:

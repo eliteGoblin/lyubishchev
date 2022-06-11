@@ -4,12 +4,30 @@ import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
-from lyubishchev.data_model.timeinterval_data import *
+from lyubishchev.data_model.timeinterval_data import (
+    PROJECT,
+    TYPE,
+    TYPE_DISTRACTED,
+    TYPE_RELAX,
+    TYPE_ROUTINE,
+    TYPE_SELF_IMPROVING,
+    VALID_DISTRACTED_TAGS,
+    VALID_INTERVAL_TYPES,
+    VALID_PROJECTS,
+    VALID_RELAX_TAGS,
+    VALID_ROUTINE_TAGS,
+    VALID_SELF_IMPROVING_TAGS,
+    VALID_TAGS,
+    VALID_TIME_INTERVAL_LABEL_KEY,
+)
 
 
 @dataclass
 class TimeInterval:
-    """TimeInterval object is for tracking a time interval, with additional labels and annotations"""
+    """
+    TimeInterval object is for tracking a time interval,
+    with additional labels and annotations
+    """
 
     metadata: Metadata
     extra_info: str
@@ -23,43 +41,33 @@ class TimeInterval:
         self.duration_minutes = 0
 
 
-def validate_time_interval_label_and_tag(label: Label) -> None:
+def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
+    label: Label,
+) -> None:
 
     """
-    throw InvalidLabelTag
+    throw InvalidLabelTag if TimeInterval label, tag validation fail
     """
-    # check required fields
     if TYPE not in label:
-        raise InvalidLabelTag("key {key} missing".format(key=TYPE))
+        raise InvalidLabelTag(f"key {TYPE} missing in TimeInterval")
     if label[TYPE] not in VALID_INTERVAL_TYPES:
-        raise InvalidLabelTag("invalid type value {value}".format(value=label[TYPE]))
+        raise InvalidLabelTag(f"invalid type value {label[TYPE]} in TimeInterval")
 
     if PROJECT in label:
         project_value: str = label[PROJECT]
         if project_value == "" or project_value not in VALID_PROJECTS:
-            raise InvalidLabelTag(
-                "invalid project value {value}".format(value=project_value)
-            )
+            raise InvalidLabelTag(f"invalid project value {project_value}")
 
     # check tags
     for label_key, value in label.items():
         if value != "":
             # it's a label(not a tag): check label key is valid
             if label_key not in VALID_TIME_INTERVAL_LABEL_KEY:
-                raise InvalidLabelTag(
-                    "invalid label key {key}".format(
-                        key=label_key,
-                    )
-                )
+                raise InvalidLabelTag(f"invalid label key {label_key}")
             continue
-        else:
-            # if it's a tag(value empty string), check if valid tag names.
-            if label_key not in VALID_TAGS:
-                raise InvalidLabelTag(
-                    "invalid tag key {tag}".format(
-                        tag=label_key,
-                    )
-                )
+        # if it's a tag(value empty string), check if valid tag names.
+        if label_key not in VALID_TAGS:
+            raise InvalidLabelTag(f"invalid tag key {label_key}")
         # check if tag match type
         type_value: str = label[TYPE]
         if type_value == TYPE_RELAX:
@@ -76,14 +84,7 @@ def validate_time_interval_label_and_tag(label: Label) -> None:
                 continue
         else:
             raise InvalidLabelTag(
-                "tag {tag} must be specified with valid type, or pls add it in data.py".format(
-                    tag=label_key
-                )
+                f"tag {label_key} must be specified with valid type, or pls add it in data.py"
             )
 
-        raise InvalidLabelTag(
-            "invalid tag value {value} for type {typ}".format(
-                value=value,
-                typ=TYPE,
-            )
-        )
+        raise InvalidLabelTag(f"invalid tag value {value} for type {TYPE}")

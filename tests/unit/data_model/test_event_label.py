@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from lyubishchev.data_model import *
+from lyubishchev.data_model import *  # pylint: disable=wildcard-import,unused-wildcard-import)
 
 
 def test_validate_event() -> None:
@@ -74,7 +74,7 @@ def test_validate_event() -> None:
     for case in testcases:
         try:
             validate_event_label_and_tag(case.input)
-        except InvalidLabelTag as e:
+        except InvalidLabelTag:
             assert not case.expect_is_valid
         else:
             assert case.expect_is_valid

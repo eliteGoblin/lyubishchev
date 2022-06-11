@@ -4,7 +4,16 @@ import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
-from lyubishchev.data_model.event_data import *
+from lyubishchev.data_model.event_data import (
+    TYPE,
+    TYPE_RECOVER_UNWELL,
+    TYPE_UNWELL,
+    VALID_LABEL_KEY,
+    VALID_RECOVER_UNWELL_TAGS,
+    VALID_TAG_KEY,
+    VALID_TYPE,
+    VALID_UNWELL_TAGS,
+)
 
 
 @dataclass
@@ -25,33 +34,23 @@ class Event:
 def validate_event_label_and_tag(label: Label) -> None:
 
     """
-    throw InvalidLabelTag
+    throw InvalidLabelTag in event label and tag validation fail
     """
-    # check required fields
     if TYPE not in label:
-        raise InvalidLabelTag("key {key} missing".format(key=TYPE))
+        raise InvalidLabelTag(f"key {TYPE} missing in event")
     if label[TYPE] not in VALID_TYPE:
-        raise InvalidLabelTag("invalid type value {value}".format(value=label[TYPE]))
+        raise InvalidLabelTag(f"invalid type value {label[TYPE]} in event")
 
     # check tags
     for label_key, value in label.items():
         if value != "":
             # it's a label(not a tag): check label key is valid
             if label_key not in VALID_LABEL_KEY:
-                raise InvalidLabelTag(
-                    "invalid label key {key}".format(
-                        key=label_key,
-                    )
-                )
+                raise InvalidLabelTag(f"invalid label key {label_key}")
             continue
-        else:
-            # if it's a tag(value empty string), check if valid tag names.
-            if label_key not in VALID_TAG_KEY:
-                raise InvalidLabelTag(
-                    "invalid tag key {tag}".format(
-                        tag=label_key,
-                    )
-                )
+        # if it's a tag(value empty string), check if valid tag names.
+        if label_key not in VALID_TAG_KEY:
+            raise InvalidLabelTag(f"invalid tag key {label_key}")
         # check if tag match type
         type_value: str = label[TYPE]
         if type_value == TYPE_UNWELL:
@@ -62,14 +61,7 @@ def validate_event_label_and_tag(label: Label) -> None:
                 continue
         else:
             raise InvalidLabelTag(
-                "tag {tag} must be specified with valid type, or pls add it in data.py".format(
-                    tag=label_key
-                )
+                f"tag {label_key} must be specified with valid event type"
             )
 
-        raise InvalidLabelTag(
-            "invalid tag value {value} for type {typ}".format(
-                value=value,
-                typ=TYPE,
-            )
-        )
+        raise InvalidLabelTag(f"invalid tag value {value} for type {TYPE}")
