@@ -82,10 +82,11 @@ generated based on TimeIntervals and Events
 ```json
 {
     "date": , # with timezone
-    "getup_timestamp": 123456789,
-    "bed_timestamp": 123456789,
-    "sleep_mins": 9999,
-    "happiness_gauge": 3.5, # 1-5, float
+    "wakeup_time": 123456789,
+    "getup_time": 123456789,
+    "bed_time": 123456789,
+    "sleep_minutes": 9999,
+    "happiness": 3.5, # 1-5, float
     "time_intervals": [], # 按发生时间排序
     "events": [] # 发生时间排序
 }

@@ -8,7 +8,6 @@ PROJECT: str = "project"
 PROJECT_SOFTWARE_ENGINEERING: str = "software-engineering"
 PROJECT_COMPUTER_VISION = "computer-vision"
 PROJECT_MATH = "math"
-PROJECT_READING = "reading"
 PROJECT_GIS = "gis"
 
 # hard code valid projects for now, later we could link it to EPIC
@@ -16,7 +15,6 @@ VALID_PROJECTS: List[str] = [
     PROJECT_SOFTWARE_ENGINEERING,
     PROJECT_COMPUTER_VISION,
     PROJECT_MATH,
-    PROJECT_READING,
     PROJECT_GIS,
 ]
 

@@ -6,24 +6,17 @@ Label = Dict[str, str]
 
 
 class InvalidLabelTag(Exception):
-    """Exception raised when missing required labels, invalid label or label and tag not matching the"""
-
-    pass
+    """
+    Exception raised when missing required labels,
+    invalid label or label and tag not matching the
+    """
 
 
 @dataclass
 class Metadata:
-    version: str  # semver, e.g v0.1.0
     annotation: Annotation
     label: Label
 
     def __init__(self) -> None:
-        self.version = ""
         self.annotation = {}
         self.label = {}
-
-    def validate(self) -> None:
-        """
-        throw InvalidLabelTag
-        """
-        raise NotImplementedError("not implemented!")
