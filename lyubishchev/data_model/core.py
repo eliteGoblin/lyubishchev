@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Union
+from typing import Any, Dict, List, Union
 
 Annotation = Dict[str, Union[str, int, float]]
 Label = Dict[str, str]
@@ -17,6 +17,10 @@ class Metadata:
     annotation: Annotation
     label: Label
 
-    def __init__(self) -> None:
-        self.annotation = {}
-        self.label = {}
+    def __init__(self, **kwargs: Any) -> None:
+        valid_keys: List[str] = [
+            "annotation",
+            "label",
+        ]
+        for key in valid_keys:
+            setattr(self, key, kwargs.get(key))

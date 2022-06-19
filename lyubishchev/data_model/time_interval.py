@@ -1,6 +1,6 @@
 from dataclasses import dataclass
+from typing import Any, List
 
-import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
@@ -34,11 +34,15 @@ class TimeInterval:
     timestamp: Arrow
     duration_minutes: int
 
-    def __init__(self) -> None:
-        self.metadata = Metadata()
-        self.extra_info = ""
-        self.timestamp = arrow.now()
-        self.duration_minutes = 0
+    def __init__(self, **kwargs: Any) -> None:
+        valid_keys: List[str] = [
+            "metadata",
+            "extra_info",
+            "timestamp",
+            "duration_minutes",
+        ]
+        for key in valid_keys:
+            setattr(self, key, kwargs.get(key))
 
 
 def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches

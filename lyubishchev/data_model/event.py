@@ -1,11 +1,11 @@
 from dataclasses import dataclass
+from typing import Any, List
 
-import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
 from lyubishchev.data_model.event_data import (
-    TYPE,
+    EVENT_TYPE,
     TYPE_RECOVER_UNWELL,
     TYPE_UNWELL,
     VALID_LABEL_KEY,
@@ -24,11 +24,10 @@ class Event:
     extra_info: str
     timestamp: Arrow
 
-    def __init__(self) -> None:
-        self.metadata = Metadata()
-        self.extra_info = ""
-        self.timestamp = arrow.now()
-        self.duration_minutes = 0
+    def __init__(self, **kwargs: Any) -> None:
+        valid_keys: List[str] = ["metadata", "extra_info", "timestamp"]
+        for key in valid_keys:
+            setattr(self, key, kwargs.get(key))
 
 
 def validate_event_label_and_tag(label: Label) -> None:
@@ -36,10 +35,10 @@ def validate_event_label_and_tag(label: Label) -> None:
     """
     throw InvalidLabelTag in event label and tag validation fail
     """
-    if TYPE not in label:
-        raise InvalidLabelTag(f"key {TYPE} missing in event")
-    if label[TYPE] not in VALID_TYPE:
-        raise InvalidLabelTag(f"invalid type value {label[TYPE]} in event")
+    if EVENT_TYPE not in label:
+        raise InvalidLabelTag(f"key {EVENT_TYPE} missing in event")
+    if label[EVENT_TYPE] not in VALID_TYPE:
+        raise InvalidLabelTag(f"invalid type value {label[EVENT_TYPE]} in event")
 
     # check tags
     for label_key, value in label.items():
@@ -52,7 +51,7 @@ def validate_event_label_and_tag(label: Label) -> None:
         if label_key not in VALID_TAG_KEY:
             raise InvalidLabelTag(f"invalid tag key {label_key}")
         # check if tag match type
-        type_value: str = label[TYPE]
+        type_value: str = label[EVENT_TYPE]
         if type_value == TYPE_UNWELL:
             if label_key in VALID_UNWELL_TAGS:
                 continue
@@ -64,4 +63,4 @@ def validate_event_label_and_tag(label: Label) -> None:
                 f"tag {label_key} must be specified with valid event type"
             )
 
-        raise InvalidLabelTag(f"invalid tag value {value} for type {TYPE}")
+        raise InvalidLabelTag(f"invalid tag value {value} for type {EVENT_TYPE}")

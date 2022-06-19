@@ -1,11 +1,11 @@
 from typing import List
 
 # each Event must has one type
-TYPE: str = "type"
+EVENT_TYPE: str = "type"
 # valid event type values
 TYPE_WAKEUP = "wakeup"
 TYPE_GETUP = "getup"
-TYPE_GOBED = "gobed"
+TYPE_BED = "bed"
 TYPE_UNWELL = "unwell"
 TYPE_RECOVER_UNWELL = "recover-unwell"
 
@@ -13,7 +13,7 @@ TYPE_RECOVER_UNWELL = "recover-unwell"
 VALID_TYPE: List[str] = [
     TYPE_WAKEUP,
     TYPE_GETUP,
-    TYPE_GOBED,
+    TYPE_BED,
     TYPE_UNWELL,
     TYPE_RECOVER_UNWELL,
 ]
@@ -34,7 +34,7 @@ VALID_RECOVER_UNWELL_TAGS: List[str] = VALID_UNWELL_TAGS
 
 
 VALID_LABEL_KEY: List[str] = [
-    TYPE,
+    EVENT_TYPE,
 ]
 
 VALID_TAG_KEY: List[str] = [*VALID_UNWELL_TAGS]

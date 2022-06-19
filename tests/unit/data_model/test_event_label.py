@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from lyubishchev.data_model import *  # pylint: disable=wildcard-import,unused-wildcard-import)
+from lyubishchev.data_model import InvalidLabelTag, Label, validate_event_label_and_tag
 
 
 def test_validate_event() -> None:
