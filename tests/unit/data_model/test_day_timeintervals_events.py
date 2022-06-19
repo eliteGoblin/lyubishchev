@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import List
 
 import arrow
-import pytest
 
 from lyubishchev.data_model import (
     DayRecord,
@@ -154,7 +153,6 @@ def test_validate_events() -> None:
             assert case.expect_success
 
 
-@pytest.mark.focus  # https://stackoverflow.com/a/45270469
 def test_validate_time_intervals_match_events() -> None:
     @dataclass
     class TestCase:
