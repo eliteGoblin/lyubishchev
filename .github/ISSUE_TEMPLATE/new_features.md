@@ -1,7 +1,7 @@
 ---
-name: New Feature
-about: Suggest an new feature
-labels: kind/feature
+name: Improvement
+about: Suggest an improvement or new feature
+labels: kind/improvement
 ---
 
 ## Context

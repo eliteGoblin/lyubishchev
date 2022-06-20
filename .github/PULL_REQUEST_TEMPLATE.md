@@ -1,4 +1,4 @@
-# Library PR
+# PR
 
 Fixes #{issue_number}
 

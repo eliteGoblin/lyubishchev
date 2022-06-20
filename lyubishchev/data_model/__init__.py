@@ -1,4 +1,6 @@
 from .core import Annotation, InvalidLabelTag, Label, Metadata
+from .data_fetcher import TimeIntervalFetcher
+from .data_reader import date_range_to_timestamp_range
 from .day import (
     DayRecord,
     InvalidDayRecord,
@@ -39,4 +41,6 @@ __all__ = [
     "validate_time_intervals_order",
     "validate_time_intervals_match_events",
     "validate_events",
+    "TimeIntervalFetcher",  # data_fetcher
+    "date_range_to_timestamp_range",  # data_reader
 ]
