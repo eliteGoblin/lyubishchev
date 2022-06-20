@@ -263,14 +263,3 @@ def validate_day_record(day: DayRecord) -> None:
     ]
     for verifier in verifiers:
         verifier(day)
-
-
-def parse_and_generate_day_records(
-    time_intervals: List[TimeInterval],
-    events: List[Event],
-    previous_night_sleep_minutes: int,
-) -> List[DayRecord]:
-    """
-    events must with first records wakeup, last records with bed
-    """
-    raise NotImplementedError

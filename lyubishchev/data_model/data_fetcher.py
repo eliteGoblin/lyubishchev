@@ -13,15 +13,14 @@ class TimeIntervalFetcher(ABC):  # pylint: disable=too-few-public-methods
 
     @abstractmethod
     def fetch_time_intervals_events(
-        self, start_date: str, end_date: str
+        self, start_timestamp: Arrow, end_timestamp: Arrow
     ) -> tuple[List[TimeInterval], List[Event]]:
         """
-        start_date, end_date : YYYY-MM-DD
-        Fetch records between: [start's 00:00, end)
+        Fetch records between: [start_timestamp, end_timestamp]
         """
 
     @abstractmethod
     def fetch_last_bedtime(self, timestamp: Arrow) -> Arrow:
         """
-        Get when was the last bedtime before given timestamp within 24 hrs
+        Get when was the last bedtime
         """
