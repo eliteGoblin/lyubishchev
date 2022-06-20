@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 
 from arrow import Arrow
 
@@ -9,7 +9,7 @@ from .time_interval import TimeInterval
 
 def generate_timestamp_from_date_str(
     start_date: str, end_date: str
-) -> tuple[Arrow, Arrow]:
+) -> Tuple[Arrow, Arrow]:
     raise NotImplementedError
 
 
