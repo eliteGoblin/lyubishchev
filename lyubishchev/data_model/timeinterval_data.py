@@ -19,7 +19,7 @@ VALID_PROJECTS: List[str] = [
 ]
 
 # each TimeInterval must has one type
-TYPE: str = "type"
+TIME_INTERVAL_TYPE: str = "type"
 # valid type values
 TYPE_DISPUTE: str = "dispute"
 TYPE_DISTRACTED: str = "distracted"
@@ -93,4 +93,4 @@ VALID_TAGS: List[str] = [
     *VALID_SELF_IMPROVING_TAGS,
 ]
 
-VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [PROJECT, TYPE]
+VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [PROJECT, TIME_INTERVAL_TYPE]

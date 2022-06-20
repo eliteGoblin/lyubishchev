@@ -14,6 +14,7 @@ from lyubishchev.data_model.event_data import (
     TYPE_WAKEUP,
 )
 from lyubishchev.data_model.time_interval import TimeInterval
+from lyubishchev.data_model.timeinterval_data import TIME_INTERVAL_TYPE, TYPE_SLEEP
 
 
 class InvalidDayRecord(Exception):
@@ -77,6 +78,16 @@ class DayRecord:
            sleep last night = [last day's bedtime, current day's wakeup time]
            nap of day = Current day's TimeIntervals tagged with sleep
         """
+        return self.last_night_sleep_minutes + self.day_sleep_minutes
+
+    @property
+    def day_sleep_minutes(self) -> int:
+        return sum(
+            interval.duration_minutes
+            if interval.metadata.label[TIME_INTERVAL_TYPE] == TYPE_SLEEP
+            else 0
+            for interval in self.time_intervals
+        )
 
     @property
     def day_length_minutes(self) -> int:
@@ -257,7 +268,7 @@ def validate_day_record(day: DayRecord) -> None:
 def parse_and_generate_day_records(
     time_intervals: List[TimeInterval],
     events: List[Event],
-    night_sleep_minutes_before_start: int,
+    previous_night_sleep_minutes: int,
 ) -> List[DayRecord]:
     """
     events must with first records wakeup, last records with bed
