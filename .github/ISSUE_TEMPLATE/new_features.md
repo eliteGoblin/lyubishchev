@@ -1,7 +1,7 @@
 ---
 name: Improvement
 about: Suggest an improvement or new feature
-labels: kind/improvement
+labels: kind/improvement 
 ---
 
 ## Context
