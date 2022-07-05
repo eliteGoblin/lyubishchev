@@ -1,5 +1,8 @@
 from typing import List
 
+# event means status change, e.g
+#   sleep => wakeup
+
 # each Event must has one type
 EVENT_TYPE: str = "type"
 # valid event type values
@@ -8,6 +11,7 @@ TYPE_GETUP = "getup"
 TYPE_BED = "bed"
 TYPE_UNWELL = "unwell"
 TYPE_RECOVER_UNWELL = "recover-unwell"
+
 
 # type means mutual exclusive
 VALID_TYPE: List[str] = [
@@ -26,6 +30,7 @@ TAG_INJURED: str = "injured"
 
 VALID_UNWELL_TAGS: List[str] = [
     TAG_COLD,
+    # more sickness type can be added here
     TAG_INJURED,
 ]
 

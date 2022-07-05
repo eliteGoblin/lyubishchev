@@ -44,11 +44,24 @@ class TimeIntervalFetcher(ABC):  # pylint: disable=too-few-public-methods
 TimeIntervals: 时间within event的时间range.
 Events: 第一天wakeup第一条; 最后一条是bed.
 
-问题: 
+# Design
 
-*  DayRecord模型里，把getup, wakeup, bed视为event吗? 还是implementation detail; 这几个作为day summary的field, 而不是event, 减少工作量(貌似这个合理).
+*  简化接口: 标准化为timestamp.
+*  过滤TimeInterval, 并装入DayRecord, 这是business logic. 并不是implementation difference.
 
-TODO:
+TODO: think how to use it, 目前的想法: Fetcher只关心从无歧义timestamp, 获取intervals and events
 
-*  决定 ^^ 
-*  Unit test of DayRecord
+Business Logic中:
+
+1.  generate timestamp using date str
+2.  using timestamp to get events and time intervals
+3.  get accurate range: [fist wakeup, last bed] of events: 
+    1.  start是00:00开始，wakeup一定在此之后: e.g June 1 的start: June 1 00:00之后的第一个wakeup.
+    2.  如何区分最后一天bedtime: 可能是前一天凌晨睡觉; 也可能是后一天早睡; 诀窍: end的wakup之前的bedtime为最后一个bedtime. 
+    3.  e.g [June 1, June 5) : end timestamp 为 June 5 23:59, 不想包含June 5的records: 首先从后往前找到最后一个wakeup, 即June 5的wakeup.(从来没有第二天的wakeup早于23:59); 以此，倒着找之前最后一个bedtime, 即为 June 4 的bedtime.
+4.  用accurate range, refine TimeIntervals, 为分割成每天做准备. 
+
+
+分割每天时: 
+
+用类似函数, start index, parse_next_day(); 遍历所有的TimeIntervals, Events; Fill DayRecord data structure.

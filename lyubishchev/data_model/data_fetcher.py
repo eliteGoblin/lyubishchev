@@ -3,25 +3,19 @@ from typing import List
 
 from arrow import Arrow
 
-from lyubishchev.data_model import Event, TimeInterval
+from lyubishchev.data_model.event import Event
+from lyubishchev.data_model.time_interval import TimeInterval
 
 
 class TimeIntervalFetcher(ABC):  # pylint: disable=too-few-public-methods
     """
-    throw: ?
+    throw: ValueError, Exception
     """
 
     @abstractmethod
     def fetch_time_intervals_events(
-        self, start_date: str, end_date: str
+        self, start_timestamp: Arrow, end_timestamp: Arrow
     ) -> tuple[List[TimeInterval], List[Event]]:
         """
-        start_date, end_date : YYYY-MM-DD
-        Fetch records between: [start's 00:00, end)
-        """
-
-    @abstractmethod
-    def fetch_last_bedtime(self, timestamp: Arrow) -> Arrow:
-        """
-        Get when was the last bedtime before given timestamp within 24 hrs
+        Fetch records exactly between: [start_timestamp, end_timestamp]
         """

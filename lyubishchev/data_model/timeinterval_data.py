@@ -19,8 +19,9 @@ VALID_PROJECTS: List[str] = [
 ]
 
 # each TimeInterval must has one type
-TYPE: str = "type"
+TIME_INTERVAL_TYPE: str = "type"
 # valid type values
+TYPE_BOWEL_MOVEMENT: str = "bowel-movement"
 TYPE_DISPUTE: str = "dispute"
 TYPE_DISTRACTED: str = "distracted"
 TYPE_EXERCISE: str = "exercise"
@@ -34,6 +35,7 @@ TYPE_SLEEP: str = "sleep"
 TYPE_WORK: str = "work"
 
 VALID_INTERVAL_TYPES: List[str] = [
+    TYPE_BOWEL_MOVEMENT,
     TYPE_DISPUTE,
     TYPE_DISTRACTED,
     TYPE_EXERCISE,
@@ -54,20 +56,19 @@ TAG_FAMILY: str = "family"
 TAG_HAPPY: str = "happy"
 TAG_INTIMACY: str = "intimacy"
 TAG_SOCIAL: str = "social"
-TAG_YOUTUBE: str = "youtube"
 
 VALID_RELAX_TAGS: List[str] = [
     TAG_FAMILY,
     TAG_HAPPY,
     TAG_INTIMACY,
     TAG_SOCIAL,
-    TAG_YOUTUBE,
 ]
 
 # Tags for type=distracted
 TAG_GAME: str = "game"
 TAG_NEWS: str = "news"
 TAG_PORN: str = "porn"
+TAG_YOUTUBE: str = "youtube"
 
 VALID_DISTRACTED_TAGS: List[str] = [TAG_GAME, TAG_NEWS, TAG_PORN, TAG_YOUTUBE]
 
@@ -79,18 +80,27 @@ TAG_HOUSEWORK: str = "housework"
 VALID_ROUTINE_TAGS: List[str] = [TAG_KITCHEN, TAG_HOUSEWORK]
 
 # Tags for type=self-improving
+# TAG_READING apply to:
+#   Kindle, non-CS good book
+#   Articles, blogs
+TAG_READING: str = "reading"
 # TAG_DEEP_LEARNING can apply to:
 #   Hard subject like math, or
 #   Actively learning: OJ, output notes, blogs, demo projects; distinguish of plain reading
 TAG_DEEP_LEARNING: str = "deep-learning"
 TAG_REVIEW: str = "review"  # review, plan
-VALID_SELF_IMPROVING_TAGS: List[str] = [TAG_DEEP_LEARNING, TAG_REVIEW]
+VALID_SELF_IMPROVING_TAGS: List[str] = [TAG_READING, TAG_DEEP_LEARNING, TAG_REVIEW]
+
+# Tags for sex
+TAG_MASTERBATE: str = "masterbate"
+VALID_SEX_TAGS: List[str] = [TAG_MASTERBATE]
 
 VALID_TAGS: List[str] = [
     *VALID_RELAX_TAGS,
     *VALID_ROUTINE_TAGS,
     *VALID_DISTRACTED_TAGS,
     *VALID_SELF_IMPROVING_TAGS,
+    *VALID_SEX_TAGS,
 ]
 
-VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [PROJECT, TYPE]
+VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [PROJECT, TIME_INTERVAL_TYPE]

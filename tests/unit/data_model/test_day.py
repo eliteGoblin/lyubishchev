@@ -6,6 +6,7 @@ import arrow
 from lyubishchev.data_model import (
     DayRecord,
     InvalidDayRecord,
+    Metadata,
     TimeInterval,
     validate_required_fields,
     validate_time_order,
@@ -52,6 +53,94 @@ def test_date_str() -> None:
 
     for case in testcases:
         assert case.input_day.date_str(date_fmt) == case.expected_date_str
+
+
+def test_sleep_minutes() -> None:
+    @dataclass
+    class TestCase:
+        description: str
+        input_day: DayRecord
+        expected: int
+
+    testcases: List[TestCase] = [
+        TestCase(
+            description="sleep minutes should equal to last sleep and nap of time intervals",
+            input_day=DayRecord(
+                last_night_sleep_minutes=300,
+                time_intervals=[
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "routine"}),
+                        duration_minutes=10,
+                    ),
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "sleep"}),
+                        duration_minutes=30,
+                    ),
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "sleep"}),
+                        duration_minutes=50,
+                    ),
+                ],
+            ),
+            expected=380,
+        ),
+        TestCase(
+            description="sleep minutes should equal to last sleep if day sleep",
+            input_day=DayRecord(
+                last_night_sleep_minutes=300,
+                time_intervals=[
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "routine"}),
+                        duration_minutes=10,
+                    ),
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "relax"}),
+                        duration_minutes=30,
+                    ),
+                ],
+            ),
+            expected=300,
+        ),
+    ]
+    for case in testcases:
+        assert case.input_day.sleep_minutes == case.expected
+
+
+def test_recorded_minutes() -> None:
+    @dataclass
+    class TestCase:
+        description: str
+        input_day: DayRecord
+        expected: int
+
+    testcases: List[TestCase] = [
+        TestCase(
+            description="recorded minutes should be accumulation of all intervals",
+            input_day=DayRecord(
+                time_intervals=[
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "routine"}),
+                        duration_minutes=10,
+                    ),
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "sleep"}),
+                        duration_minutes=30,
+                    ),
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "relax"}),
+                        duration_minutes=50,
+                    ),
+                    TimeInterval(
+                        metadata=Metadata(label={"type": "self-improving"}),
+                        duration_minutes=20,
+                    ),
+                ],
+            ),
+            expected=110,
+        ),
+    ]
+    for case in testcases:
+        assert case.input_day.recorded_minutes == case.expected
 
 
 def test_day_validate_required_fields() -> None:

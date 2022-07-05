@@ -6,7 +6,7 @@ from arrow import Arrow
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
 from lyubishchev.data_model.timeinterval_data import (
     PROJECT,
-    TYPE,
+    TIME_INTERVAL_TYPE,
     TYPE_DISTRACTED,
     TYPE_RELAX,
     TYPE_ROUTINE,
@@ -52,10 +52,12 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
     """
     throw InvalidLabelTag if TimeInterval label, tag validation fail
     """
-    if TYPE not in label:
-        raise InvalidLabelTag(f"key {TYPE} missing in TimeInterval")
-    if label[TYPE] not in VALID_INTERVAL_TYPES:
-        raise InvalidLabelTag(f"invalid type value {label[TYPE]} in TimeInterval")
+    if TIME_INTERVAL_TYPE not in label:
+        raise InvalidLabelTag(f"key {TIME_INTERVAL_TYPE} missing in TimeInterval")
+    if label[TIME_INTERVAL_TYPE] not in VALID_INTERVAL_TYPES:
+        raise InvalidLabelTag(
+            f"invalid type value {label[TIME_INTERVAL_TYPE]} in TimeInterval"
+        )
 
     if PROJECT in label:
         project_value: str = label[PROJECT]
@@ -73,7 +75,7 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
         if label_key not in VALID_TAGS:
             raise InvalidLabelTag(f"invalid tag key {label_key}")
         # check if tag match type
-        type_value: str = label[TYPE]
+        type_value: str = label[TIME_INTERVAL_TYPE]
         if type_value == TYPE_RELAX:
             if label_key in VALID_RELAX_TAGS:
                 continue
@@ -91,4 +93,6 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
                 f"tag {label_key} must be specified with valid type, or pls add it in data.py"
             )
 
-        raise InvalidLabelTag(f"invalid tag value {value} for type {TYPE}")
+        raise InvalidLabelTag(
+            f"invalid tag value {value} for type {TIME_INTERVAL_TYPE}"
+        )
