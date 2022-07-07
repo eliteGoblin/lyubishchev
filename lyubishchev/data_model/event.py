@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
@@ -25,9 +26,14 @@ class Event:
     timestamp: Arrow
 
     def __init__(self, **kwargs: Any) -> None:
+        self.metadata = Metadata()
+        self.extra_info = ""
+        self.timestamp = arrow.utcnow()
+
         valid_keys: List[str] = ["metadata", "extra_info", "timestamp"]
         for key in valid_keys:
-            setattr(self, key, kwargs.get(key))
+            if kwargs.get(key) is not None:
+                setattr(self, key, kwargs.get(key))
 
 
 def validate_event_label_and_tag(label: Label) -> None:

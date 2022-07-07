@@ -15,7 +15,7 @@ from .day import (
 from .event import Event, validate_event_label_and_tag
 from .event_data import EVENT_TYPE, TYPE_BED, TYPE_GETUP, TYPE_WAKEUP
 from .time_interval import TimeInterval, validate_time_interval_label_and_tag
-from .timeinterval_data import TIME_INTERVAL_TYPE, TYPE_SLEEP
+from .timeinterval_data import TIME_INTERVAL_TYPE, TYPE_SLEEP, VALID_TIME_INTERVAL_TAGS
 
 __all__ = [
     "Annotation",
@@ -24,7 +24,8 @@ __all__ = [
     "InvalidLabelTag",
     "TimeInterval",
     "validate_time_interval_label_and_tag",
-    "TIME_INTERVAL_TYPE",
+    "TIME_INTERVAL_TYPE",  # timeinterval_data
+    "VALID_TIME_INTERVAL_TAGS",
     "TYPE_SLEEP",
     "validate_event_label_and_tag",
     "Event",

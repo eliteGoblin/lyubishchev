@@ -1,0 +1,80 @@
+{
+    "billable": false,
+    "customFieldValues": [],
+    "description": "kindle",
+    "hourlyRate": null,
+    "id": "62bfb40a28ee9614bcebcd6e",
+    "isLocked": false,
+    "project": null,
+    "projectId": null,
+    "tags": [
+        {
+            "archived": false,
+            "id": "5e86fe02fbe9b56304197ee4",
+            "name": "type=self-improving",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        },
+        {
+            "archived": false,
+            "id": "625a63d92ec955315e8a5634",
+            "name": "event_type=bed",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        },
+        {
+            "archived": false,
+            "id": "62a3d2e941b5926786ec82ec",
+            "name": "reading",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        }
+    ],
+    "task": null,
+    "timeInterval": {
+        "duration": "PT25M",
+        "end": "2022-07-01T15:35:00Z",
+        "start": "2022-07-01T15:10:00Z"
+    },
+    "user": {
+        "activeWorkspace": "5e86fab7183a8475e0c7a757",
+        "defaultWorkspace": "5e86fab7183a8475e0c7a757",
+        "email": "elitegoblinrb@gmail.com",
+        "id": "5e86fab6183a8475e0c7a755",
+        "memberships": [],
+        "name": "Sun Frank",
+        "profilePicture": "https://img.clockify.me/no-user-image.png",
+        "settings": {
+            "alerts": true,
+            "approval": true,
+            "collapseAllProjectLists": false,
+            "dashboardPinToTop": false,
+            "dashboardSelection": "ME",
+            "dashboardViewType": "PROJECT",
+            "dateFormat": "MM/DD/YYYY",
+            "groupSimilarEntriesDisabled": false,
+            "isCompactViewOn": false,
+            "lang": null,
+            "longRunning": false,
+            "multiFactorEnabled": false,
+            "myStartOfDay": "09:00",
+            "projectListCollapse": 50,
+            "projectPickerTaskFilter": false,
+            "pto": true,
+            "reminders": true,
+            "scheduledReports": true,
+            "scheduling": true,
+            "sendNewsletter": false,
+            "summaryReportSettings": {
+                "group": "TAG",
+                "subgroup": "TIME_ENTRY"
+            },
+            "theme": "DEFAULT",
+            "timeFormat": "HOUR24",
+            "timeTrackingManual": false,
+            "timeZone": "Australia/Sydney",
+            "weekStart": "MONDAY",
+            "weeklyUpdates": true
+        },
+        "status": "ACTIVE"
+    },
+    "userId": "5e86fab6183a8475e0c7a755",
+    "workspaceId": "5e86fab7183a8475e0c7a757"
+}

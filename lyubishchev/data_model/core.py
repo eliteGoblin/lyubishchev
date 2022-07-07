@@ -18,9 +18,13 @@ class Metadata:
     label: Label
 
     def __init__(self, **kwargs: Any) -> None:
+        self.annotation = {}
+        self.label = {}
+
         valid_keys: List[str] = [
             "annotation",
             "label",
         ]
         for key in valid_keys:
-            setattr(self, key, kwargs.get(key))
+            if kwargs.get(key) is not None:
+                setattr(self, key, kwargs.get(key))

@@ -1,4 +1,7 @@
+import json
 import os
+
+import pytest
 
 from lyubishchev.clockify_fetcher import ClockifyConfig, ClockifyFetcher
 from lyubishchev.data_model import date_range_to_timestamp_range
@@ -10,9 +13,11 @@ config: ClockifyConfig = ClockifyConfig(
     api_key=os.getenv("CLOCKIFY_API_KEY", "fake_clockify_key"),
 )
 
+
 # Testing data in sample_data.py
 
 
+@pytest.mark.focus
 def test_fetch_single_day() -> None:
 
     fetcher: ClockifyFetcher = ClockifyFetcher(config)
@@ -21,9 +26,9 @@ def test_fetch_single_day() -> None:
             "2022-07-02", "2022-07-03"
         )  # get [7.2, 7.4], 3 days
     )
-    # for time_series in res:
-    #     print(json.dumps(time_series, sort_keys=True, indent=4))
-    assert len(res) == 29
+    for time_series in res:
+        print(json.dumps(time_series, sort_keys=True, indent=4))
+    assert len(res) == 30
 
 
 def test_fetch_3_days() -> None:

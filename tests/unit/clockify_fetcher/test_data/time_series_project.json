@@ -1,0 +1,108 @@
+{
+    "billable": true,
+    "customFieldValues": [],
+    "description": "lyubishchev",
+    "hourlyRate": null,
+    "id": "62c01cac9f05ee7061dc2ec5",
+    "isLocked": false,
+    "project": {
+        "archived": false,
+        "billable": true,
+        "budgetEstimate": null,
+        "clientId": "5e8860cacd2bf8251ba96a03",
+        "clientName": "III",
+        "color": "#673AB7",
+        "costRate": null,
+        "duration": "PT210H45M33S",
+        "estimate": {
+            "estimate": "PT0S",
+            "type": "AUTO"
+        },
+        "hourlyRate": {
+            "amount": 0,
+            "currency": "USD"
+        },
+        "id": "5e86fe4e183a8475e0c7aae7",
+        "memberships": [
+            {
+                "costRate": null,
+                "hourlyRate": null,
+                "membershipStatus": "ACTIVE",
+                "membershipType": "PROJECT",
+                "targetId": "5e86fe4e183a8475e0c7aae7",
+                "userId": "5e86fab6183a8475e0c7a755"
+            }
+        ],
+        "name": "engineering",
+        "note": "",
+        "public": true,
+        "template": false,
+        "timeEstimate": {
+            "active": true,
+            "estimate": "PT0S",
+            "includeNonBillable": true,
+            "resetOption": null,
+            "type": "AUTO"
+        },
+        "workspaceId": "5e86fab7183a8475e0c7a757"
+    },
+    "projectId": "5e86fe4e183a8475e0c7aae7",
+    "tags": [
+        {
+            "archived": false,
+            "id": "5e86fe02fbe9b56304197ee4",
+            "name": "type=self-improving",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        }
+    ],
+    "task": null,
+    "timeInterval": {
+        "duration": "PT5M25S",
+        "end": "2022-07-02T10:29:04Z",
+        "start": "2022-07-02T10:23:39Z"
+    },
+    "user": {
+        "activeWorkspace": "5e86fab7183a8475e0c7a757",
+        "defaultWorkspace": "5e86fab7183a8475e0c7a757",
+        "email": "elitegoblinrb@gmail.com",
+        "id": "5e86fab6183a8475e0c7a755",
+        "memberships": [],
+        "name": "Sun Frank",
+        "profilePicture": "https://img.clockify.me/no-user-image.png",
+        "settings": {
+            "alerts": true,
+            "approval": true,
+            "collapseAllProjectLists": false,
+            "dashboardPinToTop": false,
+            "dashboardSelection": "ME",
+            "dashboardViewType": "PROJECT",
+            "dateFormat": "MM/DD/YYYY",
+            "groupSimilarEntriesDisabled": false,
+            "isCompactViewOn": false,
+            "lang": null,
+            "longRunning": false,
+            "multiFactorEnabled": false,
+            "myStartOfDay": "09:00",
+            "projectListCollapse": 50,
+            "projectPickerTaskFilter": false,
+            "pto": true,
+            "reminders": true,
+            "scheduledReports": true,
+            "scheduling": true,
+            "sendNewsletter": false,
+            "summaryReportSettings": {
+                "group": "TAG",
+                "subgroup": "TIME_ENTRY"
+            },
+            "theme": "DEFAULT",
+            "timeFormat": "HOUR24",
+            "timeTrackingManual": false,
+            "timeZone": "Australia/Sydney",
+            "weekStart": "MONDAY",
+            "weeklyUpdates": true
+        },
+        "status": "ACTIVE"
+    },
+    "userId": "5e86fab6183a8475e0c7a755",
+    "workspaceId": "5e86fab7183a8475e0c7a757"
+}

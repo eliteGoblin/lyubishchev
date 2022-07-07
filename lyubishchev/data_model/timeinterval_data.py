@@ -51,19 +51,6 @@ VALID_INTERVAL_TYPES: List[str] = [
 
 # Tag: key only label; provide extra info for certain TimeInterval Types
 
-# Tags for type=relax
-TAG_FAMILY: str = "family"
-TAG_HAPPY: str = "happy"
-TAG_INTIMACY: str = "intimacy"
-TAG_SOCIAL: str = "social"
-
-VALID_RELAX_TAGS: List[str] = [
-    TAG_FAMILY,
-    TAG_HAPPY,
-    TAG_INTIMACY,
-    TAG_SOCIAL,
-]
-
 # Tags for type=distracted
 TAG_GAME: str = "game"
 TAG_NEWS: str = "news"
@@ -91,16 +78,36 @@ TAG_DEEP_LEARNING: str = "deep-learning"
 TAG_REVIEW: str = "review"  # review, plan
 VALID_SELF_IMPROVING_TAGS: List[str] = [TAG_READING, TAG_DEEP_LEARNING, TAG_REVIEW]
 
+
+# Tags for type=relax
+TAG_FAMILY: str = "family"
+TAG_HAPPY: str = "happy"
+TAG_INTIMACY: str = "intimacy"
+TAG_SOCIAL: str = "social"
+
+VALID_RELAX_TAGS: List[str] = [
+    TAG_FAMILY,
+    TAG_HAPPY,
+    TAG_INTIMACY,
+    TAG_SOCIAL,
+    TAG_READING,  # reading could be either relax or self-improving; so valid for both types
+]
+
+
 # Tags for sex
 TAG_MASTERBATE: str = "masterbate"
 VALID_SEX_TAGS: List[str] = [TAG_MASTERBATE]
 
-VALID_TAGS: List[str] = [
-    *VALID_RELAX_TAGS,
-    *VALID_ROUTINE_TAGS,
-    *VALID_DISTRACTED_TAGS,
-    *VALID_SELF_IMPROVING_TAGS,
-    *VALID_SEX_TAGS,
-]
+VALID_TIME_INTERVAL_TAGS: List[str] = list(
+    set(
+        [  # remove potential duplicate tags from types, e.g reading
+            *VALID_RELAX_TAGS,
+            *VALID_ROUTINE_TAGS,
+            *VALID_DISTRACTED_TAGS,
+            *VALID_SELF_IMPROVING_TAGS,
+            *VALID_SEX_TAGS,
+        ]
+    )
+)
 
 VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [PROJECT, TIME_INTERVAL_TYPE]
