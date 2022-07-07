@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
@@ -8,9 +9,9 @@ from lyubishchev.data_model.event_data import (
     EVENT_TYPE,
     TYPE_RECOVER_UNWELL,
     TYPE_UNWELL,
-    VALID_LABEL_KEY,
+    VALID_EVENT_LABEL_KEY,
+    VALID_EVENT_TAG_KEY,
     VALID_RECOVER_UNWELL_TAGS,
-    VALID_TAG_KEY,
     VALID_TYPE,
     VALID_UNWELL_TAGS,
 )
@@ -25,9 +26,14 @@ class Event:
     timestamp: Arrow
 
     def __init__(self, **kwargs: Any) -> None:
+        self.metadata = Metadata()
+        self.extra_info = ""
+        self.timestamp = arrow.utcnow()
+
         valid_keys: List[str] = ["metadata", "extra_info", "timestamp"]
         for key in valid_keys:
-            setattr(self, key, kwargs.get(key))
+            if kwargs.get(key) is not None:
+                setattr(self, key, kwargs.get(key))
 
 
 def validate_event_label_and_tag(label: Label) -> None:
@@ -44,11 +50,11 @@ def validate_event_label_and_tag(label: Label) -> None:
     for label_key, value in label.items():
         if value != "":
             # it's a label(not a tag): check label key is valid
-            if label_key not in VALID_LABEL_KEY:
+            if label_key not in VALID_EVENT_LABEL_KEY:
                 raise InvalidLabelTag(f"invalid label key {label_key}")
             continue
         # if it's a tag(value empty string), check if valid tag names.
-        if label_key not in VALID_TAG_KEY:
+        if label_key not in VALID_EVENT_TAG_KEY:
             raise InvalidLabelTag(f"invalid tag key {label_key}")
         # check if tag match type
         type_value: str = label[EVENT_TYPE]

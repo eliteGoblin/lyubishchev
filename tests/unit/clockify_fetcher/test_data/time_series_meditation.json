@@ -1,0 +1,68 @@
+{
+    "billable": false,
+    "customFieldValues": [],
+    "description": "meditation",
+    "hourlyRate": null,
+    "id": "62c141129f05ee7061dc963f",
+    "isLocked": false,
+    "project": null,
+    "projectId": null,
+    "tags": [
+        {
+            "archived": false,
+            "id": "625749afa28dee431cdcaf13",
+            "name": "type=meditation",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        }
+    ],
+    "task": null,
+    "timeInterval": {
+        "duration": "PT6M47S",
+        "end": "2022-07-03T07:18:00Z",
+        "start": "2022-07-03T07:11:13Z"
+    },
+    "user": {
+        "activeWorkspace": "5e86fab7183a8475e0c7a757",
+        "defaultWorkspace": "5e86fab7183a8475e0c7a757",
+        "email": "elitegoblinrb@gmail.com",
+        "id": "5e86fab6183a8475e0c7a755",
+        "memberships": [],
+        "name": "Sun Frank",
+        "profilePicture": "https://img.clockify.me/no-user-image.png",
+        "settings": {
+            "alerts": true,
+            "approval": true,
+            "collapseAllProjectLists": false,
+            "dashboardPinToTop": false,
+            "dashboardSelection": "ME",
+            "dashboardViewType": "PROJECT",
+            "dateFormat": "MM/DD/YYYY",
+            "groupSimilarEntriesDisabled": false,
+            "isCompactViewOn": false,
+            "lang": null,
+            "longRunning": false,
+            "multiFactorEnabled": false,
+            "myStartOfDay": "09:00",
+            "projectListCollapse": 50,
+            "projectPickerTaskFilter": false,
+            "pto": true,
+            "reminders": true,
+            "scheduledReports": true,
+            "scheduling": true,
+            "sendNewsletter": false,
+            "summaryReportSettings": {
+                "group": "TAG",
+                "subgroup": "TIME_ENTRY"
+            },
+            "theme": "DEFAULT",
+            "timeFormat": "HOUR24",
+            "timeTrackingManual": false,
+            "timeZone": "Australia/Sydney",
+            "weekStart": "MONDAY",
+            "weeklyUpdates": true
+        },
+        "status": "ACTIVE"
+    },
+    "userId": "5e86fab6183a8475e0c7a755",
+    "workspaceId": "5e86fab7183a8475e0c7a757"
+}

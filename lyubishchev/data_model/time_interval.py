@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, List
 
+import arrow
 from arrow import Arrow
 
 from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
@@ -17,8 +18,8 @@ from lyubishchev.data_model.timeinterval_data import (
     VALID_RELAX_TAGS,
     VALID_ROUTINE_TAGS,
     VALID_SELF_IMPROVING_TAGS,
-    VALID_TAGS,
     VALID_TIME_INTERVAL_LABEL_KEY,
+    VALID_TIME_INTERVAL_TAGS,
 )
 
 
@@ -35,6 +36,11 @@ class TimeInterval:
     duration_minutes: int
 
     def __init__(self, **kwargs: Any) -> None:
+        self.metadata = Metadata()
+        self.extra_info = ""
+        self.timestamp = arrow.utcnow()
+        self.duration_minutes = 0
+
         valid_keys: List[str] = [
             "metadata",
             "extra_info",
@@ -42,7 +48,8 @@ class TimeInterval:
             "duration_minutes",
         ]
         for key in valid_keys:
-            setattr(self, key, kwargs.get(key))
+            if kwargs.get(key) is not None:
+                setattr(self, key, kwargs.get(key))
 
 
 def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
@@ -72,7 +79,7 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
                 raise InvalidLabelTag(f"invalid label key {label_key}")
             continue
         # if it's a tag(value empty string), check if valid tag names.
-        if label_key not in VALID_TAGS:
+        if label_key not in VALID_TIME_INTERVAL_TAGS:
             raise InvalidLabelTag(f"invalid tag key {label_key}")
         # check if tag match type
         type_value: str = label[TIME_INTERVAL_TYPE]
