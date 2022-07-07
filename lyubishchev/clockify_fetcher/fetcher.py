@@ -10,6 +10,9 @@ from urllib3.util.retry import Retry
 
 from lyubishchev import config
 from lyubishchev.data_model import (
+    EVENT_TYPE,
+    TYPE_BED,
+    VALID_EVENT_TAG_KEY,
     VALID_TIME_INTERVAL_TAGS,
     Event,
     TimeInterval,
@@ -92,8 +95,44 @@ def generate_event_from_time_series(time_series_entry: TimeSeries) -> Optional[E
         timestamp:  start or end of TimeSeries, depends event type
     throw: ValueError
     """
-    print(time_series_entry)
-    return Event()
+    result: Optional[Event] = None
+    if "tags" not in time_series_entry:
+        raise ValueError(f"time_series_entry should contain tags: {time_series_entry}")
+    for tag in time_series_entry["tags"]:
+        tag_name: str = tag["name"]
+        if is_clockify_tag_a_label(tag_name):
+            key, value = tag_name.split("=")
+            valid_label_key_translate_dict: dict[str, str] = {
+                "event_type": EVENT_TYPE,
+            }
+            if key in valid_label_key_translate_dict:
+                if result is None:
+                    result = Event()
+                result.metadata.label[valid_label_key_translate_dict[key]] = value
+        else:
+            if tag_name in VALID_EVENT_TAG_KEY:
+                if result is None:
+                    result = Event()
+                result.metadata.label[tag_name] = ""
+
+    if result is None:  # no event type tag means not contain a event
+        return None
+
+    if result.metadata.label[EVENT_TYPE] == TYPE_BED:
+        result.timestamp = arrow.get(time_series_entry["timeInterval"]["end"]).to(
+            config.get_iana_timezone_name()
+        )
+    else:
+        result.timestamp = arrow.get(time_series_entry["timeInterval"]["start"]).to(
+            config.get_iana_timezone_name()
+        )
+    # fill other fields
+    result.extra_info = time_series_entry["description"]
+    if result.extra_info == "":
+        raise ValueError(
+            f"time_series_entry at {result.timestamp} should contain description field "
+        )
+    return result
 
 
 class ClockifyFetcher(TimeIntervalFetcher):

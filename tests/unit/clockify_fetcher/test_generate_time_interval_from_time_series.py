@@ -4,7 +4,8 @@ from datetime import datetime
 from functools import partial
 
 import arrow
-import pytest
+
+# import pytest
 from arrow import Arrow
 
 from lyubishchev.clockify_fetcher.fetcher import (  # generate_event_from_time_series,
@@ -25,7 +26,6 @@ def test_time_diff_minutes() -> None:
     assert time_diff_minutes(timestamp_2, timestamp_3) == 3
 
 
-@pytest.mark.focus
 def test_generate_time_interval_from_time_series() -> None:
     @dataclass
     class TestCase:

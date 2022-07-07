@@ -13,7 +13,14 @@ from .day import (
     validate_value_range,
 )
 from .event import Event, validate_event_label_and_tag
-from .event_data import EVENT_TYPE, TYPE_BED, TYPE_GETUP, TYPE_WAKEUP
+from .event_data import (
+    EVENT_TYPE,
+    TYPE_BED,
+    TYPE_GETUP,
+    TYPE_WAKEUP,
+    VALID_EVENT_LABEL_KEY,
+    VALID_EVENT_TAG_KEY,
+)
 from .time_interval import TimeInterval, validate_time_interval_label_and_tag
 from .timeinterval_data import TIME_INTERVAL_TYPE, TYPE_SLEEP, VALID_TIME_INTERVAL_TAGS
 
@@ -26,6 +33,7 @@ __all__ = [
     "validate_time_interval_label_and_tag",
     "TIME_INTERVAL_TYPE",  # timeinterval_data
     "VALID_TIME_INTERVAL_TAGS",
+    "VALID_EVENT_TAG_KEY",  # event_data
     "TYPE_SLEEP",
     "validate_event_label_and_tag",
     "Event",
@@ -33,7 +41,7 @@ __all__ = [
     "TYPE_BED",
     "TYPE_GETUP",
     "TYPE_WAKEUP",
-    "DayRecord",
+    "DayRecord",  # day
     "InvalidDayRecord",
     "validate_day_record",
     "validate_required_fields",
