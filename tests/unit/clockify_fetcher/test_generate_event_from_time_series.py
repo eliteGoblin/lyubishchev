@@ -4,17 +4,18 @@ from functools import partial
 from typing import Optional
 
 import arrow
-import pytest
 
 from lyubishchev.clockify_fetcher.fetcher import (
     generate_event_from_time_series,
 )  # generate_event_from_time_series,
 from lyubishchev.data_model import Event, Metadata
 
+# import pytest
+
+
 open_utf8 = partial(open, encoding="UTF-8")
 
 
-@pytest.mark.focus
 def test_generate_event_from_time_series() -> None:
     @dataclass
     class TestCase:
@@ -63,6 +64,12 @@ def test_generate_event_from_time_series() -> None:
                 extra_info="kindle",
                 timestamp=arrow.get("2022-07-01T15:35:00Z").to("Australia/Sydney"),
             ),
+        ),
+        TestCase(
+            description="dup event type: wakeup and bed record should pass fail",
+            test_data_path="time_series_error_dup_event_type.json",
+            expect_success=False,
+            expected_event=None,
         ),
     ]
     test_data_folder: str = "./tests/unit/clockify_fetcher/test_data/"
