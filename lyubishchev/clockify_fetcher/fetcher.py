@@ -17,6 +17,8 @@ from lyubishchev.data_model import (
     Event,
     TimeInterval,
     TimeIntervalFetcher,
+    validate_event_label_and_tag,
+    validate_time_interval_label_and_tag,
 )
 
 TimeSeries = dict[str, Any]
@@ -55,18 +57,6 @@ def generate_time_interval_from_time_series(
     result: TimeInterval = TimeInterval()
     if "tags" not in time_series_entry:
         raise ValueError(f"time_series_entry should contain tags: {time_series_entry}")
-    for tag in time_series_entry["tags"]:
-        tag_name: str = tag["name"]
-        if is_clockify_tag_a_label(tag_name):
-            key, value = tag_name.split("=")
-            valid_label_key: list[str] = ["type"]
-            if key in valid_label_key:
-                result.metadata.label[key] = value
-        else:
-            if tag_name in VALID_TIME_INTERVAL_TAGS:
-                result.metadata.label[tag_name] = ""
-    if time_series_entry["project"] is not None:
-        result.metadata.label["project"] = time_series_entry["project"]["name"]
     # fill time fields
     start_timestamp: Arrow = arrow.get(time_series_entry["timeInterval"]["start"]).to(
         config.get_iana_timezone_name()
@@ -76,28 +66,53 @@ def generate_time_interval_from_time_series(
     )
     result.timestamp = start_timestamp
     result.duration_minutes = time_diff_minutes(start_timestamp, end_timestamp)
+    # fill metadata
+    for tag in time_series_entry["tags"]:
+        tag_name: str = tag["name"]
+        if is_clockify_tag_a_label(tag_name):
+            key, value = tag_name.split("=")
+            if key != "type":  # type is the only valid label atm
+                continue
+            if key in result.metadata.label:  # avoid two type label
+                raise ValueError(
+                    f"duplicate label key {key}, already exist for entry {start_timestamp}"
+                )
+            result.metadata.label[key] = value
+        else:
+            if tag_name in VALID_TIME_INTERVAL_TAGS:
+                result.metadata.label[tag_name] = ""
+    if time_series_entry["project"] is not None:
+        result.metadata.label["project"] = time_series_entry["project"]["name"]
     # fill other fields
     result.extra_info = time_series_entry["description"]
     if result.extra_info == "":
         raise ValueError(
-            f"time_series_entry at {start_timestamp} should contain description field "
+            f"time_series_entry at {start_timestamp} should contain description field"
         )
-
+    try:
+        validate_time_interval_label_and_tag(result.metadata.label)
+    except Exception:
+        print(f"unexpected exception when processing time entry: {start_timestamp}")
+        raise
     return result
 
 
 def generate_event_from_time_series(time_series_entry: TimeSeries) -> Optional[Event]:
+    # pylint: disable=too-many-branches
     """
     return a event from a TimeSeries object or None if not event contained in TimeSeries
     fill:
         metadata: label only, skip annotation for now
         extra_info: from description field, possible for future's annotation parsing
         timestamp:  start or end of TimeSeries, depends event type
-    throw: ValueError
+    throw: ValueError, InvalidLabelTag
     """
     result: Optional[Event] = None
     if "tags" not in time_series_entry:
         raise ValueError(f"time_series_entry should contain tags: {time_series_entry}")
+    start_timestamp: Arrow = arrow.get(time_series_entry["timeInterval"]["start"]).to(
+        config.get_iana_timezone_name()
+    )
     for tag in time_series_entry["tags"]:
         tag_name: str = tag["name"]
         if is_clockify_tag_a_label(tag_name):
@@ -108,7 +123,12 @@ def generate_event_from_time_series(time_series_entry: TimeSeries) -> Optional[E
             if key in valid_label_key_translate_dict:
                 if result is None:
                     result = Event()
-                result.metadata.label[valid_label_key_translate_dict[key]] = value
+                time_interval_label_key: str = valid_label_key_translate_dict[key]
+                if time_interval_label_key in result.metadata.label:
+                    raise ValueError(
+                        f"time_series_entry at {start_timestamp} contain duplicate event label key"
+                    )
+                result.metadata.label[time_interval_label_key] = value
         else:
             if tag_name in VALID_EVENT_TAG_KEY:
                 if result is None:
@@ -123,15 +143,19 @@ def generate_event_from_time_series(time_series_entry: TimeSeries) -> Optional[E
             config.get_iana_timezone_name()
         )
     else:
-        result.timestamp = arrow.get(time_series_entry["timeInterval"]["start"]).to(
-            config.get_iana_timezone_name()
-        )
+        result.timestamp = start_timestamp
     # fill other fields
     result.extra_info = time_series_entry["description"]
     if result.extra_info == "":
         raise ValueError(
             f"time_series_entry at {result.timestamp} should contain description field "
         )
+    validate_event_label_and_tag(result.metadata.label)
+    try:
+        validate_event_label_and_tag(result.metadata.label)
+    except Exception:
+        print(f"unexpected exception when processing time entry: {start_timestamp}")
+        raise
     return result
 
 

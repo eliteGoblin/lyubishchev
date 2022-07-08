@@ -95,13 +95,20 @@ def test_generate_time_interval_from_time_series() -> None:
                 metadata=Metadata(
                     label={
                         "type": "self-improving",
-                        "project": "engineering",
+                        "project": "software-engineering",
                     }
                 ),
                 extra_info="lyubishchev",
                 timestamp=arrow.get("2022-07-02T10:23:39").to("Australia/Sydney"),
                 duration_minutes=5,
             ),
+        ),
+        # time_series_error_dup_interval_type.json
+        TestCase(
+            description="record with duplicate interval type should fail",
+            test_data_path="time_series_error_dup_interval_type.json",
+            expect_success=False,
+            expected_time_interval=TimeInterval(),
         ),
     ]
     test_data_folder: str = "./tests/unit/clockify_fetcher/test_data/"

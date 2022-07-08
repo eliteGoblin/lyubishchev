@@ -1,65 +1,43 @@
 {
-    "billable": true,
+    "billable": false,
     "customFieldValues": [],
-    "description": "lyubishchev",
+    "description": "kindle",
     "hourlyRate": null,
-    "id": "62c01cac9f05ee7061dc2ec5",
+    "id": "62bfb40a28ee9614bcebcd6e",
     "isLocked": false,
-    "project": {
-        "archived": false,
-        "billable": true,
-        "budgetEstimate": null,
-        "clientId": "5e8860cacd2bf8251ba96a03",
-        "clientName": "III",
-        "color": "#673AB7",
-        "costRate": null,
-        "duration": "PT210H45M33S",
-        "estimate": {
-            "estimate": "PT0S",
-            "type": "AUTO"
-        },
-        "hourlyRate": {
-            "amount": 0,
-            "currency": "USD"
-        },
-        "id": "5e86fe4e183a8475e0c7aae7",
-        "memberships": [
-            {
-                "costRate": null,
-                "hourlyRate": null,
-                "membershipStatus": "ACTIVE",
-                "membershipType": "PROJECT",
-                "targetId": "5e86fe4e183a8475e0c7aae7",
-                "userId": "5e86fab6183a8475e0c7a755"
-            }
-        ],
-        "name": "software-engineering",
-        "note": "",
-        "public": true,
-        "template": false,
-        "timeEstimate": {
-            "active": true,
-            "estimate": "PT0S",
-            "includeNonBillable": true,
-            "resetOption": null,
-            "type": "AUTO"
-        },
-        "workspaceId": "5e86fab7183a8475e0c7a757"
-    },
-    "projectId": "5e86fe4e183a8475e0c7aae7",
+    "project": null,
+    "projectId": null,
     "tags": [
         {
             "archived": false,
             "id": "5e86fe02fbe9b56304197ee4",
             "name": "type=self-improving",
             "workspaceId": "5e86fab7183a8475e0c7a757"
+        },
+        {
+            "archived": false,
+            "id": "625a63d92ec955315e8a5634",
+            "name": "event_type=bed",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        },
+        {
+            "archived": false,
+            "id": "625a63d92ec955315e8a5634",
+            "name": "event_type=wakeup",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        },
+        {
+            "archived": false,
+            "id": "62a3d2e941b5926786ec82ec",
+            "name": "reading",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
         }
     ],
     "task": null,
     "timeInterval": {
-        "duration": "PT5M25S",
-        "end": "2022-07-02T10:29:04Z",
-        "start": "2022-07-02T10:23:39Z"
+        "duration": "PT25M",
+        "end": "2022-07-01T15:35:00Z",
+        "start": "2022-07-01T15:10:00Z"
     },
     "user": {
         "activeWorkspace": "5e86fab7183a8475e0c7a757",
