@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# https://stackoverflow.com/a/67987982
+coverage run --source=lyubishchev -m pytest -vv tests/unit && coverage report -m

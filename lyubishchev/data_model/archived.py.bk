@@ -1,0 +1,112 @@
+def parse_and_generate_day_record(
+    events: list[Event],
+    time_intervals: list[TimeInterval],
+    day_search_start_timestamp: Arrow,
+) -> DayRecord:
+    """
+    parse and generate single day record
+    Parameters:
+        events: events used to split time_intervals by day
+        time_intervals: time entries records, MUST include last day's bed event,
+                        not necessary to have other buffer records
+        day_search_start_timestamp: caller believe getup event for first day happened after this timestamp
+    raise:
+        ValueError if key events not exist or mismatch
+    """
+    # use events to split day boundary
+    last_night_bed_index: int  # events index of last night bed time
+    wakeup_index: int  # events index of current day's wakeup event
+    getup_index: int  # events index of current day's getup event
+    bed_index: int  # events index of current day's bed event
+
+    # day_record = time_intervals[start_interval_index:end_interval_index]
+
+
+
+    # use timestamp from key events(wakeup, bed) to cut time intervals for current day
+    start_interval_index = find_first_match(
+        sequence=time_intervals,
+        search_start_timestamp=events[wakeup_index].timestamp,
+    )
+    try:
+        end_interval_index = find_first_match(
+            # first interval record after bed time of today, means first time interval for next day\
+            # (which should include wakeup event).
+            sequence=time_intervals,
+            search_start_timestamp=events[bed_index].timestamp,
+        )
+    except TimeSeriesNotFound:
+        # if can't find records happen after last day's bed, means last time_interval contain last day's bed event,
+        # use it as end
+        end_interval_index = len(time_intervals)
+
+    return DayRecord(
+        wakeup_timestamp=events[wakeup_index].timestamp,
+        getup_timestamp=events[getup_index].timestamp,
+        bed_timestamp=events[bed_index].timestamp,
+        last_night_sleep_minutes=time_diff_minutes(
+            start=events[last_night_bed_index].timestamp,
+            end=events[wakeup_index].timestamp,
+        ),
+        time_intervals=time_intervals[start_interval_index:end_interval_index],
+        events=remove_wakeup_getup_bed_from_day_events(
+            events[wakeup_index : bed_index + 1]
+        ),
+    )
+
+
+def parse_and_generate_day_records(
+    start_date: str,
+    end_date: str,
+    events: list[Event],
+    time_intervals: list[TimeInterval],
+) -> list[DayRecord]:
+    """
+    Parameters:
+        start_date: first day should be returned, used to skip buffered time_intervals
+        end_date: one day past last day, shouldn't be included in return value;
+        events:
+            Use wakeup, bed event to set boundary between days; then fill each day's event
+            MUST contain the day before start_date's bedtime
+            For [start_date, end_date), MUST include wakeup, bed event for each day
+        time_intervals: TimeIntervals for a selected date range
+            MUST in time order
+            No overlapping allowed for any 2 TimeIntervals
+    Return:
+        day records generated from input:
+            first day must be start_date; last day must be one day before end_date
+    Throws:
+        ValueError for any data issue
+    """
+    must_yyyy_mm_dd(start_date)
+    must_yyyy_mm_dd(end_date)
+    if start_date >= end_date:
+        raise ValueError(f"start date {start_date} must before end date {end_date} ")
+    must_time_order(time_intervals)
+    must_time_order(events)
+    must_events_cover_date_range(events, start_date, end_date)
+    # not right with buffered events, event could be bed, which is later than start of first interval
+    must_time_intervals_within_events(events=events, time_intervals=time_intervals)
+
+    timezone_name: str = config.get_iana_timezone_name()
+    day_records: list[DayRecord] = []
+    current_day_date: str = start_date
+
+    while True:
+        current_day_start_timestamp: Arrow = day_start_timestamp_early_bound(
+            timezone_name, current_day_date
+        )
+
+        try:
+            day_record = parse_and_generate_day_record(
+                events=events,
+                time_intervals=time_intervals,
+                day_search_start_timestamp=current_day_start_timestamp,
+            )
+        except TimeSeriesNotFound:
+            break
+
+        day_records.append(day_record)
+        current_day_date = next_day(timezone_name, date_str=current_day_date)
+
+    return day_records

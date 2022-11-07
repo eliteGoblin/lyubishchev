@@ -17,6 +17,7 @@ from lyubishchev.data_model import (
     Event,
     TimeInterval,
     TimeIntervalFetcher,
+    time_diff_minutes,
     validate_event_label_and_tag,
     validate_time_interval_label_and_tag,
 )
@@ -39,13 +40,9 @@ def is_clockify_tag_a_label(tag: str) -> bool:
     return tag.find("=") != -1
 
 
-def time_diff_minutes(start: Arrow, end: Arrow) -> int:
-    return int((end - start).seconds / 60)
-
-
 def generate_time_interval_from_time_series(
     time_series_entry: TimeSeries,
-) -> TimeInterval:
+) -> Optional[TimeInterval]:
     """
     return a TimeInterval from a TimeSeries object, fill
         Metadata: label only, skip annotation for now
@@ -55,6 +52,23 @@ def generate_time_interval_from_time_series(
     throw: ValueError
     """
     result: TimeInterval = TimeInterval()
+    required_keys: list[str] = [
+        "timeInterval",
+        "tags",
+    ]
+    for required_key in required_keys:
+        if required_key not in time_series_entry:
+            raise ValueError(
+                f"time_series_entry should contain required key: {required_key}"
+            )
+
+    if (
+        "end" not in time_series_entry["timeInterval"]
+        or time_series_entry["timeInterval"]["end"] is None
+    ):
+        # no end means currently counting record, return None
+        return None
+
     if "tags" not in time_series_entry:
         raise ValueError(f"time_series_entry should contain tags: {time_series_entry}")
     # fill time fields
@@ -183,18 +197,29 @@ class ClockifyFetcher(TimeIntervalFetcher):
         time_series: list[TimeSeries] = self.fetch_raw_time_series(
             start_timestamp, end_timestamp
         )
+
         time_intervals: list[TimeInterval] = []
         events: list[Event] = []
 
-        for time_series_entry in time_series:
-            time_interval: TimeInterval = generate_time_interval_from_time_series(
-                time_series_entry
-            )
+        # ClockifyAPI returned time entry in order: latest record at first,
+        # here we want asc order by timestamp, so need to reverse the result list
+        for index, time_series_entry in enumerate(reversed(time_series)):
+            time_interval: Optional[
+                TimeInterval
+            ] = generate_time_interval_from_time_series(time_series_entry)
+            if (
+                time_interval is None
+            ):  # we reach the record still counting, i.e not stopped
+                assert (
+                    index == len(time_series) - 1
+                ), f"index is {index}, {time_series_entry}, len is {len(time_series)}"
+                break
+
             time_intervals.append(time_interval)
+
             event: Optional[Event] = generate_event_from_time_series(time_series_entry)
             if event is not None:
                 events.append(event)
-
         return time_intervals, events
 
     def fetch_raw_time_series(

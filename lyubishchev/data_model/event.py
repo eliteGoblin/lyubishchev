@@ -4,7 +4,7 @@ from typing import Any, List
 import arrow
 from arrow import Arrow
 
-from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
+from lyubishchev.data_model.core_data_structure import InvalidLabelTag, Label, Metadata
 from lyubishchev.data_model.event_data import (
     EVENT_TYPE,
     TYPE_RECOVER_UNWELL,
@@ -31,7 +31,9 @@ class Event:
         self.timestamp = arrow.utcnow()
 
         valid_keys: List[str] = ["metadata", "extra_info", "timestamp"]
-        for key in valid_keys:
+        for key in kwargs:
+            if key not in valid_keys:
+                raise ValueError(f"invalid key {key} when init Event")
             if kwargs.get(key) is not None:
                 setattr(self, key, kwargs.get(key))
 

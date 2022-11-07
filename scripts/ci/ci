@@ -6,3 +6,4 @@ script_dir=$(dirname "$0")
 ./${script_dir}/stylecheck
 ./${script_dir}/typecheck
 ./${script_dir}/unittests
+./${script_dir}/coverage_report

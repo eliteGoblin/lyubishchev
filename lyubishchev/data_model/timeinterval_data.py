@@ -78,7 +78,6 @@ TAG_DEEP_LEARNING: str = "deep-learning"
 TAG_REVIEW: str = "review"  # review, plan
 VALID_SELF_IMPROVING_TAGS: List[str] = [TAG_READING, TAG_DEEP_LEARNING, TAG_REVIEW]
 
-
 # Tags for type=relax
 TAG_FAMILY: str = "family"
 TAG_HAPPY: str = "happy"
@@ -93,6 +92,17 @@ VALID_RELAX_TAGS: List[str] = [
     TAG_READING,  # reading could be either relax or self-improving; so valid for both types
 ]
 
+TAG_CODING: str = "coding"  # coding, creative work
+TAG_DEVOPS: str = "devops"  # architecture, automation, operation, configuration
+TAG_COLLABORATION: str = "collaboration"  # discuss requirements, brainstorming, pair
+TAG_HELP: str = "help_other"  # help, coach
+VALID_WORK_TAGS: list[str] = [
+    TAG_CODING,
+    TAG_DEVOPS,
+    TAG_COLLABORATION,
+    TAG_HELP,
+    TAG_SOCIAL,
+]
 
 # Tags for sex
 TAG_MASTERBATE: str = "masterbate"

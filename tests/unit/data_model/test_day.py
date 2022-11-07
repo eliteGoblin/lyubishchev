@@ -19,8 +19,6 @@ from lyubishchev.data_model import (
 
 
 def test_date_str() -> None:
-    date_fmt: str = "YYYY-MM-DD"
-
     @dataclass
     class TestCase:
         description: str
@@ -52,7 +50,7 @@ def test_date_str() -> None:
     ]
 
     for case in testcases:
-        assert case.input_day.date_str(date_fmt) == case.expected_date_str
+        assert case.input_day.date_str() == case.expected_date_str
 
 
 def test_sleep_minutes() -> None:

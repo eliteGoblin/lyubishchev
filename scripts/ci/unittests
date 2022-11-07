@@ -1,4 +1,4 @@
 #!/bin/sh
 
-py.test tests/unit $@
-#pytest -rP -vv -m focus tests/unit
+py.test -rX -vv tests/unit $@
+# pytest -rX -vv -m focus tests/unit

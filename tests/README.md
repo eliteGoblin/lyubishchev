@@ -1,3 +1,9 @@
+# TODO
+
+* Add unit test for functions in day_parser.py
+* Add integration test for day record parsing logic:
+  * Grab real response from ClockifyAPI, feed into logic
+
 # Run test
 
 ```shell
@@ -22,6 +28,12 @@ pytest -m focus tests
 ```shell
 # show all markers
 pytest --markers
+```
+
+skip some tests:
+```shell
+# decorate function like following, run `py.test -rX -vv tests/unit $@`
+@pytest.mark.skip(reason="no way of currently testing this")
 ```
 
 # Show extra output

@@ -4,7 +4,7 @@ from typing import Any, List
 import arrow
 from arrow import Arrow
 
-from lyubishchev.data_model.core import InvalidLabelTag, Label, Metadata
+from lyubishchev.data_model.core_data_structure import InvalidLabelTag, Label, Metadata
 from lyubishchev.data_model.timeinterval_data import (
     PROJECT,
     TIME_INTERVAL_TYPE,
@@ -12,6 +12,7 @@ from lyubishchev.data_model.timeinterval_data import (
     TYPE_RELAX,
     TYPE_ROUTINE,
     TYPE_SELF_IMPROVING,
+    TYPE_WORK,
     VALID_DISTRACTED_TAGS,
     VALID_INTERVAL_TYPES,
     VALID_PROJECTS,
@@ -20,6 +21,7 @@ from lyubishchev.data_model.timeinterval_data import (
     VALID_SELF_IMPROVING_TAGS,
     VALID_TIME_INTERVAL_LABEL_KEY,
     VALID_TIME_INTERVAL_TAGS,
+    VALID_WORK_TAGS,
 )
 
 
@@ -95,9 +97,12 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
         elif type_value == TYPE_SELF_IMPROVING:
             if label_key in VALID_SELF_IMPROVING_TAGS:
                 continue
+        elif type_value == TYPE_WORK:
+            if label_key in VALID_WORK_TAGS:
+                continue
         else:
             raise InvalidLabelTag(
-                f"tag {label_key} must be specified with valid type, or pls add it in data.py"
+                f"tag {label_key} must be specified with valid type, or pls add it in timeinterval_data.py"
             )
 
         raise InvalidLabelTag(

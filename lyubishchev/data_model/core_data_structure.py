@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Union
+from typing import Any, Union
 
-Annotation = Dict[str, Union[str, int, float]]
-Label = Dict[str, str]
+Annotation = dict[str, Union[str, int, float]]
+Label = dict[str, str]
 
 
 class InvalidLabelTag(Exception):
@@ -21,10 +21,16 @@ class Metadata:
         self.annotation = {}
         self.label = {}
 
-        valid_keys: List[str] = [
+        valid_keys: list[str] = [
             "annotation",
             "label",
         ]
         for key in valid_keys:
             if kwargs.get(key) is not None:
                 setattr(self, key, kwargs.get(key))
+
+
+class TimeSeriesNotFound(Exception):
+    """
+    Exception raised indicating can't find record matching criteria
+    """

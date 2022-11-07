@@ -14,6 +14,8 @@ from lyubishchev.data_model import (
     validate_time_intervals_order,
 )
 
+# import pytest
+
 
 def test_validate_time_intervals_order() -> None:
     @dataclass
@@ -26,6 +28,7 @@ def test_validate_time_intervals_order() -> None:
         TestCase(
             description="empty TimeIntervals should fail",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 time_intervals=[],
             ),
             expect_success=False,
@@ -33,6 +36,7 @@ def test_validate_time_intervals_order() -> None:
         TestCase(
             description="TimeIntervals disorder should fail",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 time_intervals=[
                     TimeInterval(
                         timestamp=arrow.now().shift(hours=-8),
@@ -52,13 +56,14 @@ def test_validate_time_intervals_order() -> None:
         TestCase(
             description="TimeIntervals disorder larger than 5 mins should fail",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 time_intervals=[
                     TimeInterval(
-                        timestamp=arrow.get("1970-01-01T00:00:00+00:00"),
+                        timestamp=arrow.get("1986-01-01T00:00:00+00:00"),
                         duration_minutes=15,
                     ),
                     TimeInterval(
-                        timestamp=arrow.get("1970-01-01T00:05:00+00:00"),
+                        timestamp=arrow.get("1986-01-01T00:05:00+00:00"),
                         duration_minutes=10,
                     ),
                 ],
@@ -66,31 +71,36 @@ def test_validate_time_intervals_order() -> None:
             expect_success=False,
         ),
         TestCase(
-            description="TimeIntervals disorder within 5 mins should succeeded",
+            description="TimeIntervals disorder within 5 mins should fail, too (no tolerance)",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 time_intervals=[
                     TimeInterval(
-                        timestamp=arrow.get("1970-01-01T00:00:00+00:00"),
+                        timestamp=arrow.get("1987-01-01T00:00:00+00:00"),
                         duration_minutes=10,
                     ),
                     TimeInterval(
-                        timestamp=arrow.get("1970-01-01T00:08:00+00:00"),
+                        timestamp=arrow.get("1987-01-01T00:08:00+00:00"),
                         duration_minutes=20,
                     ),
                 ],
             ),
-            expect_success=True,
+            expect_success=False,
         ),
     ]
 
-    for case in testcases:
+    for index, case in enumerate(testcases):
+        assert_msg: str = f"case {index} failed"
         try:
             validate_time_intervals_order(case.input)
         except InvalidDayRecord as exp:
             print(exp)
-            assert not case.expect_success
+            assert not case.expect_success, assert_msg
+        except ValueError:
+            print(assert_msg)
+            raise
         else:
-            assert case.expect_success
+            assert case.expect_success, assert_msg
 
 
 def test_validate_events() -> None:
@@ -104,6 +114,7 @@ def test_validate_events() -> None:
         TestCase(
             description="empty events is ok",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 events=[],
             ),
             expect_success=True,
@@ -111,6 +122,7 @@ def test_validate_events() -> None:
         TestCase(
             description="events disorder should fail",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 events=[
                     Event(
                         metadata=Metadata(label={"type": "cold"}),
@@ -128,6 +140,7 @@ def test_validate_events() -> None:
             description="events contain bed related type should fail"
             "which should be filled into DayRecord then deleted",
             input=DayRecord(
+                wakeup_timestamp=arrow.now(),
                 events=[
                     Event(
                         metadata=Metadata(label={"type": "wakeup"}),

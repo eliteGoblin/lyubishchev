@@ -2,17 +2,17 @@ import json
 from dataclasses import dataclass
 from datetime import datetime
 from functools import partial
+from typing import Optional
 
 import arrow
 
 # import pytest
 from arrow import Arrow
 
-from lyubishchev.clockify_fetcher.fetcher import (  # generate_event_from_time_series,
+from lyubishchev.clockify_fetcher.fetcher import (
     generate_time_interval_from_time_series,
-    time_diff_minutes,
-)
-from lyubishchev.data_model import Metadata, TimeInterval
+)  # generate_event_from_time_series,
+from lyubishchev.data_model import Metadata, TimeInterval, time_diff_minutes
 
 open_utf8 = partial(open, encoding="UTF-8")
 
@@ -112,15 +112,19 @@ def test_generate_time_interval_from_time_series() -> None:
         ),
     ]
     test_data_folder: str = "./tests/unit/clockify_fetcher/test_data/"
-    for case in testcases:
+    for index, case in enumerate(testcases):
+        assert_message: str = f"case {index} failed! "
         with open_utf8(test_data_folder + case.test_data_path) as test_data:
             try:
-                time_interval: TimeInterval = generate_time_interval_from_time_series(
-                    json.load(test_data)
-                )
+                time_interval: Optional[
+                    TimeInterval
+                ] = generate_time_interval_from_time_series(json.load(test_data))
             except ValueError as exp:
                 print(exp)
-                assert not case.expect_success
+                assert not case.expect_success, assert_message
+            except Exception:
+                print(assert_message)
+                raise
             else:
                 assert case.expect_success
                 assert time_interval == case.expected_time_interval
