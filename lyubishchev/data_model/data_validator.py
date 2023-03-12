@@ -8,6 +8,7 @@ from lyubishchev import config
 
 from .date_time_utils import day_end_timestamp_late_bound, previous_day
 from .event import Event
+from .event_data import EVENT_TYPE, TYPE_BED, TYPE_WAKEUP
 from .time_interval import TimeInterval
 
 
@@ -96,9 +97,42 @@ def must_single_day_events(single_day_events: list[Event]) -> None:
                 Last is day's bed event
             8 < Bed - wakeup < 24
     raise:
-        ValueError if key time series missing
+        ValueError
     """
-    raise NotImplementedError
+    if len(single_day_events) < 3:
+        raise ValueError(
+            f"single day events {single_day_events} needs min size 3 to cover 1 wakeup, 2 bed"
+        )
+    if single_day_events[0].metadata.label[EVENT_TYPE] != TYPE_BED:
+        raise ValueError(
+            f"single day events {single_day_events} should start with last day's bed event, got {single_day_events[0]}"
+        )
+    if single_day_events[1].metadata.label[EVENT_TYPE] != TYPE_WAKEUP:
+        raise ValueError(
+            f"single day events index 1 should be wakeup event, got {single_day_events[1]}"
+        )
+    if single_day_events[-1].metadata.label[EVENT_TYPE] != TYPE_BED:
+        raise ValueError(
+            f"single day events last index should be bed event, got {single_day_events[-1]}"
+        )
+
+    # bed - wakeup should be 8 hr < x < 24 hr
+    diff = single_day_events[-1].timestamp - single_day_events[1].timestamp
+    secs: int = diff.total_seconds()  # type: ignore
+
+    assert 8 * 60 * 60 < secs < 24 * 60 * 60
+
+    for i, event in enumerate(single_day_events):
+        if i in (0, 1, len(single_day_events) - 1):
+            continue
+        if (
+            event.metadata.label[EVENT_TYPE] == TYPE_WAKEUP
+            or event.metadata.label[EVENT_TYPE] == TYPE_BED
+        ):
+            raise ValueError(
+                f"single day events {single_day_events} "
+                + f"contain extra wakeup or bed event, violating at pos {i}, {event}"
+            )
 
 
 def must_single_day_time_intervals(
@@ -111,7 +145,15 @@ def must_single_day_time_intervals(
         single_day_time_intervals: TimeIntervals of that day, rules:
             First TimeInterval starts >= wakeup event
             Last TimeInterval ends <= bed event
+            last timeinterval end timestamp - first time interval start timestamp <= 24 hr
     raise:
-        ValueError if key time series missing
+        ValueError
     """
-    raise NotImplementedError
+
+    assert single_day_time_intervals[0].timestamp >= single_day_events[1].timestamp
+    assert single_day_time_intervals[-1].timestamp <= single_day_events[-1].timestamp
+    diff = (
+        single_day_time_intervals[-1].timestamp - single_day_time_intervals[0].timestamp
+    )
+    assert diff.total_seconds() <= 24 * 60 * 60  # type: ignore
+    # mypy seems can't infer Arrow - Arrow is a datetime.timedelta

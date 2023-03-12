@@ -26,6 +26,7 @@ from .day import (
 )
 from .day_parser import (
     get_events_for_single_day,
+    get_time_intervals_for_single_day,
     parse_and_generate_day_record,
     parse_and_generate_day_records,
     remove_wakeup_getup_bed_from_day_events,
@@ -88,4 +89,5 @@ __all__ = [
     "TimeSeriesNotFound",
     "remove_wakeup_getup_bed_from_day_events",
     "get_events_for_single_day",
+    "get_time_intervals_for_single_day",
 ]

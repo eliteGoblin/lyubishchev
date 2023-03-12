@@ -22,7 +22,7 @@ decorate the method using: `@pytest.mark.focus`
 then run 
 
 ```shell
-pytest -m focus tests
+pytest -m focus tests -vv
 ```
 
 ```shell

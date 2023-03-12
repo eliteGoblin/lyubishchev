@@ -15,7 +15,7 @@ from lyubishchev.data_model import (
     parse_and_generate_day_records,
 )
 
-from .test_data.july_2 import july_2_events_buffered, july_2_intervals
+from .test_data.july_2 import july_2_events, july_2_intervals
 
 
 def test_date_range_to_timestamp_range() -> None:
@@ -107,7 +107,65 @@ def test_date_range_to_timestamp_range() -> None:
             assert case.expected_timestamp_range == res
 
 
-@pytest.mark.skip(reason="todo next, logic changed completely")
+def test_parse_and_generate_day_record_expect_fail() -> None:
+    @dataclass
+    class TestCase:
+        description: str
+        events: list[Event]
+        time_intervals: list[TimeInterval]
+        day_search_start_timestamp: Arrow
+
+    testcases: list[TestCase] = [
+        TestCase(
+            description="empty events expect fail",
+            events=[],
+            time_intervals=july_2_intervals(),
+            day_search_start_timestamp=arrow.get(
+                datetime(2022, 7, 2, 0, 0, 0), "Australia/Sydney"
+            ),
+        ),
+        TestCase(
+            description="no previous day's bed event expect fail",
+            events=july_2_events()[1:],
+            time_intervals=july_2_intervals(),
+            day_search_start_timestamp=arrow.get(
+                datetime(2022, 7, 2, 0, 0, 0), "Australia/Sydney"
+            ),
+        ),
+        TestCase(
+            description="no last day's bed event expect fail",
+            events=july_2_events()[:-1],
+            time_intervals=july_2_intervals(),
+            day_search_start_timestamp=arrow.get(
+                datetime(2022, 7, 2, 0, 0, 0), "Australia/Sydney"
+            ),
+        ),
+        TestCase(
+            description="2 previous bed in a row should fail",
+            events=july_2_events(1, 0),
+            time_intervals=july_2_intervals(),
+            day_search_start_timestamp=arrow.get(
+                datetime(2022, 7, 2, 0, 0, 0), "Australia/Sydney"
+            ),
+        ),
+        TestCase(
+            description="dup wakeup should fail",
+            events=july_2_events(1, 1),
+            time_intervals=july_2_intervals(),
+            day_search_start_timestamp=arrow.get(
+                datetime(2022, 7, 2, 0, 0, 0), "Australia/Sydney"
+            ),
+        ),
+    ]
+
+    for case in testcases:
+        with pytest.raises(ValueError):
+            parse_and_generate_day_record(
+                single_day_events=case.events,
+                single_day_time_intervals=case.time_intervals,
+            )
+
+
 def test_parse_and_generate_day_record() -> None:
     @dataclass
     class TestCase:
@@ -115,18 +173,16 @@ def test_parse_and_generate_day_record() -> None:
         events: list[Event]
         time_intervals: list[TimeInterval]
         day_search_start_timestamp: Arrow
-        expect_success: bool
         expected_day_record: DayRecord
 
     testcases: list[TestCase] = [
         TestCase(
             description="",
-            events=july_2_events_buffered,
-            time_intervals=july_2_intervals,
+            events=july_2_events(),
+            time_intervals=july_2_intervals(),
             day_search_start_timestamp=arrow.get(
                 datetime(2022, 7, 2, 0, 0, 0), "Australia/Sydney"
             ),
-            expect_success=True,
             expected_day_record=DayRecord(
                 wakeup_timestamp=arrow.get(
                     datetime(2022, 7, 2, 9, 30, 20), "Australia/Sydney"
@@ -139,26 +195,18 @@ def test_parse_and_generate_day_record() -> None:
                 ),
                 last_night_sleep_minutes=480,
                 events=[],  # wakeup, getup, bed events should be excluded from day records
-                time_intervals=july_2_intervals,
+                time_intervals=july_2_intervals(),
             ),
         )
     ]
 
     for i, case in enumerate(testcases):
         assert_message: str = f"case {i} failed, {case.description}"
-        try:
-            res = parse_and_generate_day_record(
-                single_day_events=case.events,
-                single_day_time_intervals=case.time_intervals,
-            )
-        except ValueError as exp:
-            assert not case.expect_success, assert_message + f"exception: {exp}"
-        except Exception as exp:
-            print(assert_message + f"unexpected exception {exp}")
-            raise
-        else:
-            assert case.expect_success, assert_message
-            assert case.expected_day_record == res, assert_message
+        res = parse_and_generate_day_record(
+            single_day_events=case.events,
+            single_day_time_intervals=case.time_intervals,
+        )
+        assert case.expected_day_record == res, assert_message
 
 
 @pytest.mark.skip(reason="todo next")
@@ -217,8 +265,8 @@ def test_parse_and_generate_day_records() -> None:
             input=TestInput(
                 start_date="2022-07-02",
                 end_date="2022-07-03",
-                events=july_2_events_buffered,
-                time_intervals=july_2_intervals,
+                events=july_2_events(),
+                time_intervals=july_2_intervals(),
             ),
             expect_success=True,
             expected_day_records=[
@@ -233,8 +281,8 @@ def test_parse_and_generate_day_records() -> None:
                         datetime(2022, 7, 3, 1, 20, 30), "Australia/Sydney"
                     ),
                     last_night_sleep_minutes=480,
-                    events=july_2_events_buffered[1:],
-                    time_intervals=july_2_intervals,
+                    events=july_2_events()[1:],
+                    time_intervals=july_2_intervals(),
                 ),
             ],
         ),

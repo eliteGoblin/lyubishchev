@@ -1,8 +1,6 @@
 import json
 import os
 
-import pytest
-
 from lyubishchev.clockify_fetcher import ClockifyConfig, ClockifyFetcher
 from lyubishchev.data_model import date_range_to_timestamp_range
 
@@ -17,7 +15,6 @@ config: ClockifyConfig = ClockifyConfig(
 # Testing data in sample_data.py
 
 
-@pytest.mark.focus
 def test_fetch_single_day() -> None:
 
     fetcher: ClockifyFetcher = ClockifyFetcher(config)

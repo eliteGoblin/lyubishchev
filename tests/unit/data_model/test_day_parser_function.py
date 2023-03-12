@@ -9,12 +9,13 @@ from arrow import Arrow
 from lyubishchev import config
 from lyubishchev.data_model import (
     Event,
-    TimeInterval,
     Label,
     Metadata,
+    TimeInterval,
     TimeSeriesNotFound,
     find_first_match,
     get_events_for_single_day,
+    get_time_intervals_for_single_day,
     must_events_cover_date_range,
     remove_wakeup_getup_bed_from_day_events,
     timestamp_from_date_str,
@@ -181,6 +182,21 @@ def test_find_first_match_event() -> None:
             ),
             expected_find=True,
             expected_index=1,
+        ),
+        TestCase(
+            description="return if timestamp is equal",
+            events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 20), "Australia/Sydney"
+                    ),
+                ),
+            ],
+            search_start_timestamp=arrow.get(
+                datetime(2022, 7, 2, 18, 50, 20), "Australia/Sydney"
+            ),
+            expected_find=True,
+            expected_index=0,
         ),
         TestCase(
             description="reversed, should return first event match timestamp",
@@ -548,7 +564,7 @@ def test_get_events_for_single_day_expect_fail() -> None:
         with pytest.raises(TimeSeriesNotFound):
             get_events_for_single_day(
                 date_range_events=case.events,
-                start_date="2022-07-01",
+                date="2022-07-02",
             )
 
 
@@ -740,20 +756,15 @@ def test_get_events_for_single_day() -> None:
         assert_message: str = f"case {index} failed! {case.description}"
         res = get_events_for_single_day(
             date_range_events=case.events,
-            start_date="2022-07-02",
+            date="2022-07-02",
         )
         assert res == case.expected_events, assert_message
 
+
 def test_get_time_intervals_for_single_day_expect_fail() -> None:
-    raise NotImplementedError
-    # TODO: if day is empty, at least add 2 records: wakeup and bed, otherwise following day won't parse
-    # simplify other validation
-    # sleep is essential to track
-    events: list[Event] = [
+    single_day_events: list[Event] = [
         Event(
-            timestamp=arrow.get(
-                datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"
-            ),
+            timestamp=arrow.get(datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
                     "type": "bed",
@@ -761,9 +772,7 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
             ),
         ),
         Event(
-            timestamp=arrow.get(
-                datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
-            ),
+            timestamp=arrow.get(datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
                     "type": "wakeup",
@@ -771,9 +780,7 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
             ),
         ),
         Event(
-            timestamp=arrow.get(
-                datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
-            ),
+            timestamp=arrow.get(datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
                     "type": "bed",
@@ -786,8 +793,8 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
     class TestCase:
         description: str
         time_intervals: list[TimeInterval]
-    
-    testCases: list[TestCase] = [
+
+    testcases: list[TestCase] = [
         TestCase(
             description="no time interval after wakeup should fail",
             time_intervals=[],
@@ -802,8 +809,148 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
                 )
             ],
         ),
+        TestCase(
+            description="no time interval after wakeup should fail",
+            time_intervals=[
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 20), "Australia/Sydney"
+                    ),
+                )
+            ],
+        ),
     ]
 
+    for case in testcases:
+        with pytest.raises(TimeSeriesNotFound):
+            get_time_intervals_for_single_day(
+                date_range_intervals=case.time_intervals,
+                current_day_events=single_day_events,
+            )
 
-# time interval same timestamp should pass
-# only 1 time interval should pass
+
+def test_get_time_intervals_for_single_day() -> None:
+    # time interval same timestamp should pass
+    # only 1 time interval should pass
+    # time interval same timestamp should pass
+    # only 1 time interval should pass
+    single_day_events: list[Event] = [
+        Event(
+            timestamp=arrow.get(datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"),
+            metadata=Metadata(
+                label={
+                    "type": "bed",
+                }
+            ),
+        ),
+        Event(
+            timestamp=arrow.get(datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"),
+            metadata=Metadata(
+                label={
+                    "type": "wakeup",
+                }
+            ),
+        ),
+        Event(
+            timestamp=arrow.get(datetime(2022, 7, 2, 20, 50, 21), "Australia/Sydney"),
+            metadata=Metadata(
+                label={
+                    "type": "bed",
+                }
+            ),
+        ),
+    ]
+
+    @dataclass
+    class TestCase:
+        description: str
+        time_intervals: list[TimeInterval]
+        expected_time_intervals: list[TimeInterval]
+
+    testcases: list[TestCase] = [
+        TestCase(
+            description="time intervals with wakeup in first time intervals and bed in last time intervals should pass",
+            time_intervals=[
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="morning wakeup",
+                    duration=90,
+                ),
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="routine",
+                    duration=120,
+                ),
+            ],
+            expected_time_intervals=[
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="morning wakeup",
+                    duration=90,
+                ),
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="routine",
+                    duration=120,
+                ),
+            ],
+        ),
+        TestCase(
+            description="skip the time intervals start from today's bed time event",
+            time_intervals=[
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="morning wakeup",
+                    duration=90,
+                ),
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="routine",
+                    duration=120,
+                ),
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 20, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="shouldn't include me, because I'm after today's bed time event",
+                    duration=120,
+                ),
+            ],
+            expected_time_intervals=[
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="morning wakeup",
+                    duration=90,
+                ),
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    extra_info="routine",
+                    duration=120,
+                ),
+            ],
+        ),
+    ]
+
+    for i, case in enumerate(testcases):
+        assert_message = f"case {i} failed! {case.description}"
+        res = get_time_intervals_for_single_day(
+            date_range_intervals=case.time_intervals,
+            current_day_events=single_day_events,
+        )
+        assert case.expected_time_intervals == res, assert_message

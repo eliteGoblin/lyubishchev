@@ -9,6 +9,7 @@ from .data_validator import (
     must_time_order,
 )
 from .date_time_utils import (
+    date_str_from_timestamp,
     day_start_timestamp_early_bound,
     must_yyyy_mm_dd,
     next_day,
@@ -47,13 +48,19 @@ def remove_wakeup_getup_bed_from_day_events(day_events: list[Event]) -> list[Eve
 
 def get_events_for_single_day(
     date_range_events: list[Event],
-    start_date: str,
+    date: str,
 ) -> list[Event]:
+    """
+    events MUST be logically in that day:
+        wakeup event MUST in that day
+        getup event MUST in that day
+        bed event MUST in that day or next day(sleep time is after 00:00)
+    """
 
     # searching starts at start_date's 00:00
     timezone_name: str = config.get_iana_timezone_name()
     day_search_start_timestamp: Arrow = day_start_timestamp_early_bound(
-        timezone_name, start_date
+        timezone_name, date
     )
 
     # following events are key indicator of time to generate day record
@@ -68,6 +75,13 @@ def get_events_for_single_day(
             EVENT_TYPE: TYPE_WAKEUP,
         },
     )
+
+    wakeup_date: str = date_str_from_timestamp(
+        timezone_name=config.get_iana_timezone_name(),
+        timestamp=date_range_events[wakeup_index].timestamp,
+    )
+    if wakeup_date != date:
+        raise ValueError(f"date {date} doesn't match wakeup event's date {wakeup_date}")
 
     last_night_bed_index = find_first_match(
         sequence=date_range_events,
@@ -86,6 +100,17 @@ def get_events_for_single_day(
         },
     )
 
+    timezone_name = config.get_iana_timezone_name()
+
+    bed_date: str = date_str_from_timestamp(
+        timezone_name=timezone_name,
+        timestamp=date_range_events[wakeup_index].timestamp,
+    )
+    if bed_date != date and bed_date != next_day(timezone_name, date):
+        raise ValueError(
+            f"bed event's date {bed_date} should be same as {date} or it's next day"
+        )
+
     return date_range_events[last_night_bed_index : bed_index + 1]
 
 
@@ -93,7 +118,12 @@ def get_time_intervals_for_single_day(
     date_range_intervals: list[TimeInterval],
     current_day_events: list[Event],
 ) -> list[TimeInterval]:
+    """
+    Note:
+        since events ensured in single day, no need to check here
+    """
     # use timestamp from key events(wakeup, bed) to cut time intervals for current day
+    # skip the time intervals start from today's bed time event, means it's next day's first time interval
     day_events: DayEvents = DayEvents(current_day_events)
     start_interval_index = find_first_match(
         sequence=date_range_intervals,
@@ -156,6 +186,9 @@ def parse_and_generate_day_records(
     time_intervals: list[TimeInterval],
 ) -> list[DayRecord]:
     """
+    parse_and_generate_day_records:
+        favor explicit over implicit, i.e buffered range
+        first events much be last night's bed event
     Parameters:
         start_date: first day of return list[DayRecord]
         end_date: day past last day return(DayRecords[-1])
@@ -190,7 +223,7 @@ def parse_and_generate_day_records(
     to_parse_date: str = start_date
     while True:
         events_for_current_day: list[Event] = get_events_for_single_day(
-            date_range_events=events, start_date=to_parse_date
+            date_range_events=events, date=to_parse_date
         )
 
         time_intervals_for_current_day: list[
