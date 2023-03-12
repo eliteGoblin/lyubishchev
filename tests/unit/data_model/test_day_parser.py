@@ -1,3 +1,4 @@
+import itertools
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
@@ -16,6 +17,7 @@ from lyubishchev.data_model import (
 )
 
 from .test_data.july_2 import july_2_events, july_2_intervals
+from .test_data.july_2_3_4 import july_2_3_4_events, july_2_3_4_intervals
 
 
 def test_date_range_to_timestamp_range() -> None:
@@ -188,7 +190,7 @@ def test_parse_and_generate_day_record() -> None:
                     datetime(2022, 7, 2, 9, 30, 20), "Australia/Sydney"
                 ),
                 getup_timestamp=arrow.get(
-                    datetime(2022, 7, 2, 9, 30, 20), "Australia/Sydney"
+                    datetime(2022, 7, 2, 9, 50, 20), "Australia/Sydney"
                 ),
                 bed_timestamp=arrow.get(
                     datetime(2022, 7, 3, 1, 20, 30), "Australia/Sydney"
@@ -209,7 +211,62 @@ def test_parse_and_generate_day_record() -> None:
         assert case.expected_day_record == res, assert_message
 
 
-@pytest.mark.skip(reason="todo next")
+def test_parse_and_generate_day_records_expect_fail() -> None:
+    @dataclass
+    class TestInput:
+        start_date: str
+        end_date: str
+        events: list[Event]
+        time_intervals: list[TimeInterval]
+
+    @dataclass
+    class TestCase:
+        description: str
+        input: TestInput
+
+    testcases: list[TestCase] = [
+        TestCase(
+            description="Invalid date format should raise",
+            input=TestInput(
+                start_date="2022.07.02",
+                end_date="2022-07-03",
+                events=[],
+                time_intervals=[],
+            ),
+        ),
+        TestCase(
+            description="Invalid date format should raise",
+            input=TestInput(
+                start_date="2022-07-0223",
+                end_date="2022-07-03",
+                events=[],
+                time_intervals=[],
+            ),
+        ),
+        TestCase(
+            description="Start date later than end date should raise",
+            input=TestInput(
+                start_date="2022-07-05",
+                end_date="2022-07-03",
+                events=[],
+                time_intervals=[],
+            ),
+        ),
+        # unordered events should fail
+        # unordered time_intervals should fail
+        # no buffer events should fail
+    ]
+
+    for case in testcases:
+        with pytest.raises(Exception):
+            parse_and_generate_day_records(
+                case.input.start_date,
+                case.input.end_date,
+                events=case.input.events,
+                time_intervals=case.input.time_intervals,
+            )
+
+
 def test_parse_and_generate_day_records() -> None:
     @dataclass
     class TestInput:
@@ -222,44 +279,9 @@ def test_parse_and_generate_day_records() -> None:
     class TestCase:
         description: str
         input: TestInput
-        expect_success: bool
-        expected_day_records: Optional[list[DayRecord]] = None
+        expected_day_records: list[DayRecord]
 
     testcases: list[TestCase] = [
-        TestCase(
-            description="Invalid date format should raise",
-            input=TestInput(
-                start_date="2022.07.02",
-                end_date="2022-07-03",
-                events=[],
-                time_intervals=[],
-            ),
-            expect_success=False,
-        ),
-        TestCase(
-            description="Invalid date format should raise",
-            input=TestInput(
-                start_date="2022-07-0223",
-                end_date="2022-07-03",
-                events=[],
-                time_intervals=[],
-            ),
-            expect_success=False,
-        ),
-        TestCase(
-            description="Start date later than end date should raise",
-            input=TestInput(
-                start_date="2022-07-05",
-                end_date="2022-07-03",
-                events=[],
-                time_intervals=[],
-            ),
-            expect_success=False,
-        ),
-        # unordered events should fail
-        # unordered time_intervals should fail
-        # no buffer events should fail
-        # wakeup getup same or different, test cases
         TestCase(
             description="Single valid day record 07.02 should pass",
             input=TestInput(
@@ -268,21 +290,77 @@ def test_parse_and_generate_day_records() -> None:
                 events=july_2_events(),
                 time_intervals=july_2_intervals(),
             ),
-            expect_success=True,
             expected_day_records=[
                 DayRecord(
                     wakeup_timestamp=arrow.get(
                         datetime(2022, 7, 2, 9, 30, 20), "Australia/Sydney"
                     ),
                     getup_timestamp=arrow.get(
-                        datetime(2022, 7, 2, 9, 30, 20), "Australia/Sydney"
+                        datetime(2022, 7, 2, 9, 50, 20), "Australia/Sydney"
                     ),
                     bed_timestamp=arrow.get(
                         datetime(2022, 7, 3, 1, 20, 30), "Australia/Sydney"
                     ),
                     last_night_sleep_minutes=480,
-                    events=july_2_events()[1:],
+                    events=[],
                     time_intervals=july_2_intervals(),
+                ),
+            ],
+        ),
+        TestCase(
+            description="07.02 and 07.03 07.04 should pass",
+            input=TestInput(
+                start_date="2022-07-02",
+                end_date="2022-07-05",
+                events=list(
+                    itertools.chain.from_iterable(july_2_3_4_events().values())
+                ),
+                time_intervals=list(
+                    itertools.chain.from_iterable(july_2_3_4_intervals().values())
+                ),
+            ),
+            expected_day_records=[
+                DayRecord(
+                    wakeup_timestamp=arrow.get(
+                        datetime(2022, 7, 2, 4, 30, 20), "Australia/Sydney"
+                    ),
+                    getup_timestamp=arrow.get(
+                        datetime(2022, 7, 2, 4, 50, 20), "Australia/Sydney"
+                    ),
+                    bed_timestamp=arrow.get(
+                        datetime(2022, 7, 2, 20, 50, 30), "Australia/Sydney"
+                    ),
+                    last_night_sleep_minutes=480,
+                    events=[],
+                    time_intervals=july_2_3_4_intervals()["2022-07-02"],
+                ),
+                DayRecord(
+                    wakeup_timestamp=arrow.get(
+                        datetime(2022, 7, 3, 4, 00, 20), "Australia/Sydney"
+                    ),
+                    getup_timestamp=arrow.get(
+                        datetime(2022, 7, 3, 4, 15, 20), "Australia/Sydney"
+                    ),
+                    bed_timestamp=arrow.get(
+                        datetime(2022, 7, 3, 22, 00, 30), "Australia/Sydney"
+                    ),
+                    last_night_sleep_minutes=429,
+                    events=[],
+                    time_intervals=july_2_3_4_intervals()["2022-07-03"],
+                ),
+                DayRecord(
+                    wakeup_timestamp=arrow.get(
+                        datetime(2022, 7, 4, 3, 40, 20), "Australia/Sydney"
+                    ),
+                    getup_timestamp=arrow.get(
+                        datetime(2022, 7, 4, 4, 0, 20), "Australia/Sydney"
+                    ),
+                    bed_timestamp=arrow.get(
+                        datetime(2022, 7, 5, 00, 30, 30), "Australia/Sydney"
+                    ),
+                    last_night_sleep_minutes=339,
+                    events=[],
+                    time_intervals=july_2_3_4_intervals()["2022-07-04"],
                 ),
             ],
         ),
@@ -290,18 +368,10 @@ def test_parse_and_generate_day_records() -> None:
 
     for i, case in enumerate(testcases):
         assert_message: str = f"case {i} failed, {case.description}"
-        try:
-            res = parse_and_generate_day_records(
-                case.input.start_date,
-                case.input.end_date,
-                events=case.input.events,
-                time_intervals=case.input.time_intervals,
-            )
-        except ValueError as exp:
-            assert not case.expect_success, assert_message + f"exception: {exp}"
-        except Exception as exp:
-            print(assert_message + f"unexpected exception {exp}")
-            raise
-        else:
-            assert case.expect_success, assert_message
-            assert case.expected_day_records == res, assert_message
+        res = parse_and_generate_day_records(
+            case.input.start_date,
+            case.input.end_date,
+            events=case.input.events,
+            time_intervals=case.input.time_intervals,
+        )
+        assert case.expected_day_records == res, assert_message

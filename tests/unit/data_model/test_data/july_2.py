@@ -36,6 +36,15 @@ def july_2_events(
         Event(
             metadata=Metadata(
                 label={
+                    "type": "getup",
+                }
+            ),
+            extra_info="morning wakeup",
+            timestamp=arrow.get(datetime(2022, 7, 2, 9, 50, 20), "Australia/Sydney"),
+        ),
+        Event(
+            metadata=Metadata(
+                label={
                     "type": "bed",
                 }
             ),

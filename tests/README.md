@@ -22,6 +22,7 @@ decorate the method using: `@pytest.mark.focus`
 then run 
 
 ```shell
+# @pytest.mark.focus
 pytest -m focus tests -vv
 ```
 
