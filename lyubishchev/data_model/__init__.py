@@ -25,6 +25,7 @@ from .day import (
     validate_value_range,
 )
 from .day_parser import (
+    get_events_for_single_day,
     parse_and_generate_day_record,
     parse_and_generate_day_records,
     remove_wakeup_getup_bed_from_day_events,
@@ -86,4 +87,5 @@ __all__ = [
     "find_first_match",
     "TimeSeriesNotFound",
     "remove_wakeup_getup_bed_from_day_events",
+    "get_events_for_single_day",
 ]

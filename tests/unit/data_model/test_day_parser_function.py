@@ -3,15 +3,18 @@ from datetime import datetime
 from typing import List, Optional
 
 import arrow
+import pytest
 from arrow import Arrow
 
 from lyubishchev import config
 from lyubishchev.data_model import (
     Event,
+    TimeInterval,
     Label,
     Metadata,
     TimeSeriesNotFound,
     find_first_match,
+    get_events_for_single_day,
     must_events_cover_date_range,
     remove_wakeup_getup_bed_from_day_events,
     timestamp_from_date_str,
@@ -376,7 +379,7 @@ def test_find_first_match_event() -> None:
             assert case.expected_index == event_index, assert_message
 
 
-def test_strip_wakeup_getup_bed_from_day_events() -> None:
+def test_remove_wakeup_getup_bed_from_day_events() -> None:
     @dataclass
     class TestCase:
         description: str
@@ -475,3 +478,332 @@ def test_strip_wakeup_getup_bed_from_day_events() -> None:
         assert case.expected_events == remove_wakeup_getup_bed_from_day_events(
             day_events=case.events
         ), assert_message
+
+
+def test_get_events_for_single_day_expect_fail() -> None:
+    @dataclass
+    class TestCase:
+        description: str
+        events: list[Event]
+
+    testcases: list[TestCase] = [
+        TestCase(
+            description="no wakeup should raise exception",
+            events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+            ],
+        ),
+        TestCase(
+            description="no bed should raise exception",
+            events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+            ],
+        ),
+        TestCase(
+            description="no last night bed should raise exception",
+            events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 20, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+            ],
+        ),
+    ]
+
+    for case in testcases:
+        with pytest.raises(TimeSeriesNotFound):
+            get_events_for_single_day(
+                date_range_events=case.events,
+                start_date="2022-07-01",
+            )
+
+
+def test_get_events_for_single_day() -> None:
+    @dataclass
+    class TestCase:
+        description: str
+        events: list[Event]
+        expected_events: list[Event]
+
+    testcases: list[TestCase] = [
+        TestCase(
+            description="wakeup and bed should return events",
+            events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 3, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+            ],
+            expected_events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+            ],
+        ),
+        TestCase(
+            description="wakeup, getup and bed should return events",
+            events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 4, 20, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "getup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 3, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+            ],
+            expected_events=[
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "wakeup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 4, 20, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "getup",
+                        }
+                    ),
+                ),
+                Event(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+                    ),
+                    metadata=Metadata(
+                        label={
+                            "type": "bed",
+                        }
+                    ),
+                ),
+            ],
+        ),
+    ]
+
+    for index, case in enumerate(testcases):
+        assert_message: str = f"case {index} failed! {case.description}"
+        res = get_events_for_single_day(
+            date_range_events=case.events,
+            start_date="2022-07-02",
+        )
+        assert res == case.expected_events, assert_message
+
+def test_get_time_intervals_for_single_day_expect_fail() -> None:
+    raise NotImplementedError
+    # TODO: if day is empty, at least add 2 records: wakeup and bed, otherwise following day won't parse
+    # simplify other validation
+    # sleep is essential to track
+    events: list[Event] = [
+        Event(
+            timestamp=arrow.get(
+                datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"
+            ),
+            metadata=Metadata(
+                label={
+                    "type": "bed",
+                }
+            ),
+        ),
+        Event(
+            timestamp=arrow.get(
+                datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
+            ),
+            metadata=Metadata(
+                label={
+                    "type": "wakeup",
+                }
+            ),
+        ),
+        Event(
+            timestamp=arrow.get(
+                datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
+            ),
+            metadata=Metadata(
+                label={
+                    "type": "bed",
+                }
+            ),
+        ),
+    ]
+
+    @dataclass
+    class TestCase:
+        description: str
+        time_intervals: list[TimeInterval]
+    
+    testCases: list[TestCase] = [
+        TestCase(
+            description="no time interval after wakeup should fail",
+            time_intervals=[],
+        ),
+        TestCase(
+            description="no time interval after wakeup should fail",
+            time_intervals=[
+                TimeInterval(
+                    timestamp=arrow.get(
+                        datetime(2022, 7, 2, 3, 50, 20), "Australia/Sydney"
+                    ),
+                )
+            ],
+        ),
+    ]
+
+
+# time interval same timestamp should pass
+# only 1 time interval should pass
