@@ -1,0 +1,4 @@
+#!/bin/sh
+
+py.test -rX -vv tests/integration $@
+# pytest -rX -vv -m focus tests/integration

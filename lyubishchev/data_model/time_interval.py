@@ -62,7 +62,9 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
     throw InvalidLabelTag if TimeInterval label, tag validation fail
     """
     if TIME_INTERVAL_TYPE not in label:
-        raise InvalidLabelTag(f"key {TIME_INTERVAL_TYPE} missing in TimeInterval")
+        raise InvalidLabelTag(
+            f"key {TIME_INTERVAL_TYPE} missing in TimeInterval {label}"
+        )
     if label[TIME_INTERVAL_TYPE] not in VALID_INTERVAL_TYPES:
         raise InvalidLabelTag(
             f"invalid type value {label[TIME_INTERVAL_TYPE]} in TimeInterval"

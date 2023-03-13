@@ -369,8 +369,8 @@ def test_parse_and_generate_day_records() -> None:
     for i, case in enumerate(testcases):
         assert_message: str = f"case {i} failed, {case.description}"
         res = parse_and_generate_day_records(
-            case.input.start_date,
-            case.input.end_date,
+            start_date=case.input.start_date,
+            end_date=case.input.end_date,
             events=case.input.events,
             time_intervals=case.input.time_intervals,
         )

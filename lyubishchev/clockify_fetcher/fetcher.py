@@ -225,6 +225,9 @@ class ClockifyFetcher(TimeIntervalFetcher):
     def fetch_raw_time_series(
         self, start_timestamp: Arrow, end_timestamp: Arrow
     ) -> list[dict[str, Any]]:
+        """
+        return time series in Clockify's object structure(dict[str, Any])
+        """
         # timestamp in Clockify must end with Z, even input is local time, bug?
         timestamp_format: str = "%Y-%m-%dT%H:%M:%SZ"
         page_size: int = 50  # Clockify default page size
@@ -257,6 +260,7 @@ class ClockifyFetcher(TimeIntervalFetcher):
                 "https://" + urllib.request.pathname2url(query),
                 headers=headers,
                 params=params,
+                # verify=False, disable ssl verify for cert issue
             )
             if response.status_code != 200:
                 raise Exception(

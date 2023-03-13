@@ -23,7 +23,8 @@ then run
 
 ```shell
 # @pytest.mark.focus
-pytest -m focus tests -vv
+# -s means show code's stdout in pytest's output
+pytest -m focus -s tests -vv
 ```
 
 ```shell
