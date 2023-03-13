@@ -1,4 +1,3 @@
-import os
 import sys
 
 from lyubishchev.cached_data_reader import CachedDayDataReader
@@ -14,12 +13,7 @@ from lyubishchev.report_generator import ReportGenerator
 
 
 def main() -> int:
-    config: ClockifyConfig = ClockifyConfig(
-        host="api.clockify.me",
-        workspace_id="5e86fab7183a8475e0c7a757",
-        user_id="5e86fab6183a8475e0c7a755",
-        api_key=os.getenv("CLOCKIFY_API_KEY", "fake_clockify_key"),
-    )
+    config: ClockifyConfig = ClockifyConfig()
     start_date: str = "2022-08-16"
     end_date: str = "2022-08-17"
 

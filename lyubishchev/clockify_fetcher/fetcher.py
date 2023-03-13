@@ -1,5 +1,5 @@
+import os
 import urllib
-from dataclasses import dataclass
 from typing import Any, Optional
 
 import arrow
@@ -25,12 +25,29 @@ from lyubishchev.data_model import (
 TimeSeries = dict[str, Any]
 
 
-@dataclass
-class ClockifyConfig:
+class ClockifyConfig:  # pylint: disable=too-few-public-methods
     host: str
     api_key: str
     workspace_id: str
     user_id: str
+
+    def __init__(self) -> None:
+        self.host = "api.clockify.me"
+        self.workspace_id = os.getenv(
+            "CLOCKIFY_WORKSPACE_ID", "fake_clockify_workspace_id"
+        )
+        self.user_id = os.getenv("CLOCKIFY_USER_ID", "fake_clockify_id")
+        self.api_key = os.getenv("CLOCKIFY_API_KEY", "fake_clockify_key")
+
+    def __repr__(self) -> str:
+        return f"""
+            ClockifyConfig(
+                host={self.host},
+                api_key={self.api_key},
+                workspace_id={self.workspace_id},
+                user_id={self.user_id}
+            )
+        """
 
 
 def is_clockify_tag_a_label(tag: str) -> bool:

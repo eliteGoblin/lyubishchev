@@ -1,5 +1,5 @@
 ---
-name: lyubishchev ci tests
+name: lyubishchev CI tests
 on: [push]
 jobs:
   run-format-checker:
@@ -48,17 +48,41 @@ jobs:
           scripts/ci/typecheck
 
 
-  run-unit-tests:
+  run-unit-test:
     runs-on: ubuntu-latest
+    environment: CI
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      - run: |
+      - shell: bash
+        run: |
           python -m venv .venv
           echo ".venv/bin" >> $GITHUB_PATH
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
-          scripts/ci/unittests
+          scripts/ci/unittest
+
+  run-intgegration-test:
+    runs-on: ubuntu-latest
+    environment: CI
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - shell: bash
+        env:
+          CLOCKIFY_USER_ID: ${{ secrets.CLOCKIFY_USER_ID }}
+          CLOCKIFY_WORKSPACE_ID: ${{ secrets.CLOCKIFY_WORKSPACE_ID }}
+          CLOCKIFY_API_KEY: ${{ secrets.CLOCKIFY_API_KEY }}
+          is_CI: true
+        run: |
+          python -m venv .venv
+          echo ".venv/bin" >> $GITHUB_PATH
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+          scripts/ci/intgtest

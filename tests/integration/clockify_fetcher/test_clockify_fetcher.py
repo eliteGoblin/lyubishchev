@@ -1,14 +1,7 @@
-import os
-
 from lyubishchev.clockify_fetcher import ClockifyConfig, ClockifyFetcher
 from lyubishchev.data_model import date_range_to_timestamp_range
 
-config: ClockifyConfig = ClockifyConfig(
-    host="api.clockify.me",
-    workspace_id="5e86fab7183a8475e0c7a757",
-    user_id="5e86fab6183a8475e0c7a755",
-    api_key=os.getenv("CLOCKIFY_API_KEY", "fake_clockify_key"),
-)
+config: ClockifyConfig = ClockifyConfig()
 
 
 def test_fetch_raw_time_series_single_day() -> None:

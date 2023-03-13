@@ -1,21 +1,17 @@
-import os
-
 import arrow
 
 from lyubishchev.clockify_fetcher import ClockifyConfig, ClockifyFetcher
 from lyubishchev.data_model import Event, Metadata, date_range_to_timestamp_range
 
-# 2022-07-02 via WebUI: https://app.clockify.me/tracker?page=15&limit=200
+# import pytest
+# from icecream import ic
 
-config: ClockifyConfig = ClockifyConfig(
-    host="api.clockify.me",
-    workspace_id="5e86fab7183a8475e0c7a757",
-    user_id="5e86fab6183a8475e0c7a755",
-    api_key=os.getenv("CLOCKIFY_API_KEY", "fake_clockify_key"),
-)
+
+# 2022-07-02 via WebUI: https://app.clockify.me/tracker?page=15&limit=200
 
 
 def test_fetch_time_intervals_events_single_day() -> None:
+    config: ClockifyConfig = ClockifyConfig()
     fetcher: ClockifyFetcher = ClockifyFetcher(config)
     time_intervals, events = fetcher.fetch_time_intervals_events(
         *date_range_to_timestamp_range(
@@ -53,6 +49,7 @@ def test_fetch_time_intervals_events_single_day() -> None:
 
 
 def test_fetch_raw_time_series_3_days() -> None:
+    config: ClockifyConfig = ClockifyConfig()
     fetcher: ClockifyFetcher = ClockifyFetcher(config)
     time_intervals, events = fetcher.fetch_time_intervals_events(
         *date_range_to_timestamp_range(

@@ -1,4 +1,10 @@
 #!/bin/sh
 
+if [ -z "$is_CI" ]; then
+  echo "Environment variable is_CI is NOT set, skipping integration test"
+  return
+fi
+
 py.test -rX -vv tests/integration $@
+
 # pytest -rX -vv -m focus tests/integration

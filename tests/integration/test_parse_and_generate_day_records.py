@@ -1,7 +1,4 @@
-import os
-
 import arrow
-import pytest
 
 from lyubishchev.clockify_fetcher import ClockifyConfig, ClockifyFetcher
 from lyubishchev.data_model import (
@@ -12,17 +9,15 @@ from lyubishchev.data_model import (
     parse_and_generate_day_records,
 )
 
+# debug a test case
+# import pytest
+# from icecream import ic
+
 # 2022-07-02 via WebUI: https://app.clockify.me/tracker?page=15&limit=200
 
-config: ClockifyConfig = ClockifyConfig(
-    host="api.clockify.me",
-    workspace_id="5e86fab7183a8475e0c7a757",
-    user_id="5e86fab6183a8475e0c7a755",
-    api_key=os.getenv("CLOCKIFY_API_KEY", "fake_clockify_key"),
-)
+config: ClockifyConfig = ClockifyConfig()
 
 
-@pytest.mark.focus
 def test_parse_and_generate_day_records_single_day() -> None:
     fetcher: ClockifyFetcher = ClockifyFetcher(config)
     time_intervals, events = fetcher.fetch_time_intervals_events(
@@ -151,3 +146,60 @@ def test_parse_and_generate_day_records_single_day() -> None:
         ],
         events=[],
     )
+
+
+# @pytest.mark.focus
+def test_parse_and_generate_day_records_multi_days() -> None:
+    fetcher: ClockifyFetcher = ClockifyFetcher(config)
+    time_intervals, events = fetcher.fetch_time_intervals_events(
+        *date_range_to_timestamp_range("2022-07-02", "2022-07-05")
+    )
+    day_records = parse_and_generate_day_records(
+        start_date="2022-07-02",
+        end_date="2022-07-05",
+        time_intervals=time_intervals,
+        events=events,
+    )
+
+    assert len(day_records) == 3
+    for i, day_record in enumerate(day_records):
+        # ic(day_record)
+        assert len(day_record.events) == 0
+
+        if i == 0:
+            assert len(day_record.time_intervals) == 16
+        elif i == 1:
+            assert len(day_record.time_intervals) == 19
+        elif i == 2:
+            assert len(day_record.time_intervals) == 21
+
+        day_record.time_intervals = (
+            []
+        )  # clear it to make easy for testing DayRecord fields
+
+    assert day_records == [
+        DayRecord(
+            wakeup_timestamp=arrow.get("2022-07-02T09:15:00+10:00"),
+            getup_timestamp=arrow.get("2022-07-02T09:15:00+10:00"),
+            bed_timestamp=arrow.get("2022-07-03T04:00:00+10:00"),
+            last_night_sleep_minutes=460,
+            time_intervals=[],
+            events=[],
+        ),
+        DayRecord(
+            wakeup_timestamp=arrow.get("2022-07-03T10:30:00+10:00"),
+            getup_timestamp=arrow.get("2022-07-03T11:10:00+10:00"),
+            bed_timestamp=arrow.get("2022-07-04T02:40:00+10:00"),
+            last_night_sleep_minutes=390,
+            time_intervals=[],
+            events=[],
+        ),
+        DayRecord(
+            wakeup_timestamp=arrow.get("2022-07-04T09:00:00+10:00"),
+            getup_timestamp=arrow.get("2022-07-04T09:00:00+10:00"),
+            bed_timestamp=arrow.get("2022-07-05T00:20:00+10:00"),
+            last_night_sleep_minutes=380,
+            time_intervals=[],
+            events=[],
+        ),
+    ]

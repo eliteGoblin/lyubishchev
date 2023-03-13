@@ -115,6 +115,20 @@ class DayRecord:
         if self.timezone_name is None:
             self.timezone_name = config.get_iana_timezone_name()
 
+    def __repr__(self) -> str:
+        return f"""
+        DayRecord(
+            timezone_name={self.timezone_name},
+            day_str={self.date_str()},
+            wakeup_timestamp={self.wakeup_timestamp},
+            getup_timestamp={self.getup_timestamp},
+            bed_timestamp={self.bed_timestamp},
+            last_night_sleep_minutes={self.last_night_sleep_minutes},
+            time_intervals={len(self.time_intervals)},
+            events={len(self.events)},
+        )
+        """
+
     def date_str(self) -> str:
         """
         local date matters: what's the local date when time recorded

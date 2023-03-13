@@ -95,6 +95,9 @@ def date_range_to_timestamp_range(
         End timestamp:   end date 18:00, ensure we include last day(the day before end)'s bedtime,
         but exclude end date's bedtime
     Throws: ValueError
+    Note:
+        If time record is consecutive, extra buffer usually NOT needed, timestamp range already "buffered":
+            start_date:00:00 - end_date:18:00
     """
     # Explicitly format checking , instead of relying on datetime parse
     must_yyyy_mm_dd(start_date)
