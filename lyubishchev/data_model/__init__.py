@@ -10,6 +10,7 @@ from .data_reader import DataReader
 from .data_validator import must_events_cover_date_range
 from .date_time_utils import (
     date_range_to_timestamp_range,
+    next_day,
     time_diff_minutes,
     timestamp_from_date_str,
 )
@@ -37,12 +38,26 @@ from .event_data import (
     TYPE_BED,
     TYPE_GETUP,
     TYPE_WAKEUP,
-    VALID_EVENT_LABEL_KEY,
     VALID_EVENT_TAG_KEY,
 )
 from .search_time_series import find_first_match
 from .time_interval import TimeInterval, validate_time_interval_label_and_tag
-from .timeinterval_data import TIME_INTERVAL_TYPE, TYPE_SLEEP, VALID_TIME_INTERVAL_TAGS
+from .timeinterval_data import (
+    TIME_INTERVAL_TYPE,
+    TYPE_BOWEL_MOVEMENT,
+    TYPE_DISPUTE,
+    TYPE_DISTRACTED,
+    TYPE_EXERCISE,
+    TYPE_MEDITATION,
+    TYPE_PMO,
+    TYPE_RELAX,
+    TYPE_ROUTINE,
+    TYPE_SELF_IMPROVING,
+    TYPE_SEX,
+    TYPE_SLEEP,
+    TYPE_WORK,
+    VALID_TIME_INTERVAL_TAGS,
+)
 
 __all__ = [
     # core
@@ -51,12 +66,26 @@ __all__ = [
     "Label",
     "InvalidLabelTag",
     "TimeInterval",
+    # util
     "time_diff_minutes",
     "timestamp_from_date_str",
+    "next_day",
     # TimeInterval
     "validate_time_interval_label_and_tag",
     "TIME_INTERVAL_TYPE",
     "VALID_TIME_INTERVAL_TAGS",
+    "TYPE_BOWEL_MOVEMENT",
+    "TYPE_DISPUTE",
+    "TYPE_DISTRACTED",
+    "TYPE_EXERCISE",
+    "TYPE_MEDITATION",
+    "TYPE_PMO",
+    "TYPE_RELAX",
+    "TYPE_ROUTINE",
+    "TYPE_SELF_IMPROVING",
+    "TYPE_SEX",
+    "TYPE_SLEEP",
+    "TYPE_WORK",
     # Event
     "VALID_EVENT_TAG_KEY",
     "TYPE_SLEEP",

@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 
-from arrow import Arrow
-
 from lyubishchev.data_model.day import DayRecord
-from lyubishchev.data_model.event import Event
 from lyubishchev.data_model.time_interval import TimeInterval
 
 
@@ -37,17 +34,12 @@ class DataReader(ABC):
 
         when implement, could use date_range_to_timestamp_range to get timestamp from date str
         """
+        raise NotImplementedError
 
     @abstractmethod
-    def fetch_last_time_interval(
-        self, timestamp: Arrow, typ: str, tag: str = ""
-    ) -> TimeInterval:
-        """
-        Get when was the last event which matches criteria
-        """
-
-    @abstractmethod
-    def fetch_last_event(self, timestamp: Arrow, typ: str, tag: str = "") -> Event:
-        """
-        Get when was the last event which matches criteria
-        """
+    def get_time_intervals(
+        self,
+        start_date: str,
+        end_date: str,
+    ) -> list[TimeInterval]:
+        raise NotImplementedError
