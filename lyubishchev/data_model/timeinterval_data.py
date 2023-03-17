@@ -33,6 +33,7 @@ TYPE_ROUTINE: str = "routine"
 TYPE_SELF_IMPROVING: str = "self-improving"
 TYPE_SEX: str = "sex"
 TYPE_SLEEP: str = "sleep"
+TYPE_WALK: str = "walk"
 TYPE_WORK: str = "work"
 TYPE_NUMB: str = "numb"  # avoid feeling
 
@@ -48,6 +49,7 @@ VALID_INTERVAL_TYPES: List[str] = [
     TYPE_SELF_IMPROVING,
     TYPE_SEX,
     TYPE_SLEEP,
+    TYPE_WALK,
     TYPE_WORK,
     TYPE_NUMB,
 ]

@@ -78,6 +78,35 @@ def previous_day(timezone_name: str, date_str: str) -> str:
     )
 
 
+def get_day_range_from_relative_days(
+    start_date: str,
+    days_delta: int,
+) -> tuple[str, str]:
+    """
+    get day range from relative days;
+    Args:
+        days_delta: means how many days I want to be in rage [start, end) can be both positive and negative
+            e.g I want days_delta=-2, I want to see past 2 days (NOT including today)'s data: today - 2d, today - 1d;
+            so it should return [today -2d, today)
+    Return:
+        actual date range, earlier day first
+    """
+    must_yyyy_mm_dd(start_date)
+    calculate_starte = timestamp_from_date_str(
+        timezone_name=config.get_iana_timezone_name(),
+        date_str=start_date,
+    )
+    the_other_timestamp = calculate_starte.shift(days=days_delta)
+    the_other_date = date_str_from_timestamp(
+        timezone_name=config.get_iana_timezone_name(),
+        timestamp=the_other_timestamp,
+    )
+
+    if days_delta > 0:
+        return start_date, the_other_date
+    return the_other_date, start_date
+
+
 def date_range_to_timestamp_range(
     start_date: str, end_date: str, buffer_days: int = 0
 ) -> tuple[Arrow, Arrow]:

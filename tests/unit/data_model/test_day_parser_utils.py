@@ -14,6 +14,7 @@ from lyubishchev.data_model import (
     TimeInterval,
     TimeSeriesNotFound,
     find_first_match,
+    get_day_range_from_relative_days,
     get_events_for_single_day,
     get_time_intervals_for_single_day,
     must_events_cover_date_range,
@@ -954,3 +955,46 @@ def test_get_time_intervals_for_single_day() -> None:
             current_day_events=single_day_events,
         )
         assert case.expected_time_intervals == res, assert_message
+
+
+def test_get_day_range_from_relative_days() -> None:
+    @dataclass
+    class TestCase:
+        start_date: str
+        days_delta: int
+        expected_day_range: tuple[str, str]
+
+    testcases: list[TestCase] = [
+        TestCase(
+            start_date="2021-01-01",
+            days_delta=0,
+            expected_day_range=("2021-01-01", "2021-01-01"),
+        ),
+        TestCase(
+            start_date="2021-01-01",
+            days_delta=1,
+            expected_day_range=("2021-01-01", "2021-01-02"),
+        ),
+        TestCase(
+            start_date="2021-01-01",
+            days_delta=5,
+            expected_day_range=("2021-01-01", "2021-01-06"),
+        ),
+        TestCase(
+            start_date="2021-01-01",
+            days_delta=-1,
+            expected_day_range=("2020-12-31", "2021-01-01"),
+        ),
+        TestCase(
+            start_date="2021-01-01",
+            days_delta=-5,
+            expected_day_range=("2020-12-27", "2021-01-01"),
+        ),
+    ]
+
+    for i, testcase in enumerate(testcases):
+        assert_message = f"case {i} failed!"
+        res = get_day_range_from_relative_days(
+            start_date=testcase.start_date, days_delta=testcase.days_delta
+        )
+        assert testcase.expected_day_range == res, assert_message
