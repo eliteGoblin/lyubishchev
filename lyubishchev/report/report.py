@@ -3,10 +3,10 @@ from typing import Any
 from arrow import Arrow
 
 from lyubishchev import config
-from lyubishchev.data_model import TYPE_EXERCISE  # events
 from lyubishchev.data_model import (
     TIME_INTERVAL_TYPE,
     TYPE_BED,
+    TYPE_EXERCISE,
     TYPE_GETUP,
     TYPE_SELF_IMPROVING,
     TYPE_SEX,
@@ -15,30 +15,72 @@ from lyubishchev.data_model import (
     TYPE_WORK,
     DayRecord,
     Label,
-    TimeInterval,
+    is_label_match,
+    must_yyyy_mm_dd,
     next_day,
+    time_diff_minutes,
+    timestamp_from_date_str,
 )
 
-
-def total_hours(day_records: list[DayRecord]) -> float:
-    raise NotImplementedError
+# use minutes as unit, it's visualizer responsibility to decide how to display it(in hours, etc)
 
 
-def time_spans_matching_label(
+def total_minutes(start_date_str: str, end_date_str: str) -> int:
+    must_yyyy_mm_dd(start_date_str)
+    must_yyyy_mm_dd(end_date_str)
+
+    if start_date_str >= end_date_str:
+        return 0
+
+    start = timestamp_from_date_str(config.get_iana_timezone_name(), start_date_str)
+    end = timestamp_from_date_str(config.get_iana_timezone_name(), end_date_str)
+
+    return time_diff_minutes(start, end)
+
+
+def time_spans_by_day_matching_label_minutes(
     day_records: list[DayRecord], label: Label
-) -> list[TimeInterval]:
-    raise NotImplementedError
+) -> list[int]:
+    """
+    Calculate time spans(duration of activity) of day, matching label
+    Return:
+        list of time spans in hours, one element for each day
+    """
+    time_spans = []
+    for day in day_records:
+        minuts_of_current_day = 0
+        for time_interval in day.time_intervals:
+            if is_label_match(time_interval.metadata.label, label):
+                minuts_of_current_day += time_interval.duration_minutes
+        time_spans.append(minuts_of_current_day)
+    return time_spans
 
 
-def time_spans_night_sleep(day_records: list[DayRecord]) -> list[float]:
-    raise NotImplementedError
+def time_spans_by_field_minutes(
+    day_records: list[DayRecord], field_name: str
+) -> list[int]:
+    """
+    return a list of time spans, one element for each day
+    """
+    res = []
+    for day in day_records:
+        res.append(int(getattr(day, field_name)))
+    return res
 
 
-def timestamps_of_days(day_records: list[DayRecord], field_name: str) -> list[Arrow]:
+def timestamps_of_days_by_field(
+    day_records: list[DayRecord], field_name: str
+) -> list[Arrow]:
     """
     timestamps_of_days returns a list of timestamps of a field in day_records array
     """
-    raise NotImplementedError
+    res: list[Arrow] = []
+    for day in day_records:
+        timestamp: Arrow = getattr(day, field_name)
+        if not isinstance(timestamp, Arrow):
+            raise TypeError(f"field {field_name} of {day} is not a timestamp")
+        res.append(timestamp)
+    return res
 
 
 class DayRangeReport:
@@ -50,6 +92,10 @@ class DayRangeReport:
 
     def __init__(self, day_records: list[DayRecord]):
         self.day_records = day_records
+
+    @property
+    def report_unit(self) -> str:
+        return "minutes"
 
     @property
     def start_date_str(self) -> str:
@@ -65,37 +111,50 @@ class DayRangeReport:
     def get_interval_metrics(self) -> dict[str, Any]:
         return {
             "effective_output": {
-                "self_improving": time_spans_matching_label(
+                "self_improving": time_spans_by_day_matching_label_minutes(
                     self.day_records,
                     {TIME_INTERVAL_TYPE: TYPE_SELF_IMPROVING},
                 ),
-                "work": time_spans_matching_label(
+                "work": time_spans_by_day_matching_label_minutes(
                     self.day_records, {TIME_INTERVAL_TYPE: TYPE_WORK}
                 ),
             },
-            "sex": time_spans_matching_label(
+            "sex": time_spans_by_day_matching_label_minutes(
                 self.day_records, {TIME_INTERVAL_TYPE: TYPE_SEX}
             ),
-            "exercise": time_spans_matching_label(
+            "exercise": time_spans_by_day_matching_label_minutes(
                 self.day_records, {TIME_INTERVAL_TYPE: TYPE_EXERCISE}
             ),
             "sleep": {
-                "night_hours": time_spans_night_sleep(self.day_records),
-                "nap": time_spans_matching_label(
+                "night_sleep": time_spans_by_field_minutes(
+                    self.day_records, "last_night_sleep_minutes"
+                ),
+                "nap": time_spans_by_day_matching_label_minutes(
                     self.day_records, {TIME_INTERVAL_TYPE: TYPE_SLEEP}
                 ),  # TYPE_SLEEP only means nap, night sleep is not recorded and derived from bed and wakeup time
             },
         }
 
-    def get_time_stats(self) -> dict[str, float]:
+    def get_time_stats(self) -> dict[str, int]:
         """
         get_time_stats returns a dict of time stats
         """
         interval_metrics = self.get_interval_metrics()
+
+        minutes: int = total_minutes(
+            self.day_records[0].date_str(),
+            next_day(
+                timezone_name=config.get_iana_timezone_name(),
+                date_str=self.day_records[-1].date_str(),
+            ),
+        )
+
         return {
-            "total": total_hours(self.day_records),
-            "sleep": sum(interval_metrics["sleep"]["night_hours"])
+            "total": minutes,
+            "sleep_all": sum(interval_metrics["sleep"]["night_sleep"])
             + sum(interval_metrics["sleep"]["nap"]),
+            "sleep_night": sum(interval_metrics["sleep"]["night_sleep"]),
+            "sleep_nap": sum(interval_metrics["sleep"]["nap"]),
             "work": sum(interval_metrics["effective_output"]["work"]),
             "exercise": sum(interval_metrics["exercise"]),
             "self_improving": sum(
@@ -104,8 +163,11 @@ class DayRangeReport:
         }
 
     def get_event_metrics(self) -> dict[str, list[Arrow]]:
+        suffix = "_timestamp"
         return {
-            "wakeup": timestamps_of_days(self.day_records, TYPE_WAKEUP),
-            "getup": timestamps_of_days(self.day_records, TYPE_GETUP),
-            "bed": timestamps_of_days(self.day_records, TYPE_BED),
+            "wakeup": timestamps_of_days_by_field(
+                self.day_records, TYPE_WAKEUP + suffix
+            ),
+            "getup": timestamps_of_days_by_field(self.day_records, TYPE_GETUP + suffix),
+            "bed": timestamps_of_days_by_field(self.day_records, TYPE_BED + suffix),
         }

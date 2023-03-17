@@ -4,12 +4,14 @@ from .core_data_structure import (
     Label,
     Metadata,
     TimeSeriesNotFound,
+    is_label_match,
 )
 from .data_fetcher import TimeIntervalFetcher
 from .data_reader import DataReader
 from .data_validator import must_events_cover_date_range
 from .date_time_utils import (
     date_range_to_timestamp_range,
+    must_yyyy_mm_dd,
     next_day,
     time_diff_minutes,
     timestamp_from_date_str,
@@ -66,9 +68,11 @@ __all__ = [
     "Label",
     "InvalidLabelTag",
     "TimeInterval",
+    "is_label_match",
     # util
     "time_diff_minutes",
     "timestamp_from_date_str",
+    "must_yyyy_mm_dd",
     "next_day",
     # TimeInterval
     "validate_time_interval_label_and_tag",

@@ -124,8 +124,8 @@ class DayRecord:
             getup_timestamp={self.getup_timestamp},
             bed_timestamp={self.bed_timestamp},
             last_night_sleep_minutes={self.last_night_sleep_minutes},
-            time_intervals={len(self.time_intervals)},
-            events={len(self.events)},
+            time_intervals={self.time_intervals},
+            events={self.events},
         )
         """
 

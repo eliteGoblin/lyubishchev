@@ -17,7 +17,7 @@ def must_yyyy_mm_dd(date_str: str) -> None:
 
 
 def time_diff_minutes(start: Arrow, end: Arrow) -> int:
-    return int((end - start).seconds / 60)
+    return int((end - start).total_seconds() / 60)  # type: ignore
 
 
 def day_start_timestamp_early_bound(timezone_name: str, start_date: str) -> Arrow:
@@ -96,8 +96,7 @@ def date_range_to_timestamp_range(
         but exclude end date's bedtime
     Throws: ValueError
     Note:
-        If time record is consecutive, extra buffer usually NOT needed, timestamp range already "buffered":
-            start_date:00:00 - end_date:18:00
+        buffer is to fetch the day before start_date's bed time, to calculate start day's sleep
     """
     # Explicitly format checking , instead of relying on datetime parse
     must_yyyy_mm_dd(start_date)

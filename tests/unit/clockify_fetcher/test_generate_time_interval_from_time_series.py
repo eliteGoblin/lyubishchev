@@ -21,9 +21,12 @@ def test_time_diff_minutes() -> None:
     timestamp_1: Arrow = arrow.get(datetime(2022, 7, 2, 18, 50, 20), "Australia/Sydney")
     timestamp_2: Arrow = arrow.get(datetime(2022, 7, 2, 18, 55, 10), "Australia/Sydney")
     timestamp_3: Arrow = arrow.get("2022-07-02T18:59:05.970460+10:00")
+    # multi-days
+    timestamp_4: Arrow = arrow.get(datetime(2022, 7, 5, 18, 50, 20), "Australia/Sydney")
 
     assert time_diff_minutes(timestamp_1, timestamp_2) == 4
     assert time_diff_minutes(timestamp_2, timestamp_3) == 3
+    assert time_diff_minutes(timestamp_1, timestamp_4) == 4320  # 3 days
 
 
 def test_generate_time_interval_from_time_series() -> None:

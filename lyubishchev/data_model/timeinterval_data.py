@@ -9,6 +9,7 @@ PROJECT_SOFTWARE_ENGINEERING: str = "software-engineering"
 PROJECT_COMPUTER_VISION = "computer-vision"
 PROJECT_MATH = "math"
 PROJECT_GIS = "gis"
+PROJECT_GIS = "OJ"
 
 # hard code valid projects for now, later we could link it to EPIC
 VALID_PROJECTS: List[str] = [
@@ -33,6 +34,7 @@ TYPE_SELF_IMPROVING: str = "self-improving"
 TYPE_SEX: str = "sex"
 TYPE_SLEEP: str = "sleep"
 TYPE_WORK: str = "work"
+TYPE_NUMB: str = "numb"  # avoid feeling
 
 VALID_INTERVAL_TYPES: List[str] = [
     TYPE_BOWEL_MOVEMENT,
@@ -47,6 +49,7 @@ VALID_INTERVAL_TYPES: List[str] = [
     TYPE_SEX,
     TYPE_SLEEP,
     TYPE_WORK,
+    TYPE_NUMB,
 ]
 
 # Tag: key only label; provide extra info for certain TimeInterval Types

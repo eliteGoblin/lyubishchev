@@ -1,7 +1,5 @@
-from datetime import datetime
 from typing import Sequence, Union
 
-import arrow
 from arrow import Arrow
 
 from lyubishchev import config
@@ -18,19 +16,11 @@ def must_time_order(entries: Sequence[Union[Event, TimeInterval]]) -> None:
         order error of entries
         overlap larger than threshold between entries
     """
-    last_timestamp: Arrow = arrow.get(
-        datetime(
-            1970,
-            1,
-            1,
-        )
-    )
-    for entry in entries:
-        if entry.timestamp <= last_timestamp:
+    for i in range(1, len(entries)):
+        if entries[i].timestamp <= entries[i - 1].timestamp:
             raise ValueError(
-                f"entry at {entry.timestamp} earlier than previous entry: {last_timestamp}, from {entries}"
+                f"entry {entries[i]} at {entries[i].timestamp} earlier than previous entry: {entries[i-1].timestamp}"
             )
-        last_timestamp = entry.timestamp
 
 
 def must_events_cover_date_range(

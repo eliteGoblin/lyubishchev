@@ -5,6 +5,10 @@ Annotation = dict[str, Union[str, int, float]]
 Label = dict[str, str]
 
 
+def is_label_match(label: Label, search_label: Label) -> bool:
+    return all(key_value in label.items() for key_value in search_label.items())
+
+
 class InvalidLabelTag(Exception):
     """
     Exception raised when missing required labels,
