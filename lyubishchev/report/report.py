@@ -93,6 +93,9 @@ class DayRangeReport:
     def __init__(self, day_records: list[DayRecord]):
         self.day_records = day_records
 
+    def __len__(self):
+        return len(self.day_records)
+
     @property
     def report_unit(self) -> str:
         return "minutes"
@@ -107,7 +110,8 @@ class DayRangeReport:
             timezone_name=config.get_iana_timezone_name(),
             date_str=self.day_records[-1].date_str(),
         )
-
+    
+    
     def get_interval_metrics(self) -> dict[str, Any]:
         return {
             "effective_output": {
