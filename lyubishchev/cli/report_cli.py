@@ -4,6 +4,7 @@ from icecream import ic  # type: ignore
 
 from lyubishchev import config
 from lyubishchev.data_model import get_day_range_from_relative_days
+from lyubishchev.report import get_highlights
 
 from .report import get_report
 
@@ -24,6 +25,8 @@ def dayrange(start_date: str, end_date: str) -> None:
     ic(report.get_time_stats())
     ic(report.get_interval_metrics())
     ic(report.get_event_metrics())
+
+    ic(get_highlights(report))
 
 
 @report_app.command()

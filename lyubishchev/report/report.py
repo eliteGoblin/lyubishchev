@@ -8,6 +8,7 @@ from lyubishchev.data_model import (
     TYPE_BED,
     TYPE_EXERCISE,
     TYPE_GETUP,
+    TYPE_MEDITATION,
     TYPE_SELF_IMPROVING,
     TYPE_SEX,
     TYPE_SLEEP,
@@ -93,6 +94,9 @@ class DayRangeReport:
     def __init__(self, day_records: list[DayRecord]):
         self.day_records = day_records
 
+    def __len__(self) -> int:
+        return len(self.day_records)
+
     @property
     def report_unit(self) -> str:
         return "minutes"
@@ -133,6 +137,9 @@ class DayRangeReport:
                     self.day_records, {TIME_INTERVAL_TYPE: TYPE_SLEEP}
                 ),  # TYPE_SLEEP only means nap, night sleep is not recorded and derived from bed and wakeup time
             },
+            "meditation": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_MEDITATION}
+            ),
         }
 
     def get_time_stats(self) -> dict[str, int]:
@@ -160,6 +167,7 @@ class DayRangeReport:
             "self_improving": sum(
                 interval_metrics["effective_output"]["self_improving"]
             ),
+            "sex": sum(interval_metrics["sex"]),
         }
 
     def get_event_metrics(self) -> dict[str, list[Arrow]]:
