@@ -11,10 +11,18 @@ source .venv/bin/activate
 which python
 ```
 
-Run all CI scripts:
+## Run CI locally
 
 ```sh
-scripts/ci/ci
+# skip integration test
+./local.sh
 ```
 
+## Run 
 
+```s
+export CLOCKIFY_USER_ID=xxx    
+export CLOCKIFY_WORKSPACE_ID=xxx
+export CLOCKIFY_API_KEY=xxx
+python -m lyubishchev dayrange 2023-03-12 2023-03-18
+```
