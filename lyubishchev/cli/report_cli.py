@@ -40,6 +40,7 @@ def last(last_days: int) -> None:
     start_date, end_date = get_day_range_from_relative_days(
         start_date=today_str,
         days_delta=-last_days,
+        lower_bound_applied=True,
     )
     report = get_report(
         start_date=start_date,
@@ -48,6 +49,8 @@ def last(last_days: int) -> None:
     ic(report.get_time_stats())
     ic(report.get_interval_metrics())
     ic(report.get_event_metrics())
+
+    ic(get_highlights(report))
 
 
 if __name__ == "__main__":

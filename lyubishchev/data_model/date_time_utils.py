@@ -81,6 +81,7 @@ def previous_day(timezone_name: str, date_str: str) -> str:
 def get_day_range_from_relative_days(
     start_date: str,
     days_delta: int,
+    lower_bound_applied: bool = False,
 ) -> tuple[str, str]:
     """
     get day range from relative days;
@@ -103,7 +104,12 @@ def get_day_range_from_relative_days(
     )
 
     if days_delta > 0:
-        return start_date, the_other_date
+        return (
+            start_date,
+            the_other_date,
+        )  # doesn't matter return date that later than today
+    if lower_bound_applied and the_other_date < config.get_date_lower_bound():
+        the_other_date = config.get_date_lower_bound()
     return the_other_date, start_date
 
 
