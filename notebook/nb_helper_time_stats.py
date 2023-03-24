@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 def time_stat_to_pie_chart_data(time_stat: dict[str, int]) -> dict[str, int]:
     """
     cherry-pick data from timestats, and return a dict for pie chart
@@ -17,13 +18,14 @@ def time_stat_to_pie_chart_data(time_stat: dict[str, int]) -> dict[str, int]:
 
     return res
 
+
 def show_time_stat_as_piechart(report_time_stat: dict[str, int]) -> None:
     """
     show time stat as a pie chart
     """
     piechart_data = time_stat_to_pie_chart_data(report_time_stat)
 
-    fig, ax = plt.subplots()
-    ax.pie(piechart_data.values(), labels=piechart_data.keys(), autopct='%1.1f%%')
-    ax.set_title("Pie Chart of Data")
+    _, axis = plt.subplots()
+    axis.pie(piechart_data.values(), labels=piechart_data.keys(), autopct="%1.1f%%")
+    axis.set_title("Pie Chart of Data")
     plt.show()

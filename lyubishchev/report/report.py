@@ -112,6 +112,9 @@ class DayRangeReport:
             date_str=self.day_records[-1].date_str(),
         )
 
+    def dates(self) -> list[str]:
+        return [day.date_str() for day in self.day_records]
+
     def get_interval_metrics(self) -> dict[str, Any]:
         return {
             "effective_output": {

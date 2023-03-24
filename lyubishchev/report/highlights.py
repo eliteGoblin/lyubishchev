@@ -16,7 +16,9 @@ def get_self_improving_highlights(day_range_report: DayRangeReport) -> str:
 
     average_time: float = total_time / len(day_range_report)
 
-    return f"Total time: {round(total_time, 2)}h, daily self-improving: {round(average_time, 2)}h"
+    return (
+        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    )
 
 
 def get_work_highlights(day_range_report: DayRangeReport) -> str:
@@ -37,7 +39,9 @@ def get_work_highlights(day_range_report: DayRangeReport) -> str:
 
     average_time: float = total_time / total_weekdays
 
-    return f"Total time: {round(total_time, 2)}h, average: {round(average_time, 2)}h"
+    return (
+        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    )
 
 
 def get_effective_output_highlights(day_range_report: DayRangeReport) -> str:
