@@ -1,3 +1,5 @@
+from typing import Any
+
 import matplotlib.pyplot as plt
 import numpy as np
 from arrow import Arrow
@@ -55,4 +57,75 @@ def draw_bar_chart_se_work(
     plt.legend()
 
     # Show the plot
+    plt.show()
+
+
+def draw_bars_chart(
+    dates: list[str],
+    day_timestamps: list[Arrow],
+    bar_list: dict[str, dict[str, Any]],
+) -> None:
+
+    """
+    draw_bars_chart draws a bar chart with multiple bars; align middle bar in middle of tick
+    bar_list = {
+        "label1": {
+            "color": "red",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "label2": {
+            "color": "blue",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "label3": {
+            "color": "yellow",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "label4": {
+            "color": "cyan",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "label5": {
+            "color": "pink",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "label6": {
+            "color": "black",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        }
+    }
+    """
+    num_bars = len(bar_list)
+    num_dates = len(next(iter(bar_list.values()))["time_span_minutes"])
+
+    _, axis = plt.subplots()
+
+    bar_width = 2 / 3 / num_bars
+    group_positions = np.arange(num_dates)
+
+    mid = num_bars // 2
+    for idx, (label, data) in enumerate(bar_list.items()):
+        axis.bar(
+            x=group_positions + (idx - mid) * bar_width,
+            height=np.round(np.array(data["time_span_minutes"]) / 60.0, 2),
+            width=bar_width,
+            label=label,
+            color=data["color"],
+        )
+
+    axis.set_xlabel("Groups")
+    axis.set_ylabel("Time Span in Hours")
+    axis.set_title("Bar Chart of Time Spans")
+    axis.set_xticks(group_positions)
+
+    dates = [
+        date[5:] for date in dates
+    ]  # remove year, e.g. 2021-03-18 -> 03-18, since it will couse X axis label overlap
+    weekdays = get_weekdays(day_timestamps)
+    # zip the dates and weekdays, like 03-18\nMON
+    dates = [f"{date}\n{weekday}" for date, weekday in zip(dates, weekdays)]
+    axis.set_xticklabels([f"{dates[i]}" for i in range(num_dates)])
+
+    axis.legend()
+
     plt.show()

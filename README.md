@@ -33,9 +33,3 @@ python -m lyubishchev dayrange 2023-03-12 2023-03-18
 python -m lyubishchev last 5
 ```
 
-# Design ideas
-
-
-As a human, I would like to find a system best for my own human needs, thus it would fit most of people.
-
-Even supporting customize, most people don't know what they want.
