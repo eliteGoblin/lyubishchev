@@ -3,8 +3,8 @@
 set -eux
 
 reformat () {
-  isort ./lyubishchev ./tests # sort imports
-  black ./lyubishchev ./tests # all other code formatting
+  isort ./lyubishchev ./notebook ./tests # sort imports
+  black ./lyubishchev ./notebook ./tests # all other code formatting
 }
 
 reformat

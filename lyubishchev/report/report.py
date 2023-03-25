@@ -6,13 +6,19 @@ from lyubishchev import config
 from lyubishchev.data_model import (
     TIME_INTERVAL_TYPE,
     TYPE_BED,
+    TYPE_CONNECTION,
+    TYPE_DISPUTE,
     TYPE_EXERCISE,
     TYPE_GETUP,
     TYPE_MEDITATION,
+    TYPE_NUMB,
+    TYPE_PMO,
+    TYPE_ROUTINE,
     TYPE_SELF_IMPROVING,
     TYPE_SEX,
     TYPE_SLEEP,
     TYPE_WAKEUP,
+    TYPE_WALK,
     TYPE_WORK,
     DayRecord,
     Label,
@@ -112,6 +118,9 @@ class DayRangeReport:
             date_str=self.day_records[-1].date_str(),
         )
 
+    def dates(self) -> list[str]:
+        return [day.date_str() for day in self.day_records]
+
     def get_interval_metrics(self) -> dict[str, Any]:
         return {
             "effective_output": {
@@ -139,6 +148,26 @@ class DayRangeReport:
             },
             "meditation": time_spans_by_day_matching_label_minutes(
                 self.day_records, {TIME_INTERVAL_TYPE: TYPE_MEDITATION}
+            ),
+            "walk": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_WALK}
+            ),
+            "connection": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_CONNECTION}
+            ),
+            # time I regret
+            "pmo": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_PMO}
+            ),
+            "numb": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_NUMB}
+            ),
+            "dispute": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_DISPUTE}
+            ),
+            # other
+            "routine": time_spans_by_day_matching_label_minutes(
+                self.day_records, {TIME_INTERVAL_TYPE: TYPE_ROUTINE}
             ),
         }
 

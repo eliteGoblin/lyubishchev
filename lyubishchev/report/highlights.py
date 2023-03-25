@@ -16,7 +16,9 @@ def get_self_improving_highlights(day_range_report: DayRangeReport) -> str:
 
     average_time: float = total_time / len(day_range_report)
 
-    return f"Total time: {round(total_time, 2)}h, daily self-improving: {round(average_time, 2)}h"
+    return (
+        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    )
 
 
 def get_work_highlights(day_range_report: DayRangeReport) -> str:
@@ -37,7 +39,28 @@ def get_work_highlights(day_range_report: DayRangeReport) -> str:
 
     average_time: float = total_time / total_weekdays
 
-    return f"Total time: {round(total_time, 2)}h, average: {round(average_time, 2)}h"
+    return (
+        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    )
+
+
+def get_effective_output_highlights(day_range_report: DayRangeReport) -> str:
+    interval_metrics = day_range_report.get_interval_metrics()
+
+    effective_output = [
+        work + self_improving
+        for work, self_improving in zip(
+            interval_metrics["effective_output"]["work"],
+            interval_metrics["effective_output"]["self_improving"],
+        )
+    ]
+
+    total_time: float = sum(effective_output) / 60.0
+    average_time: float = total_time / len(day_range_report)
+
+    return (
+        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    )
 
 
 def every(occur_ratio: float) -> str:
@@ -62,11 +85,11 @@ def get_sex_highlights(day_range_report: DayRangeReport) -> str:
     sex = interval_metrics["sex"]
 
     sex_times: int = len([e for e in sex if e > 0])
-    sex_total_hours: float = sum(sex)
+    sex_total_hours: float = sum(sex) / 60.0
 
     return (
-        f"day has sex: {sex_times}/{len(sex)}, happens {every(len([e for e in sex if e > 0]) / len(sex))} "
-        f"total hour/avg {sex_total_hours}/{round(sex_total_hours / len(sex), 2)}h"
+        f"day has sex: {sex_times}/{len(sex)}, happens {every(len([e for e in sex if e > 0]) / len(sex))}. "
+        f"total hour/every time avg {round(sex_total_hours, 2)}/{round(sex_total_hours / sex_times, 2)}h"
     )
 
 
@@ -82,10 +105,10 @@ def get_sleep_highlights(day_range_report: DayRangeReport) -> str:
     nap_days = [e for e in nap if e > 0]
 
     return (
-        f"average nap {round(average_daily_nap_hours, 2)}h,"
+        f"average nap {round(average_daily_nap_hours, 2)}h, "
+        f"day has nap {len(nap_days)}/{len(nap)}, happens {every(len(nap_days) / len(nap))}. "
         f"average nightly sleep {round(average_nightly_sleep_hours, 2)}h, "
-        f"average sleep time {round(average_nightly_sleep_hours + average_daily_nap_hours, 2)}h ,"
-        f"day has nap {len(nap_days)}/{len(nap)}, happens {every(len(nap_days) / len(nap))}"
+        f"average all sleep time {round(average_nightly_sleep_hours + average_daily_nap_hours, 2)}h"
     )
 
 
@@ -114,7 +137,7 @@ def get_exercise_highlights(day_range_report: DayRangeReport) -> str:
 
     return (
         f"daily exercise: {res['daily_avg']}h, "
-        f"days with exercise: {len(exercise_daily_aggregate)}/{len(exercises)}, happends {res['exercie_every']}"
+        f"days with exercise: {len(exercise_daily_aggregate)}/{len(exercises)}, happens {res['exercie_every']}"
     )
 
 
@@ -125,6 +148,7 @@ def get_highlights(day_range_report: DayRangeReport) -> dict[str, str]:
     # effective output
     self_improving = get_self_improving_highlights(day_range_report)
     work = get_work_highlights(day_range_report)
+    effective_output = get_effective_output_highlights(day_range_report)
     # supporting
     sex = get_sex_highlights(day_range_report)
     sleep = get_sleep_highlights(day_range_report)
@@ -134,6 +158,7 @@ def get_highlights(day_range_report: DayRangeReport) -> dict[str, str]:
     return {
         "self_improving": self_improving,
         "work": work,
+        "effective_output": effective_output,
         "sex": sex,
         "sleep": sleep,
         "meditation": meditation,

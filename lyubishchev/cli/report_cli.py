@@ -4,7 +4,7 @@ from icecream import ic  # type: ignore
 
 from lyubishchev import config
 from lyubishchev.data_model import get_day_range_from_relative_days
-from lyubishchev.report import get_highlights
+from lyubishchev.report import DayRangeReport, get_highlights
 
 from .report import get_report
 
@@ -14,7 +14,7 @@ report_app = typer.Typer(
 
 
 @report_app.command()
-def dayrange(start_date: str, end_date: str) -> None:
+def dayrange(start_date: str, end_date: str) -> DayRangeReport:
     """
     specify day range [start_date, end_date) to generate report
     """
@@ -28,9 +28,11 @@ def dayrange(start_date: str, end_date: str) -> None:
 
     ic(get_highlights(report))
 
+    return report
+
 
 @report_app.command()
-def last(last_days: int) -> None:
+def last(last_days: int) -> DayRangeReport:
     """
     specify last N days to generate report, e.g last_days=3 means [today-3, today)
     """
@@ -40,6 +42,7 @@ def last(last_days: int) -> None:
     start_date, end_date = get_day_range_from_relative_days(
         start_date=today_str,
         days_delta=-last_days,
+        lower_bound_applied=True,
     )
     report = get_report(
         start_date=start_date,
@@ -48,6 +51,10 @@ def last(last_days: int) -> None:
     ic(report.get_time_stats())
     ic(report.get_interval_metrics())
     ic(report.get_event_metrics())
+
+    ic(get_highlights(report))
+
+    return report
 
 
 if __name__ == "__main__":
