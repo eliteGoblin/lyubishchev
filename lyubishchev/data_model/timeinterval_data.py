@@ -23,10 +23,12 @@ VALID_PROJECTS: List[str] = [
 TIME_INTERVAL_TYPE: str = "type"
 # valid type values
 TYPE_BOWEL_MOVEMENT: str = "bowel-movement"
+TYPE_CONNECTION: str = "connection"
 TYPE_DISPUTE: str = "dispute"
 TYPE_DISTRACTED: str = "distracted"
 TYPE_EXERCISE: str = "exercise"
 TYPE_MEDITATION: str = "meditation"
+TYPE_NUMB: str = "numb"  # avoid feeling
 TYPE_PMO: str = "pmo"
 TYPE_RELAX: str = "relax"
 TYPE_ROUTINE: str = "routine"
@@ -35,10 +37,11 @@ TYPE_SEX: str = "sex"
 TYPE_SLEEP: str = "sleep"
 TYPE_WALK: str = "walk"
 TYPE_WORK: str = "work"
-TYPE_NUMB: str = "numb"  # avoid feeling
+
 
 VALID_INTERVAL_TYPES: List[str] = [
     TYPE_BOWEL_MOVEMENT,
+    TYPE_CONNECTION,
     TYPE_DISPUTE,
     TYPE_DISTRACTED,
     TYPE_EXERCISE,
