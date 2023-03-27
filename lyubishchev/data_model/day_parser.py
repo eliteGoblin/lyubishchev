@@ -59,9 +59,7 @@ def get_events_for_single_day(
 
     # searching starts at start_date's 00:00
     timezone_name: str = config.get_iana_timezone_name()
-    day_search_start_timestamp: Arrow = day_start_timestamp_early_bound(
-        timezone_name, date
-    )
+    day_search_start_timestamp: Arrow = day_start_timestamp_early_bound(date)
 
     # following events are key indicator of time to generate day record
     wakeup_index: int

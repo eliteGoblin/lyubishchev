@@ -1,4 +1,4 @@
 
 #!/bin/sh
-pycodestyle --exclude=.venv --config=./scripts/ci/pycode.cfg ./lyubishchev ./notebook ./tests
-pylint --rcfile=./scripts/ci/pylintrc ./lyubishchev ./notebook ./tests
+pycodestyle --exclude=.venv --config=./scripts/ci/pycode.cfg ./lyubishchev ./time_report_notebook ./tests
+pylint --rcfile=./scripts/ci/pylintrc ./lyubishchev ./time_report_notebook ./tests
