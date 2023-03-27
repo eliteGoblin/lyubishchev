@@ -20,7 +20,9 @@ def time_diff_minutes(start: Arrow, end: Arrow) -> int:
     return int((end - start).total_seconds() / 60)  # type: ignore
 
 
-def day_start_timestamp_early_bound(timezone_name: str, start_date: str) -> Arrow:
+def day_start_timestamp_early_bound(
+    start_date: str, timezone_name: str = config.get_iana_timezone_name()
+) -> Arrow:
     """
     Return earliest timestamp for a particular day's start(wakeup event)
         i.e search for wakeup after this timestamp, for that day
@@ -140,7 +142,7 @@ def date_range_to_timestamp_range(
         raise ValueError(f"buffer_days should be non-negative, got {buffer_days}")
 
     timezone_name: str = config.get_iana_timezone_name()
-    start_timestamp: Arrow = day_start_timestamp_early_bound(timezone_name, start_date)
+    start_timestamp: Arrow = day_start_timestamp_early_bound(start_date)
     end_timestamp: Arrow = day_end_timestamp_late_bound(timezone_name, end_date)
 
     if start_date >= end_date:  # strictly follow YYYY-MM-DD, string compare is enough

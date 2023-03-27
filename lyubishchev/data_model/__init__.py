@@ -11,6 +11,7 @@ from .data_reader import DataReader
 from .data_validator import must_events_cover_date_range
 from .date_time_utils import (
     date_range_to_timestamp_range,
+    day_start_timestamp_early_bound,
     get_day_range_from_relative_days,
     must_yyyy_mm_dd,
     next_day,
@@ -79,6 +80,7 @@ __all__ = [
     "must_yyyy_mm_dd",
     "next_day",
     "get_day_range_from_relative_days",
+    "day_start_timestamp_early_bound",
     # TimeInterval
     "validate_time_interval_label_and_tag",
     "TIME_INTERVAL_TYPE",
