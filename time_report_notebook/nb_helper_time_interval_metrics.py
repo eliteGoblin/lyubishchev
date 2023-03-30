@@ -103,3 +103,7 @@ def show_effective_output_highlights(high_lights) -> None:
     print("effective_output:\t\t", high_lights["effective_output"])
     print("self_improving:\t\t\t", high_lights["self_improving"])
     print("work:\t\t\t\t", high_lights["work"])
+
+
+def draw_stacked_bar_chats() -> None:
+    raise NotImplementedError

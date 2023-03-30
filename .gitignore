@@ -1,9 +1,12 @@
-local.sh
-nb.sh
+# .gitignore
 
-.idea/
-.venv/
-archived/
+# Python files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pyc.cache
+*.pyz
 *.egg-info
 *.pyc
 .coverage
@@ -15,3 +18,27 @@ _snapshots/
 build/
 dist/
 htmlcov/
+
+# Virtual environment
+.venv/
+
+# Jupyter Notebook files
+time_report_notebook/.ipynb_checkpoints/
+
+# Logs and databases
+*.log
+*.sqlite
+
+# Unit test and coverage reports
+
+# myfile
+
+local.sh
+nb.sh
+
+# ignore html report
+time_report_notebook/*.htm
+time_report_notebook/*.html
+
+.idea/
+archived/
