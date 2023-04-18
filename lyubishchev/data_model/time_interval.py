@@ -6,7 +6,6 @@ from arrow import Arrow
 
 from lyubishchev.data_model.core_data_structure import InvalidLabelTag, Label, Metadata
 from lyubishchev.data_model.timeinterval_data import (
-    PROJECT,
     TIME_INTERVAL_TYPE,
     TYPE_DISTRACTED,
     TYPE_RELAX,
@@ -15,7 +14,6 @@ from lyubishchev.data_model.timeinterval_data import (
     TYPE_WORK,
     VALID_DISTRACTED_TAGS,
     VALID_INTERVAL_TYPES,
-    VALID_PROJECTS,
     VALID_RELAX_TAGS,
     VALID_ROUTINE_TAGS,
     VALID_SELF_IMPROVING_TAGS,
@@ -69,11 +67,6 @@ def validate_time_interval_label_and_tag(  # pylint: disable=too-many-branches
         raise InvalidLabelTag(
             f"invalid type value {label[TIME_INTERVAL_TYPE]} in TimeInterval"
         )
-
-    if PROJECT in label:
-        project_value: str = label[PROJECT]
-        if project_value == "" or project_value not in VALID_PROJECTS:
-            raise InvalidLabelTag(f"invalid project value {project_value}")
 
     # check tags
     for label_key, value in label.items():

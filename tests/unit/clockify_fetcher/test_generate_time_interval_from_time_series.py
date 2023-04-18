@@ -12,7 +12,12 @@ from arrow import Arrow
 from lyubishchev.clockify_fetcher.fetcher import (
     generate_time_interval_from_time_series,
 )  # generate_event_from_time_series,
-from lyubishchev.data_model import Metadata, TimeInterval, time_diff_minutes
+from lyubishchev.data_model import (
+    InvalidLabelTag,
+    Metadata,
+    TimeInterval,
+    time_diff_minutes,
+)
 
 open_utf8 = partial(open, encoding="UTF-8")
 
@@ -91,20 +96,10 @@ def test_generate_time_interval_from_time_series() -> None:
             ),
         ),
         TestCase(
-            description="record with project should pass correctly",
+            description="project label no longer supported",
             test_data_path="time_series_project.json",
-            expect_success=True,
-            expected_time_interval=TimeInterval(
-                metadata=Metadata(
-                    label={
-                        "type": "self-improving",
-                        "project": "software-engineering",
-                    }
-                ),
-                extra_info="lyubishchev",
-                timestamp=arrow.get("2022-07-02T10:23:39").to("Australia/Sydney"),
-                duration_minutes=5,
-            ),
+            expect_success=False,
+            expected_time_interval=TimeInterval(),
         ),
         # time_series_error_dup_interval_type.json
         TestCase(
@@ -124,6 +119,9 @@ def test_generate_time_interval_from_time_series() -> None:
                 ] = generate_time_interval_from_time_series(json.load(test_data))
             except ValueError as exp:
                 print(exp)
+                assert not case.expect_success, assert_message
+            except InvalidLabelTag as labeltagexp:
+                print(labeltagexp)
                 assert not case.expect_success, assert_message
             except Exception:
                 print(assert_message)

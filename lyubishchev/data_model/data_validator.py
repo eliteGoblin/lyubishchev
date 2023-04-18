@@ -19,7 +19,7 @@ def must_time_order(entries: Sequence[Union[Event, TimeInterval]]) -> None:
     for i in range(1, len(entries)):
         if entries[i].timestamp <= entries[i - 1].timestamp:
             raise ValueError(
-                f"entry {entries[i]} at {entries[i].timestamp} earlier than previous entry: {entries[i-1].timestamp}"
+                f"entry {entries[i]} earlier than previous entry: {entries[i-1]}"
             )
 
 
@@ -89,6 +89,7 @@ def must_single_day_events(single_day_events: list[Event]) -> None:
     raise:
         ValueError
     """
+
     if len(single_day_events) < 3:
         raise ValueError(
             f"single day events {single_day_events} needs min size 3 to cover 1 wakeup, 2 bed"
@@ -110,7 +111,8 @@ def must_single_day_events(single_day_events: list[Event]) -> None:
     diff = single_day_events[-1].timestamp - single_day_events[1].timestamp
     secs: int = diff.total_seconds()  # type: ignore
 
-    assert 8 * 60 * 60 < secs < 24 * 60 * 60
+    assert_message = f"day events {single_day_events} invalid"
+    assert 8 * 60 * 60 < secs < 24 * 60 * 60, assert_message
 
     for i, event in enumerate(single_day_events):
         if i in (0, 1, len(single_day_events) - 1):

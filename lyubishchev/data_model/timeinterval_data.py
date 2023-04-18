@@ -1,28 +1,8 @@
 from typing import List
 
-# PROJECT is for measuring output, similar to EPIC, and better to link with one
-PROJECT: str = "project"
-# PROJECT_ENGINEERING includes all efforts devoted to improve programing skills:
-#  architecting, monitoring
-#  coding, language
-PROJECT_SOFTWARE_ENGINEERING: str = "software-engineering"
-PROJECT_COMPUTER_VISION = "computer-vision"
-PROJECT_MATH = "math"
-PROJECT_GIS = "gis"
-PROJECT_GIS = "OJ"
-
-# hard code valid projects for now, later we could link it to EPIC
-VALID_PROJECTS: List[str] = [
-    PROJECT_SOFTWARE_ENGINEERING,
-    PROJECT_COMPUTER_VISION,
-    PROJECT_MATH,
-    PROJECT_GIS,
-]
-
 # each TimeInterval must has one type
 TIME_INTERVAL_TYPE: str = "type"
 # valid type values
-TYPE_BOWEL_MOVEMENT: str = "bowel-movement"
 TYPE_CONNECTION: str = "connection"
 TYPE_DISPUTE: str = "dispute"
 TYPE_DISTRACTED: str = "distracted"
@@ -40,7 +20,6 @@ TYPE_WORK: str = "work"
 
 
 VALID_INTERVAL_TYPES: List[str] = [
-    TYPE_BOWEL_MOVEMENT,
     TYPE_CONNECTION,
     TYPE_DISPUTE,
     TYPE_DISTRACTED,
@@ -128,4 +107,4 @@ VALID_TIME_INTERVAL_TAGS: List[str] = list(
     )
 )
 
-VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [PROJECT, TIME_INTERVAL_TYPE]
+VALID_TIME_INTERVAL_LABEL_KEY: List[str] = [TIME_INTERVAL_TYPE]

@@ -48,7 +48,6 @@ from .search_time_series import find_first_match
 from .time_interval import TimeInterval, validate_time_interval_label_and_tag
 from .timeinterval_data import (
     TIME_INTERVAL_TYPE,
-    TYPE_BOWEL_MOVEMENT,
     TYPE_CONNECTION,
     TYPE_DISPUTE,
     TYPE_DISTRACTED,
@@ -85,7 +84,6 @@ __all__ = [
     "validate_time_interval_label_and_tag",
     "TIME_INTERVAL_TYPE",
     "VALID_TIME_INTERVAL_TAGS",
-    "TYPE_BOWEL_MOVEMENT",
     "TYPE_CONNECTION",
     "TYPE_DISPUTE",
     "TYPE_DISTRACTED",
