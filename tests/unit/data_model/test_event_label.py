@@ -19,28 +19,28 @@ def test_validate_event() -> None:
         TestCase(
             name="with empty required type should fail",
             input={
-                "type": "",
+                "event_type": "",
             },
             expect_is_valid=False,
         ),
         TestCase(
             name="with valid required type should pass",
             input={
-                "type": "wakeup",
+                "event_type": "wakeup",
             },
             expect_is_valid=True,
         ),
         TestCase(
             name="with valid required type, valid tag should pass",
             input={
-                "type": "wakeup",
+                "event_type": "wakeup",
             },
             expect_is_valid=True,
         ),
         TestCase(
             name="with valid required type, compatible tag should pass",
             input={
-                "type": "unwell",
+                "event_type": "unwell",
                 "cold": "",
             },
             expect_is_valid=True,
@@ -48,7 +48,7 @@ def test_validate_event() -> None:
         TestCase(
             name="with valid required type, compatible tag should fail",
             input={
-                "type": "unwell",
+                "event_type": "unwell",
                 "cold": "",
             },
             expect_is_valid=True,
@@ -56,7 +56,7 @@ def test_validate_event() -> None:
         TestCase(
             name="with valid required type, compatible tag should fail",
             input={
-                "type": "recover-unwell",
+                "event_type": "recover-unwell",
                 "cold": "",
             },
             expect_is_valid=True,
@@ -64,7 +64,7 @@ def test_validate_event() -> None:
         TestCase(
             name="with valid required type, compatible tag should fail",
             input={
-                "type": "wakeup",
+                "event_type": "wakeup",
                 "cold": "",
             },
             expect_is_valid=False,

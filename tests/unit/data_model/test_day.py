@@ -67,18 +67,26 @@ def test_recorded_minutes() -> None:
                     TimeInterval(
                         metadata=Metadata(label={"type": "routine"}),
                         duration_minutes=10,
+                        extra_info="",
+                        timestamp=arrow.now(),
                     ),
                     TimeInterval(
                         metadata=Metadata(label={"type": "sleep"}),
                         duration_minutes=30,
+                        extra_info="",
+                        timestamp=arrow.now(),
                     ),
                     TimeInterval(
                         metadata=Metadata(label={"type": "relax"}),
                         duration_minutes=50,
+                        extra_info="",
+                        timestamp=arrow.now(),
                     ),
                     TimeInterval(
                         metadata=Metadata(label={"type": "self-improving"}),
                         duration_minutes=20,
+                        extra_info="",
+                        timestamp=arrow.now(),
                     ),
                 ],
             ),
@@ -91,9 +99,24 @@ def test_recorded_minutes() -> None:
 
 def test_day_validate_required_fields() -> None:
     valid_time_intervals: List[TimeInterval] = [
-        TimeInterval(timestamp=arrow.now().shift(hours=-10)),
-        TimeInterval(timestamp=arrow.now().shift(hours=-9)),
-        TimeInterval(timestamp=arrow.now().shift(hours=-8)),
+        TimeInterval(
+            timestamp=arrow.now().shift(hours=-10),
+            metadata=Metadata(),
+            duration_minutes=0,
+            extra_info="",
+        ),
+        TimeInterval(
+            timestamp=arrow.now().shift(hours=-9),
+            metadata=Metadata(),
+            duration_minutes=0,
+            extra_info="",
+        ),
+        TimeInterval(
+            timestamp=arrow.now().shift(hours=-8),
+            metadata=Metadata(),
+            duration_minutes=0,
+            extra_info="",
+        ),
     ]
 
     @dataclass

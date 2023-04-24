@@ -41,13 +41,20 @@ def test_validate_time_intervals_order() -> None:
                     TimeInterval(
                         timestamp=arrow.now().shift(hours=-8),
                         duration_minutes=10,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                     TimeInterval(
-                        timestamp=arrow.now().shift(hours=-9), duration_minutes=10
+                        timestamp=arrow.now().shift(hours=-9), 
+                        duration_minutes=10,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                     TimeInterval(
                         timestamp=arrow.now().shift(hours=-10),
                         duration_minutes=10,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                 ],
             ),
@@ -61,10 +68,14 @@ def test_validate_time_intervals_order() -> None:
                     TimeInterval(
                         timestamp=arrow.get("1986-01-01T00:00:00+00:00"),
                         duration_minutes=15,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                     TimeInterval(
                         timestamp=arrow.get("1986-01-01T00:05:00+00:00"),
                         duration_minutes=10,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                 ],
             ),
@@ -78,10 +89,14 @@ def test_validate_time_intervals_order() -> None:
                     TimeInterval(
                         timestamp=arrow.get("1987-01-01T00:00:00+00:00"),
                         duration_minutes=10,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                     TimeInterval(
                         timestamp=arrow.get("1987-01-01T00:08:00+00:00"),
                         duration_minutes=20,
+                        metadata=Metadata(),
+                        extra_info="",
                     ),
                 ],
             ),
@@ -125,11 +140,11 @@ def test_validate_events() -> None:
                 wakeup_timestamp=arrow.now(),
                 events=[
                     Event(
-                        metadata=Metadata(label={"type": "cold"}),
+                        metadata=Metadata(label={"event_type": "cold"}),
                         timestamp=arrow.get("1970-01-01T00:08:00+00:00"),
                     ),
                     Event(
-                        metadata=Metadata(label={"type": "cold"}),
+                        metadata=Metadata(label={"event_type": "cold"}),
                         timestamp=arrow.get("1970-01-01T00:07:59+00:00"),
                     ),
                 ],
@@ -143,11 +158,11 @@ def test_validate_events() -> None:
                 wakeup_timestamp=arrow.now(),
                 events=[
                     Event(
-                        metadata=Metadata(label={"type": "wakeup"}),
+                        metadata=Metadata(label={"event_type": "wakeup"}),
                         timestamp=arrow.get("1970-01-01T00:08:00+00:00"),
                     ),
                     Event(
-                        metadata=Metadata(label={"type": "getup"}),
+                        metadata=Metadata(label={"event_type": "getup"}),
                         timestamp=arrow.get("1970-01-01T00:07:59+00:00"),
                     ),
                 ],
@@ -181,7 +196,10 @@ def test_validate_time_intervals_match_events() -> None:
                 bed_timestamp=arrow.get("2000-05-23T23:15:58.970460+10:00"),
                 time_intervals=[
                     TimeInterval(
-                        timestamp=arrow.get("2000-05-23T05:00:58.970460+10:00")
+                        timestamp=arrow.get("2000-05-23T05:00:58.970460+10:00"),
+                        metadata=Metadata(),
+                        extra_info="",
+                        duration_minutes=0,
                     )
                 ],
             ),
@@ -196,6 +214,8 @@ def test_validate_time_intervals_match_events() -> None:
                     TimeInterval(
                         timestamp=arrow.get("2000-05-23T01:00:58.970460+10:00"),
                         duration_minutes=30,
+                        metadata=Metadata(),
+                        extra_info="",
                     )
                 ],
             ),
@@ -210,6 +230,8 @@ def test_validate_time_intervals_match_events() -> None:
                     TimeInterval(
                         timestamp=arrow.get("2000-05-22T10:00:58.970460+10:00"),
                         duration_minutes=6,
+                        metadata=Metadata(),
+                        extra_info="",
                     )
                 ],
             ),
@@ -225,6 +247,8 @@ def test_validate_time_intervals_match_events() -> None:
                     TimeInterval(
                         timestamp=arrow.get("2000-05-22T05:16:58.970460+10:00"),
                         duration_minutes=1100,
+                        metadata=Metadata(),
+                        extra_info="",
                     )
                 ],
             ),

@@ -20,27 +20,27 @@ def test_fetch_time_intervals_events_single_day() -> None:
     )
     assert events == [
         Event(
-            metadata=Metadata(annotation={}, label={"type": "bed"}),
+            metadata=Metadata(annotation={}, label={"event_type": "bed"}),
             extra_info="kindle",
             timestamp=arrow.get("2022-07-02T01:35:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "wakeup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "wakeup"}),
             extra_info="morning wakeup",
             timestamp=arrow.get("2022-07-02T09:15:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "bed"}),
+            metadata=Metadata(annotation={}, label={"event_type": "bed"}),
             extra_info="kindle",
             timestamp=arrow.get("2022-07-03T04:00:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "wakeup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "wakeup"}),
             extra_info="morning wakeup",
             timestamp=arrow.get("2022-07-03T10:30:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "getup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "getup"}),
             extra_info="routine",
             timestamp=arrow.get("2022-07-03T11:10:00+10:00"),
         ),
@@ -58,47 +58,47 @@ def test_fetch_raw_time_series_3_days() -> None:
     )
     assert events == [
         Event(
-            metadata=Metadata(annotation={}, label={"type": "bed"}),
+            metadata=Metadata(annotation={}, label={"event_type": "bed"}),
             extra_info="kindle",
             timestamp=arrow.get("2022-07-02T01:35:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "wakeup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "wakeup"}),
             extra_info="morning wakeup",
             timestamp=arrow.get("2022-07-02T09:15:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "bed"}),
+            metadata=Metadata(annotation={}, label={"event_type": "bed"}),
             extra_info="kindle",
             timestamp=arrow.get("2022-07-03T04:00:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "wakeup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "wakeup"}),
             extra_info="morning wakeup",
             timestamp=arrow.get("2022-07-03T10:30:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "getup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "getup"}),
             extra_info="routine",
             timestamp=arrow.get("2022-07-03T11:10:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "bed"}),
+            metadata=Metadata(annotation={}, label={"event_type": "bed"}),
             extra_info="routine",
             timestamp=arrow.get("2022-07-04T02:40:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "wakeup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "wakeup"}),
             extra_info="morning wakeup",
             timestamp=arrow.get("2022-07-04T09:00:00+10:00"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "bed"}),
+            metadata=Metadata(annotation={}, label={"event_type": "bed"}),
             extra_info="routine",
             timestamp=arrow.get("2022-07-05T00:20:00+10:00]"),
         ),
         Event(
-            metadata=Metadata(annotation={}, label={"type": "wakeup"}),
+            metadata=Metadata(annotation={}, label={"event_type": "wakeup"}),
             extra_info="morning wakeup",
             timestamp=arrow.get("2022-07-05T09:15:00+10:00"),
         ),
