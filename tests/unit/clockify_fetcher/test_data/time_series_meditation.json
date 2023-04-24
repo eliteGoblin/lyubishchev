@@ -11,7 +11,13 @@
         {
             "archived": false,
             "id": "625749afa28dee431cdcaf13",
-            "name": "type=meditation",
+            "name": "type=thinking",
+            "workspaceId": "5e86fab7183a8475e0c7a757"
+        },
+        {
+            "archived": false,
+            "id": "625749afa28dee431cdcaf13",
+            "name": "meditation",
             "workspaceId": "5e86fab7183a8475e0c7a757"
         }
     ],

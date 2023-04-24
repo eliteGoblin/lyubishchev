@@ -47,16 +47,22 @@ def test_generate_time_interval_from_time_series() -> None:
             description="empty dict should raise ValueError",
             test_data_path="empty.json",
             expect_success=False,
-            expected_time_interval=TimeInterval(),
+            expected_time_interval=TimeInterval(
+                metadata=None,
+                extra_info=None,
+                timestamp=None,
+                duration_minutes=None,
+            ),
         ),
         TestCase(
-            description="meditation record should pass correctly",
+            description="label and tag should both parsed correctly",
             test_data_path="time_series_meditation.json",
             expect_success=True,
             expected_time_interval=TimeInterval(
                 metadata=Metadata(
                     label={
-                        "type": "meditation",
+                        "type": "thinking",
+                        "meditation": "",
                     }
                 ),
                 extra_info="meditation",
@@ -106,12 +112,17 @@ def test_generate_time_interval_from_time_series() -> None:
             description="record with duplicate interval type should fail",
             test_data_path="time_series_error_dup_interval_type.json",
             expect_success=False,
-            expected_time_interval=TimeInterval(),
+            expected_time_interval=TimeInterval(
+                metadata=None,
+                extra_info=None,
+                timestamp=None,
+                duration_minutes=None,
+            ),
         ),
     ]
     test_data_folder: str = "./tests/unit/clockify_fetcher/test_data/"
     for index, case in enumerate(testcases):
-        assert_message: str = f"case {index} failed! "
+        assert_message: str = f"case {index} failed!"
         with open_utf8(test_data_folder + case.test_data_path) as test_data:
             try:
                 time_interval: Optional[
@@ -128,4 +139,4 @@ def test_generate_time_interval_from_time_series() -> None:
                 raise
             else:
                 assert case.expect_success
-                assert time_interval == case.expected_time_interval
+                assert time_interval == case.expected_time_interval, assert_message

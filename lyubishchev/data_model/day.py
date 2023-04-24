@@ -15,7 +15,6 @@ from lyubishchev.data_model.event_data import (
     TYPE_WAKEUP,
 )
 from lyubishchev.data_model.time_interval import TimeInterval
-from lyubishchev.data_model.timeinterval_data import TIME_INTERVAL_TYPE, TYPE_SLEEP
 
 from .core_data_structure import TimeSeriesNotFound
 from .search_time_series import find_first_match
@@ -138,24 +137,6 @@ class DayRecord:
         return date_str_from_timestamp(
             timezone_name=config.get_iana_timezone_name(),
             timestamp=self.wakeup_timestamp,
-        )
-
-    @property
-    def sleep_minutes(self) -> int:
-        """
-        sleep_minutes = sleep last night + nap of Day.
-           sleep last night = [last day's bedtime, current day's wakeup time]
-           nap of day = Current day's TimeIntervals tagged with sleep
-        """
-        return self.last_night_sleep_minutes + self.day_sleep_minutes
-
-    @property
-    def day_sleep_minutes(self) -> int:
-        return sum(
-            interval.duration_minutes
-            if interval.metadata.label[TIME_INTERVAL_TYPE] == TYPE_SLEEP
-            else 0
-            for interval in self.time_intervals
         )
 
     @property
