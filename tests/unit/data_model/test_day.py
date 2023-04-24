@@ -50,59 +50,7 @@ def test_date_str() -> None:
     ]
 
     for case in testcases:
-        assert case.input_day.date_str() == case.expected_date_str
-
-
-def test_sleep_minutes() -> None:
-    @dataclass
-    class TestCase:
-        description: str
-        input_day: DayRecord
-        expected: int
-
-    testcases: List[TestCase] = [
-        TestCase(
-            description="sleep minutes should equal to last sleep and nap of time intervals",
-            input_day=DayRecord(
-                last_night_sleep_minutes=300,
-                time_intervals=[
-                    TimeInterval(
-                        metadata=Metadata(label={"type": "routine"}),
-                        duration_minutes=10,
-                    ),
-                    TimeInterval(
-                        metadata=Metadata(label={"type": "sleep"}),
-                        duration_minutes=30,
-                    ),
-                    TimeInterval(
-                        metadata=Metadata(label={"type": "sleep"}),
-                        duration_minutes=50,
-                    ),
-                ],
-            ),
-            expected=380,
-        ),
-        TestCase(
-            description="sleep minutes should equal to last sleep if day sleep",
-            input_day=DayRecord(
-                last_night_sleep_minutes=300,
-                time_intervals=[
-                    TimeInterval(
-                        metadata=Metadata(label={"type": "routine"}),
-                        duration_minutes=10,
-                    ),
-                    TimeInterval(
-                        metadata=Metadata(label={"type": "relax"}),
-                        duration_minutes=30,
-                    ),
-                ],
-            ),
-            expected=300,
-        ),
-    ]
-    for case in testcases:
-        assert case.input_day.sleep_minutes == case.expected
-
+        assert case.input_day.date_str() == case.expected_date_str\
 
 def test_recorded_minutes() -> None:
     @dataclass

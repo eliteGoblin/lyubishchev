@@ -44,7 +44,7 @@ def test_generate_event_from_time_series() -> None:
             expected_event=Event(
                 metadata=Metadata(
                     label={
-                        "type": "wakeup",
+                        "event_type": "wakeup",
                     }
                 ),
                 extra_info="morning wakeup",
@@ -58,7 +58,7 @@ def test_generate_event_from_time_series() -> None:
             expected_event=Event(
                 metadata=Metadata(
                     label={
-                        "type": "bed",
+                        "event_type": "bed",
                     }
                 ),
                 extra_info="kindle",

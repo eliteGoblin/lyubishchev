@@ -12,14 +12,13 @@ from lyubishchev import config
 from lyubishchev.data_model import (
     EVENT_TYPE,
     TYPE_BED,
+    VALID_EVENT_LABEL_KEY,
     VALID_EVENT_TAG_KEY,
-    VALID_TIME_INTERVAL_TAGS,
     Event,
     TimeInterval,
     TimeIntervalFetcher,
     time_diff_minutes,
     validate_event_label_and_tag,
-    validate_time_interval_label_and_tag,
 )
 
 TimeSeries = dict[str, Any]
@@ -68,7 +67,7 @@ def generate_time_interval_from_time_series(
         duration_in_minutes: end timestamp - start timestamp
     throw: ValueError
     """
-    result: TimeInterval = TimeInterval()
+    result: TimeInterval = TimeInterval.empty()
     required_keys: list[str] = [
         "timeInterval",
         "tags",
@@ -102,7 +101,8 @@ def generate_time_interval_from_time_series(
         tag_name: str = tag["name"]
         if is_clockify_tag_a_label(tag_name):
             key, value = tag_name.split("=")
-            if key != "type":  # type is the only valid label atm
+            if key in VALID_EVENT_LABEL_KEY:
+                # skip event tag, it will be parsed in generate_event_from_time_series
                 continue
             if key in result.metadata.label:  # avoid two type label
                 raise ValueError(
@@ -110,8 +110,7 @@ def generate_time_interval_from_time_series(
                 )
             result.metadata.label[key] = value
         else:
-            if tag_name in VALID_TIME_INTERVAL_TAGS:
-                result.metadata.label[tag_name] = ""
+            result.metadata.label[tag_name] = ""
     if time_series_entry["project"] is not None:
         result.metadata.label["project"] = time_series_entry["project"]["name"]
     # fill other fields
@@ -120,11 +119,7 @@ def generate_time_interval_from_time_series(
         raise ValueError(
             f"time_series_entry at {start_timestamp} should contain description field"
         )
-    try:
-        validate_time_interval_label_and_tag(result.metadata.label)
-    except Exception:
-        print(f"unexpected exception when processing time entry: {start_timestamp}")
-        raise
+
     return result
 
 

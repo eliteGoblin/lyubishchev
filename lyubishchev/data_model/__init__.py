@@ -42,29 +42,11 @@ from .event_data import (
     TYPE_BED,
     TYPE_GETUP,
     TYPE_WAKEUP,
+    VALID_EVENT_LABEL_KEY,
     VALID_EVENT_TAG_KEY,
 )
 from .search_time_series import find_first_match
-from .time_interval import TimeInterval, validate_time_interval_label_and_tag
-from .timeinterval_data import (
-    TIME_INTERVAL_TYPE,
-    TYPE_BOWEL_MOVEMENT,
-    TYPE_CONNECTION,
-    TYPE_DISPUTE,
-    TYPE_DISTRACTED,
-    TYPE_EXERCISE,
-    TYPE_MEDITATION,
-    TYPE_NUMB,
-    TYPE_PMO,
-    TYPE_RELAX,
-    TYPE_ROUTINE,
-    TYPE_SELF_IMPROVING,
-    TYPE_SEX,
-    TYPE_SLEEP,
-    TYPE_WALK,
-    TYPE_WORK,
-    VALID_TIME_INTERVAL_TAGS,
-)
+from .time_interval import TimeInterval
 
 __all__ = [
     # core
@@ -81,28 +63,9 @@ __all__ = [
     "next_day",
     "get_day_range_from_relative_days",
     "day_start_timestamp_early_bound",
-    # TimeInterval
-    "validate_time_interval_label_and_tag",
-    "TIME_INTERVAL_TYPE",
-    "VALID_TIME_INTERVAL_TAGS",
-    "TYPE_BOWEL_MOVEMENT",
-    "TYPE_CONNECTION",
-    "TYPE_DISPUTE",
-    "TYPE_DISTRACTED",
-    "TYPE_EXERCISE",
-    "TYPE_MEDITATION",
-    "TYPE_NUMB",
-    "TYPE_PMO",
-    "TYPE_RELAX",
-    "TYPE_ROUTINE",
-    "TYPE_SELF_IMPROVING",
-    "TYPE_SEX",
-    "TYPE_SLEEP",
-    "TYPE_WALK",
-    "TYPE_WORK",
     # Event
+    "VALID_EVENT_LABEL_KEY",
     "VALID_EVENT_TAG_KEY",
-    "TYPE_SLEEP",
     "validate_event_label_and_tag",
     "Event",
     "EVENT_TYPE",

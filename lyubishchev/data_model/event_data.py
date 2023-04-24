@@ -4,7 +4,7 @@ from typing import List
 #   sleep => wakeup
 
 # each Event must has one type
-EVENT_TYPE: str = "type"
+EVENT_TYPE: str = "event_type"
 # valid event type values
 TYPE_WAKEUP = "wakeup"
 TYPE_GETUP = "getup"
