@@ -440,7 +440,7 @@ def test_remove_wakeup_getup_bed_from_day_events() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -450,7 +450,7 @@ def test_remove_wakeup_getup_bed_from_day_events() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "getup",
+                            "event_type": "getup",
                         }
                     ),
                 ),
@@ -470,7 +470,7 @@ def test_remove_wakeup_getup_bed_from_day_events() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -586,7 +586,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -596,7 +596,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -606,7 +606,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -616,7 +616,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -628,7 +628,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -638,7 +638,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -648,7 +648,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -663,7 +663,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -673,7 +673,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -683,7 +683,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "getup",
+                            "event_type": "getup",
                         }
                     ),
                 ),
@@ -693,7 +693,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -703,7 +703,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -715,7 +715,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -725,7 +725,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "wakeup",
+                            "event_type": "wakeup",
                         }
                     ),
                 ),
@@ -735,7 +735,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "getup",
+                            "event_type": "getup",
                         }
                     ),
                 ),
@@ -745,7 +745,7 @@ def test_get_events_for_single_day() -> None:
                     ),
                     metadata=Metadata(
                         label={
-                            "type": "bed",
+                            "event_type": "bed",
                         }
                     ),
                 ),
@@ -768,7 +768,7 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
             timestamp=arrow.get(datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
-                    "type": "bed",
+                    "event_type": "bed",
                 }
             ),
         ),
@@ -776,7 +776,7 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
             timestamp=arrow.get(datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
-                    "type": "wakeup",
+                    "event_type": "wakeup",
                 }
             ),
         ),
@@ -784,7 +784,7 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
             timestamp=arrow.get(datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
-                    "type": "bed",
+                    "event_type": "bed",
                 }
             ),
         ),
@@ -807,6 +807,9 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 3, 50, 20), "Australia/Sydney"
                     ),
+                    metadata=Metadata(),
+                    extra_info="",
+                    duration_minutes=0,
                 )
             ],
         ),
@@ -817,6 +820,9 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 3, 50, 20), "Australia/Sydney"
                     ),
+                    metadata=Metadata(),
+                    extra_info="",
+                    duration_minutes=0,
                 )
             ],
         ),
@@ -829,7 +835,6 @@ def test_get_time_intervals_for_single_day_expect_fail() -> None:
                 current_day_events=single_day_events,
             )
 
-
 def test_get_time_intervals_for_single_day() -> None:
     # time interval same timestamp should pass
     # only 1 time interval should pass
@@ -840,7 +845,7 @@ def test_get_time_intervals_for_single_day() -> None:
             timestamp=arrow.get(datetime(2022, 7, 1, 20, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
-                    "type": "bed",
+                    "event_type": "bed",
                 }
             ),
         ),
@@ -848,7 +853,7 @@ def test_get_time_intervals_for_single_day() -> None:
             timestamp=arrow.get(datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
-                    "type": "wakeup",
+                    "event_type": "wakeup",
                 }
             ),
         ),
@@ -856,7 +861,7 @@ def test_get_time_intervals_for_single_day() -> None:
             timestamp=arrow.get(datetime(2022, 7, 2, 20, 50, 21), "Australia/Sydney"),
             metadata=Metadata(
                 label={
-                    "type": "bed",
+                    "event_type": "bed",
                 }
             ),
         ),
@@ -877,14 +882,16 @@ def test_get_time_intervals_for_single_day() -> None:
                         datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="morning wakeup",
-                    duration=90,
+                    duration_minutes=90,
+                    metadata=Metadata(),
                 ),
                 TimeInterval(
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="routine",
-                    duration=120,
+                    duration_minutes=120,
+                    metadata=Metadata(),
                 ),
             ],
             expected_time_intervals=[
@@ -893,14 +900,16 @@ def test_get_time_intervals_for_single_day() -> None:
                         datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="morning wakeup",
-                    duration=90,
+                    duration_minutes=90,
+                    metadata=Metadata(),
                 ),
                 TimeInterval(
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="routine",
-                    duration=120,
+                    duration_minutes=120,
+                    metadata=Metadata(),
                 ),
             ],
         ),
@@ -912,21 +921,24 @@ def test_get_time_intervals_for_single_day() -> None:
                         datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="morning wakeup",
-                    duration=90,
+                    duration_minutes=90,
+                    metadata=Metadata(),
                 ),
                 TimeInterval(
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="routine",
-                    duration=120,
+                    duration_minutes=120,
+                    metadata=Metadata(),
                 ),
                 TimeInterval(
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 20, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="shouldn't include me, because I'm after today's bed time event",
-                    duration=120,
+                    duration_minutes=120,
+                    metadata=Metadata(),
                 ),
             ],
             expected_time_intervals=[
@@ -935,14 +947,16 @@ def test_get_time_intervals_for_single_day() -> None:
                         datetime(2022, 7, 2, 3, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="morning wakeup",
-                    duration=90,
+                    duration_minutes=90,
+                    metadata=Metadata(),
                 ),
                 TimeInterval(
                     timestamp=arrow.get(
                         datetime(2022, 7, 2, 18, 50, 21), "Australia/Sydney"
                     ),
                     extra_info="routine",
-                    duration=120,
+                    duration_minutes=120,
+                    metadata=Metadata(),
                 ),
             ],
         ),

@@ -1,4 +1,5 @@
 #!/bin/sh
 
-py.test -s -rX -vv tests/unit/data_model $@
-# pytest -rX -vv -m focus tests/unit
+# py.test -s -rX -vv tests/unit/data_model $@
+# f - failed x - exit on first test failure
+pytest -rfvx -vv -s tests/unit/data_model $@

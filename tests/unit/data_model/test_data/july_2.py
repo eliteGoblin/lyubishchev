@@ -18,7 +18,7 @@ def july_2_events(
         Event(
             metadata=Metadata(
                 label={
-                    "type": "bed",
+                    "event_type": "bed",
                 }
             ),
             extra_info="bed",
@@ -27,7 +27,7 @@ def july_2_events(
         Event(
             metadata=Metadata(
                 label={
-                    "type": "wakeup",
+                    "event_type": "wakeup",
                 }
             ),
             extra_info="morning wakeup",
@@ -36,7 +36,7 @@ def july_2_events(
         Event(
             metadata=Metadata(
                 label={
-                    "type": "getup",
+                    "event_type": "getup",
                 }
             ),
             extra_info="morning wakeup",
@@ -45,7 +45,7 @@ def july_2_events(
         Event(
             metadata=Metadata(
                 label={
-                    "type": "bed",
+                    "event_type": "bed",
                 }
             ),
             extra_info="bed, kindle",
@@ -70,7 +70,7 @@ def july_2_intervals(
         TimeInterval(
             metadata=Metadata(
                 label={
-                    "type": "routine",
+                    "self_routine": "",
                 }
             ),
             extra_info="morning wakeup",
@@ -80,7 +80,7 @@ def july_2_intervals(
         TimeInterval(
             metadata=Metadata(
                 label={
-                    "type": "routine",
+                    "self_routine": "",
                 }
             ),
             extra_info="routine",
@@ -90,7 +90,7 @@ def july_2_intervals(
         TimeInterval(
             metadata=Metadata(
                 label={
-                    "type": "relax",
+                   "relax": "",
                     "reading": "",
                 }
             ),
