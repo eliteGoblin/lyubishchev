@@ -40,7 +40,7 @@ def test_parse_and_generate_day_records_single_day() -> None:
         last_night_sleep_minutes=460,
         time_intervals=[
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "routine"}),
+                metadata=Metadata(annotation={}, label={"self_routine": ""}),
                 extra_info="morning wakeup",
                 timestamp=arrow.get("2022-07-02T09:15:00+10:00"),
                 duration_minutes=210,
@@ -52,13 +52,13 @@ def test_parse_and_generate_day_records_single_day() -> None:
                 duration_minutes=13,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "sleep"}),
+                metadata=Metadata(annotation={}, label={"nap": ""}),
                 extra_info="nap",
                 timestamp=arrow.get("2022-07-02T12:58:50+10:00"),
                 duration_minutes=31,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "routine"}),
+                metadata=Metadata(annotation={}, label={"self_routine": ""}),
                 extra_info="routine",
                 timestamp=arrow.get("2022-07-02T13:30:00+10:00"),
                 duration_minutes=90,
@@ -70,19 +70,19 @@ def test_parse_and_generate_day_records_single_day() -> None:
                 duration_minutes=90,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "routine"}),
+                metadata=Metadata(annotation={}, label={"self_routine": ""}),
                 extra_info="routine",
                 timestamp=arrow.get("2022-07-02T16:30:00+10:00"),
                 duration_minutes=105,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "sleep"}),
+                metadata=Metadata(annotation={}, label={"nap": ""}),
                 extra_info="nap",
                 timestamp=arrow.get("2022-07-02T18:15:00+10:00"),
                 duration_minutes=45,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "routine"}),
+                metadata=Metadata(annotation={}, label={"self_routine": ""}),
                 extra_info="routine, bath, recover",
                 timestamp=arrow.get("2022-07-02T19:00:00+10:00"),
                 duration_minutes=60,
@@ -94,7 +94,7 @@ def test_parse_and_generate_day_records_single_day() -> None:
                 duration_minutes=17,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "meditation"}),
+                metadata=Metadata(annotation={}, label={"meditation": ""}),
                 extra_info="meditation",
                 timestamp=arrow.get("2022-07-02T20:18:14+10:00"),
                 duration_minutes=5,
@@ -118,13 +118,13 @@ def test_parse_and_generate_day_records_single_day() -> None:
                 duration_minutes=48,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "routine"}),
+                metadata=Metadata(annotation={}, label={"self_routine": ""}),
                 extra_info="routine",
                 timestamp=arrow.get("2022-07-02T21:22:00+10:00"),
                 duration_minutes=218,
             ),
             TimeInterval(
-                metadata=Metadata(annotation={}, label={"type": "dispute"}),
+                metadata=Metadata(annotation={}, label={"dispute": ""}),
                 extra_info="dispute",
                 timestamp=arrow.get("2022-07-03T01:00:00+10:00"),
                 duration_minutes=30,

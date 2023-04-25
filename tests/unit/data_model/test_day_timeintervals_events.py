@@ -45,7 +45,7 @@ def test_validate_time_intervals_order() -> None:
                         extra_info="",
                     ),
                     TimeInterval(
-                        timestamp=arrow.now().shift(hours=-9), 
+                        timestamp=arrow.now().shift(hours=-9),
                         duration_minutes=10,
                         metadata=Metadata(),
                         extra_info="",

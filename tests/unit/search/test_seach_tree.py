@@ -1,10 +1,10 @@
+from typing import Any
+import pytest
+import arrow
+
 from lyubishchev.data_model import Label, TimeInterval, Metadata
 from lyubishchev.search import must_match_tree, match_function_from_dict, Match
 
-import pytest
-from typing import Any
-import arrow
-from icecream import ic
 
 class TestMustMatchTree:
     @pytest.mark.parametrize(
@@ -28,11 +28,33 @@ class TestMustMatchTree:
             ),
         ],
     )
-    def test_valid_trees(self, match_dict: dict[str, Any]):
+    def test_valid_trees(self, match_dict: dict[str, Any]) -> None:
         try:
             must_match_tree(match_dict)
-        except ValueError as e:
-            pytest.fail(f"Unexpected error for valid tree: {e}")
+        except ValueError as value_error:
+            pytest.fail(f"Unexpected error for valid tree: {value_error}")
+
+    @pytest.mark.parametrize(
+        "match_dict",
+        [
+            # valid tree with label and tag
+            (
+                {
+                    "k1=v1": None,
+                    "k2=v2": {
+                        "k21=v21": None
+                    },
+                    "k3": None,
+                    "k4": {"k41=v41": None}
+                }
+            ),
+        ]
+    )
+    def test_valid_tree_label_tag(self, match_dict: dict[str, Any]) -> None:
+        try:
+            must_match_tree(match_dict)
+        except ValueError as value_error:
+            pytest.fail(f"Unexpected error for valid tree: {value_error}")
 
     @pytest.mark.parametrize(
         "match_dict",
@@ -55,9 +77,10 @@ class TestMustMatchTree:
             )
         ],
     )
-    def test_invalid_trees(self, match_dict: dict[str, Any]):
+    def test_invalid_trees(self, match_dict: dict[str, Any]) -> None:
         with pytest.raises(ValueError):
             must_match_tree(match_dict)
+
 
 class TestMatchFunctionFromDict:
     match_dict = {
@@ -70,6 +93,13 @@ class TestMatchFunctionFromDict:
         },
         "k3=v3": {
             "k31=v31": None,
+        },
+        "k4": None,
+        "k5": {
+            "k51": None,
+            "k52": {
+                "k521=v521": None,
+            }
         }
     }
 
@@ -83,11 +113,18 @@ class TestMatchFunctionFromDict:
             ({"k1": "v2"}, False),
             ({"k3": "v3"}, False),
             ({"k2": "v2", "k21": "v21"}, False),
+            ({"k5": ""}, False),
+            ({"k5": "", "k51": ""}, True),
+            ({"k5": "", "k52": "", "k521": "v521"}, True),
         ],
     )
-    def test_match_function(self, label: Label, expected: bool):
+    def test_match_function(self, label: Label, expected: bool) -> None:
         func = match_function_from_dict(self.match_dict)
         assert func(label) == expected, f"Unexpected result for label {label}"
+
+    def test_dummy(self) -> None:
+        pass
+
 
 class TestMatchClass:
     match_dict = {
@@ -103,7 +140,7 @@ class TestMatchClass:
         }
     }
     fake_timestamp = arrow.now()
-    
+
     @pytest.mark.parametrize(
         "label, expected",
         [
@@ -116,7 +153,7 @@ class TestMatchClass:
             ({"k2": "v2", "k21": "v21"}, False),
         ],
     )
-    def test_match_class(self, label: Label, expected: bool):
+    def test_match_class(self, label: Label, expected: bool) -> None:
         match = Match.from_dict(self.match_dict)
         assert match.match_label(label) == expected, f"Unexpected result for label {label}"
 
@@ -147,31 +184,9 @@ class TestMatchClass:
                     )
                 ],
             ),
-            # (
-            #     [
-            #         TimeInterval(
-            #             Metadata(
-            #                 annotation={},
-            #                 label={'category': 'Category 1'}
-            #             ),
-            #             extra_info="Extra info 1",
-            #             timestamp=arrow.now().shift(minutes=1),
-            #             duration_minutes=20
-            #         ),
-            #         TimeInterval(
-            #             Metadata(
-            #                 annotation={},
-            #                 label={'category': 'Category 2'}
-            #             ),
-            #             extra_info="Extra info 2",
-            #             timestamp=arrow.now().shift(minutes=2),
-            #             duration_minutes=30
-            #         )
-            #     ],
-            #     True
-            # ),
         ]
     )
-    def test_match_time_intervals(self, time_intervals: list[TimeInterval], expected_time_intervals: list[TimeInterval]):
+    def test_match_time_intervals(self, time_intervals: list[TimeInterval],
+                                  expected_time_intervals: list[TimeInterval]) -> None:
         match = Match.from_dict(self.match_dict)
         assert match.match(time_intervals) == expected_time_intervals
