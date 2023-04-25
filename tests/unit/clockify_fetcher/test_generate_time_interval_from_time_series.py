@@ -42,12 +42,7 @@ def test_generate_time_interval_from_time_series() -> None:
             description="empty dict should raise ValueError",
             test_data_path="empty.json",
             expect_success=False,
-            expected_time_interval=TimeInterval(
-                metadata=None,
-                extra_info=None,
-                timestamp=None,
-                duration_minutes=None,
-            ),
+            expected_time_interval=TimeInterval.empty(),
         ),
         TestCase(
             description="label and tag should both parsed correctly",
@@ -117,12 +112,7 @@ def test_generate_time_interval_from_time_series() -> None:
             description="record with duplicate interval type should fail",
             test_data_path="time_series_error_dup_interval_type.json",
             expect_success=False,
-            expected_time_interval=TimeInterval(
-                metadata=None,
-                extra_info=None,
-                timestamp=None,
-                duration_minutes=None,
-            ),
+            expected_time_interval=TimeInterval.empty(),
         ),
     ]
     test_data_folder: str = "./tests/unit/clockify_fetcher/test_data/"

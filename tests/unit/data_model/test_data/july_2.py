@@ -90,7 +90,7 @@ def july_2_intervals(
         TimeInterval(
             metadata=Metadata(
                 label={
-                   "relax": "",
+                    "relax": "",
                     "reading": "",
                 }
             ),
