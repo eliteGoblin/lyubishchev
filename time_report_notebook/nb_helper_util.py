@@ -2,9 +2,15 @@ from typing import Any, Tuple
 
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objs as go
 from arrow import Arrow
 
-from lyubishchev.report import DayRangeReport, get_match_dict
+from lyubishchev.report import (
+    DayRangeReport,
+    get_match_dict,
+    time_spans_by_day_matching_label_minutes,
+)
+from lyubishchev.search import Match
 
 
 def remove_year(dates: list[str]) -> list[str]:
@@ -68,6 +74,56 @@ def dict_tree_to_parent_tree(
     return nodes_name, parent_node, node_values
 
 
+def m2h(minutes: list[int]) -> list[float]:
+    return [round(m / 60, 2) for m in minutes]
+
+
+def draw_bars_chart(
+    report: DayRangeReport,
+    bar_list: dict[str, dict[str, Any]],
+    title: str = "",
+) -> None:
+    """
+    Draw bar chart: X specify dates; Y specify time span in minutes
+    dates: list of dates, e.g., 2023-04-13
+    bar_list = {
+        "label1": {
+            "color": "red",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "label2": {
+            "color": "blue",
+            "time_span_minutes": [1, 2, 3, 4, 5, 6, 7]
+        },
+    }
+    """
+    dates = report.dates(is_remove_year=True, is_add_weekday=True)
+    fig = go.Figure()
+
+    for label, data in bar_list.items():
+        fig.add_trace(
+            go.Bar(
+                x=dates,
+                y=m2h(data["time_span_minutes"]),
+                name=label,
+                marker_color=data["color"],
+            )
+        )
+
+    fig.update_layout(
+        title=title,
+        xaxis_title="Dates",
+        yaxis_title="Time Span in Hours",
+        barmode="group",
+        width=800,  # Set the chart width
+        height=500,  # Set the chart height
+        margin=dict(l=50, r=50, b=100, t=100, pad=4),
+        autosize=True,
+    )
+
+    fig.show()
+
+
 def stack_bar(report: DayRangeReport, match_dict_key: str) -> None:
     match_dict = get_match_dict(match_dict_key)
     res = []
@@ -86,10 +142,45 @@ def stack_bar(report: DayRangeReport, match_dict_key: str) -> None:
         res_data_frame,
         x="date",
         y="minutes",
-        color="exercise",
+        color=match_dict_key,
         text="minutes",
         title=f"{match_dict_key} Duration by Weekday",
         labels={"date": "Weekday", "minutes": "Minutes"},
     )
 
+    fig.show()
+
+
+def sunburst_tree_depth_2(report: DayRangeReport, match_dict_key: str) -> None:
+    """
+    plot sunburst graph based on 2 level dict tree(can not be more than 2 level)
+    e.g each leaf node's key means label to match time intervals
+    {
+        "calm": {
+            "walk": 10,
+            "meditation": 20,
+        }
+    }
+    """
+    match_dict = get_match_dict(match_dict_key)
+    res = {}
+
+    for key in match_dict:
+        res[key] = sum(
+            time_spans_by_day_matching_label_minutes(
+                day_records=report.day_records,
+                match=Match.from_dict({key: None}),
+            )
+        )
+
+    labels, parents, values = dict_tree_to_parent_tree({match_dict_key: res})
+    fig = go.Figure(
+        go.Sunburst(
+            labels=labels,
+            parents=parents,
+            values=m2h(values),
+            textinfo="label+percent entry",
+        )
+    )
+    fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
     fig.show()

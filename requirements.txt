@@ -13,3 +13,4 @@ matplotlib~=3.7.0
 numpy~=1.24.2
 pandas~=1.5.3
 plotly~=5.14.0
+data-science-types~=0.2.23

@@ -110,10 +110,6 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "swim": None,
             "anaerobic": None,
         },
-        "sleep_all": {
-            "sleep": None,
-            "nap": None,
-        },
         "calm": {
             "meditation": None,
             "walk": None,
@@ -130,6 +126,7 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "dispute": None,
         },
         "routine_all": {
+            "cook": None,
             "self_routine": None,
             "housework": None,
             "meal": None,

@@ -9,8 +9,7 @@ from lyubishchev.report import (
 )
 from lyubishchev.search import Match
 
-from .nb_helper_time_interval_metrics import draw_bars_chart
-from .nb_helper_util import dict_tree_to_parent_tree
+from .nb_helper_util import dict_tree_to_parent_tree, draw_bars_chart
 
 
 def draw_bars_effective_output(report: DayRangeReport) -> None:

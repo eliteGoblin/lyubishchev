@@ -1,3 +1,4 @@
+import datetime
 from typing import Optional
 
 import plotly.graph_objs as go
@@ -15,8 +16,8 @@ def timestamp_diff(timestamp: Arrow, base_timestamp: Optional[Arrow] = None) -> 
     else:
         start_of_day = base_timestamp.floor("day")
 
-    difference = timestamp - start_of_day
-    offset_hours = difference.seconds / 3600
+    difference: datetime.timedelta = timestamp - start_of_day  # type: ignore
+    offset_hours = difference.total_seconds() / 3600.0
 
     return round(offset_hours, 2)
 
@@ -51,6 +52,7 @@ def draw_bed_plot(report: DayRangeReport) -> None:
     bed_timestamps = report.get_event_metrics()["bed"]
     base_timestamps = [day_start_timestamp_early_bound(date) for date in dates]
     diff_hours = []
+
     for idx, timestamp in enumerate(bed_timestamps):
         diff_hours.append(timestamp_diff(timestamp, base_timestamps[idx]))
 
