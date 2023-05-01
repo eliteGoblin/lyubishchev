@@ -115,10 +115,6 @@ def generate_time_interval_from_time_series(
         result.metadata.label["project"] = time_series_entry["project"]["name"]
     # fill other fields
     result.extra_info = time_series_entry["description"]
-    if result.extra_info == "":
-        raise ValueError(
-            f"time_series_entry at {start_timestamp} should contain description field"
-        )
 
     return result
 
@@ -172,10 +168,6 @@ def generate_event_from_time_series(time_series_entry: TimeSeries) -> Optional[E
         result.timestamp = start_timestamp
     # fill other fields
     result.extra_info = time_series_entry["description"]
-    if result.extra_info == "":
-        raise ValueError(
-            f"time_series_entry at {result.timestamp} should contain description field "
-        )
     validate_event_label_and_tag(result.metadata.label)
     try:
         validate_event_label_and_tag(result.metadata.label)

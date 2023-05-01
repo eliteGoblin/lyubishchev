@@ -82,22 +82,29 @@ def get_sex_highlights(day_range_report: DayRangeReport) -> str:
     """
 
     interval_metrics = day_range_report.get_interval_metrics()
-    sex = interval_metrics["sex"]
+    sex = [
+        x + y
+        for x, y in zip(
+            interval_metrics["sex_all"]["sex"], interval_metrics["sex_all"]["mbate"]
+        )
+    ]
 
     sex_times: int = len([e for e in sex if e > 0])
     sex_total_hours: float = sum(sex) / 60.0
-
+    sex_avg_duration: float = (
+        round(sex_total_hours / sex_times, 2) if sex_times > 0 else 0
+    )
     return (
         f"day has sex: {sex_times}/{len(sex)}, happens {every(len([e for e in sex if e > 0]) / len(sex))}. "
-        f"total hour/every time avg {round(sex_total_hours, 2)}/{round(sex_total_hours / sex_times, 2)}h"
+        f"total hour {round(sex_total_hours, 2)} every time avg {round(sex_avg_duration, 2)} h"
     )
 
 
 def get_sleep_highlights(day_range_report: DayRangeReport) -> str:
 
     interval_metrics = day_range_report.get_interval_metrics()
-    night_sleep = interval_metrics["sleep"]["night_sleep"]
-    nap = interval_metrics["sleep"]["nap"]
+    night_sleep = interval_metrics["sleep_all"]["night_sleep"]
+    nap = interval_metrics["sleep_all"]["nap"]
 
     average_nightly_sleep_hours: float = sum(night_sleep) / len(night_sleep) / 60.0
     average_daily_nap_hours: float = sum(nap) / len(nap) / 60.0
@@ -112,14 +119,14 @@ def get_sleep_highlights(day_range_report: DayRangeReport) -> str:
     )
 
 
-def get_meditation_highlights(day_range_report: DayRangeReport) -> str:
-    meditations = day_range_report.get_interval_metrics()["meditation"]
+def get_calm_highlights(day_range_report: DayRangeReport) -> str:
+    meditations = day_range_report.get_interval_metrics()["calm"]
     meditation_daily_aggregate = [e for e in meditations if e > 0]
 
-    daily_average_meditation_hours = sum(meditations) / (60.0 * len(meditations))
+    daily_average_calm_hours = sum(meditations) / (60.0 * len(meditations))
 
     return (
-        f"daily meditation: {round(daily_average_meditation_hours, 2)}h "
+        f"daily meditation: {round(daily_average_calm_hours, 2)}h "
         f"days with meditation: {len(meditation_daily_aggregate)}/{len(meditations)}, "
         f"happends {every(len(meditation_daily_aggregate) / len(meditations))}"
     )
@@ -152,7 +159,7 @@ def get_highlights(day_range_report: DayRangeReport) -> dict[str, str]:
     # supporting
     sex = get_sex_highlights(day_range_report)
     sleep = get_sleep_highlights(day_range_report)
-    meditation = get_meditation_highlights(day_range_report)
+    calm = get_calm_highlights(day_range_report)
     exercise = get_exercise_highlights(day_range_report)
 
     return {
@@ -161,6 +168,6 @@ def get_highlights(day_range_report: DayRangeReport) -> dict[str, str]:
         "effective_output": effective_output,
         "sex": sex,
         "sleep": sleep,
-        "meditation": meditation,
+        "calm": calm,
         "exercise": exercise,
     }

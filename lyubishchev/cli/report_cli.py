@@ -1,12 +1,14 @@
 import arrow
 import typer
-from icecream import ic  # type: ignore
 
 from lyubishchev import config
 from lyubishchev.data_model import get_day_range_from_relative_days
-from lyubishchev.report import DayRangeReport, get_highlights
+from lyubishchev.report import DayRangeReport
 
 from .report import get_report
+
+# from icecream import ic  # type: ignore
+
 
 report_app = typer.Typer(
     name="report",
@@ -22,11 +24,6 @@ def dayrange(start_date: str, end_date: str) -> DayRangeReport:
         start_date=start_date,
         end_date=end_date,
     )
-    ic(report.get_time_stats())
-    ic(report.get_interval_metrics())
-    ic(report.get_event_metrics())
-
-    ic(get_highlights(report))
 
     return report
 
@@ -48,11 +45,6 @@ def last(last_days: int) -> DayRangeReport:
         start_date=start_date,
         end_date=end_date,
     )
-    ic(report.get_time_stats())
-    ic(report.get_interval_metrics())
-    ic(report.get_event_metrics())
-
-    ic(get_highlights(report))
 
     return report
 

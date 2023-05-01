@@ -20,9 +20,7 @@ def day_records_2023_march_12_14() -> list[DayRecord]:
                     duration_minutes=34,
                 ),
                 TimeInterval(
-                    metadata=Metadata(
-                        annotation={}, label={"oj": ""}
-                    ),
+                    metadata=Metadata(annotation={}, label={"oj": ""}),
                     extra_info="oj",
                     timestamp=arrow.get("2023-03-12T08:34:26+11:00"),
                     duration_minutes=54,
@@ -105,9 +103,7 @@ def day_records_2023_march_12_14() -> list[DayRecord]:
                     duration_minutes=30,
                 ),
                 TimeInterval(
-                    metadata=Metadata(
-                        annotation={}, label={"oj": ""}
-                    ),
+                    metadata=Metadata(annotation={}, label={"oj": ""}),
                     extra_info="oj",
                     timestamp=arrow.get("2023-03-13T05:15:00+11:00"),
                     duration_minutes=15,

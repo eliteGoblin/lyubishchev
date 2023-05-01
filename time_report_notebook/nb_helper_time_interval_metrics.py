@@ -1,13 +1,18 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import plotly.graph_objs as go
-from arrow import Arrow
 
-from .nb_helper_util import remove_year_add_weekday
+from lyubishchev.report import DayRangeReport
+
+
+def m2h(minutes: list[int]) -> list[float]:
+    return [round(m / 60, 2) for m in minutes]
 
 
 def draw_bars_chart(
-    dates: List[str], day_timestamps: list[Arrow], bar_list: Dict[str, Dict[str, Any]]
+    report: DayRangeReport,
+    bar_list: Dict[str, Dict[str, Any]],
+    title: str = "",
 ) -> None:
     """
     Draw bar chart: X specify dates; Y specify time span in minutes
@@ -23,50 +28,28 @@ def draw_bars_chart(
         },
     }
     """
-    dates = remove_year_add_weekday(
-        dates=dates,
-        day_timestamps=day_timestamps,
-    )
+    dates = report.dates(is_remove_year=True, is_add_weekday=True)
     fig = go.Figure()
 
     for label, data in bar_list.items():
         fig.add_trace(
             go.Bar(
                 x=dates,
-                y=data["time_span_minutes"],
+                y=m2h(data["time_span_minutes"]),
                 name=label,
                 marker_color=data["color"],
             )
         )
 
     fig.update_layout(
-        title="Bar Chart",
+        title=title,
         xaxis_title="Dates",
-        yaxis_title="Time Span in Minutes",
+        yaxis_title="Time Span in Hours",
         barmode="group",
+        width=800,  # Set the chart width
+        height=500,  # Set the chart height
+        margin=dict(l=50, r=50, b=100, t=100, pad=4),
+        autosize=True,
     )
 
     fig.show()
-
-
-def draw_bars_effective_output(
-    dates: list[str],
-    day_timestamps: list[Arrow],
-    self_improving_minutes: list[int],
-    work_minutes: list[int],
-) -> None:
-
-    draw_bars_chart(
-        dates=dates,
-        day_timestamps=day_timestamps,
-        bar_list={
-            "self_improving": {
-                "color": "green",
-                "time_span_minutes": self_improving_minutes,
-            },
-            "work": {
-                "color": "blue",
-                "time_span_minutes": work_minutes,
-            },
-        },
-    )

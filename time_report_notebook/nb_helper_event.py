@@ -1,11 +1,11 @@
 from typing import Optional
 
-import matplotlib.pyplot as plt
+import plotly.graph_objs as go
 from arrow import Arrow
+from plotly.subplots import make_subplots
 
 from lyubishchev.data_model import day_start_timestamp_early_bound
-
-from .nb_helper_util import remove_year_add_weekday
+from lyubishchev.report import DayRangeReport
 
 
 def timestamp_diff(timestamp: Arrow, base_timestamp: Optional[Arrow] = None) -> float:
@@ -21,48 +21,51 @@ def timestamp_diff(timestamp: Arrow, base_timestamp: Optional[Arrow] = None) -> 
     return round(offset_hours, 2)
 
 
-def draw_wakeup_plot(
-    wakeup_timestamps: list[Arrow],
-    dates: list[str],
-) -> None:
-    dates = remove_year_add_weekday(
-        dates=dates,
-        day_timestamps=wakeup_timestamps,
-    )
-    diff_hours = [timestamp_diff(tm) for tm in wakeup_timestamps]
-    _, axis = plt.subplots()
-    axis.plot(dates, diff_hours, marker="o", linestyle="-", linewidth=2)
+def draw_wakeup_plot(report: DayRangeReport) -> None:
+    wakeup_timestamps = report.get_event_metrics()["wakeup"]
+    dates = report.dates(is_remove_year=True, is_add_weekday=True)
 
-    axis.set_xlabel("Wakeup Hour Offset")
-    axis.set_ylabel("Dates of Day")
+    diff_hours = [timestamp_diff(tm) for tm in wakeup_timestamps]
+
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    trace = go.Scatter(
+        x=dates, y=diff_hours, mode="markers+lines", name="Wakeup Hour Offset"
+    )
+    fig.add_trace(trace, secondary_y=False)
+
+    fig.update_xaxes(title_text="Dates of Day")
+
+    fig.update_yaxes(title_text="Wakeup Hour Offset", secondary_y=False)
 
     # Display the plot
-    plt.show()
+    fig.show()
 
 
-def draw_bed_plot(
-    bed_timestamps: list[Arrow],
-    dates: list[str],
-) -> None:
+def draw_bed_plot(report: DayRangeReport) -> None:
     """
     bedtime can be after midnight, so when calculate offset, we can't always the start of sameday,
         we need to calculate the start of previous day
     """
+    dates = report.dates(is_remove_year=False, is_add_weekday=False)
+    bed_timestamps = report.get_event_metrics()["bed"]
     base_timestamps = [day_start_timestamp_early_bound(date) for date in dates]
     diff_hours = []
     for idx, timestamp in enumerate(bed_timestamps):
         diff_hours.append(timestamp_diff(timestamp, base_timestamps[idx]))
 
-    dates = remove_year_add_weekday(
-        dates=dates,
-        day_timestamps=bed_timestamps,
+    dates = report.dates(is_remove_year=True, is_add_weekday=True)
+
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    trace = go.Scatter(
+        x=dates, y=diff_hours, mode="markers+lines", name="Bed Hour Offset"
     )
+    fig.add_trace(trace, secondary_y=False)
 
-    _, axis = plt.subplots()
-    axis.plot(dates, diff_hours, marker="o", linestyle="-", linewidth=2)
+    fig.update_xaxes(title_text="Dates of Day")
 
-    axis.set_xlabel("Bed Hour Offset")
-    axis.set_ylabel("Dates of Day")
+    fig.update_yaxes(title_text="Bed Hour Offset", secondary_y=False)
 
     # Display the plot
-    plt.show()
+    fig.show()

@@ -13,7 +13,7 @@ from lyubishchev.data_model import (
     time_diff_minutes,
     timestamp_from_date_str,
 )
-from lyubishchev.search import Match
+from lyubishchev.search import Match, must_tag
 
 # use minutes as unit, it's visualizer responsibility to decide how to display it(in hours, etc)
 
@@ -78,6 +78,80 @@ def timestamps_of_days_by_field(
     return res
 
 
+def get_match_dict(name: str) -> dict[str, Any]:
+    self_improving_dict = {
+        "bibliotherapy": None,
+        "linkedin": None,
+        "lyubishchev": None,
+        "oj": None,
+        "software": None,
+        "audible": None,
+    }
+    self_improving_tech = {
+        "linkedin": None,
+        "lyubishchev": None,
+        "oj": None,
+        "software": None,
+    }
+    self_improving_non_tech = {
+        k: v for k, v in self_improving_dict.items() if k not in self_improving_tech
+    }
+
+    abstract_label_match_dict = {
+        "self_improving": self_improving_dict,
+        "self_improving_tech": self_improving_tech,
+        "self_improving_non_tech": self_improving_non_tech,
+        "sex_all": {
+            "sex": None,
+            "mbate": None,
+        },
+        "exercise": {
+            "jog": None,
+            "swim": None,
+            "anaerobic": None,
+        },
+        "sleep_all": {
+            "sleep": None,
+            "nap": None,
+        },
+        "calm": {
+            "meditation": None,
+            "walk": None,
+        },
+        "intangible": {
+            "friends": None,
+            "family": None,
+            "lisha": None,
+            "dating": None,
+        },
+        "regret": {
+            "pmo": None,
+            "numb": None,
+            "dispute": None,
+        },
+        "routine_all": {
+            "self_routine": None,
+            "housework": None,
+            "meal": None,
+        },
+        "solitude": {
+            "internet": None,
+            "game": None,
+            "novel": None,
+        },
+    }
+    return abstract_label_match_dict[name]
+
+
+def remove_year(dates: list[str]) -> list[str]:
+    # remove year, e.g. 2021-03-18 -> 03-18, since it will couse X axis label overlap
+    return [date[5:] for date in dates]
+
+
+def get_weekdays(timestamps: list[Arrow]) -> list[str]:
+    return [timestamp.format("ddd") for timestamp in timestamps]
+
+
 class DayRangeReport:
     """
     DayRangeReport represents a report of a range of days, design doc in docs/day_range_report.md
@@ -106,107 +180,125 @@ class DayRangeReport:
             date_str=self.day_records[-1].date_str(),
         )
 
-    def dates(self) -> list[str]:
-        return [day.date_str() for day in self.day_records]
+    def dates(
+        self, is_remove_year: bool = False, is_add_weekday: bool = False
+    ) -> list[str]:
+        dates_res = [day.date_str() for day in self.day_records]
+        if not is_remove_year and not is_add_weekday:
+            return dates_res
+        day_timestamps = self.get_event_metrics()["wakeup"]
+        if is_remove_year:
+            dates_res = remove_year(dates_res)
+        if is_add_weekday:
+            weekdays = get_weekdays(day_timestamps)
+            dates_res = [
+                f"{date}\n{weekday}" for date, weekday in zip(dates_res, weekdays)
+            ]
+        return dates_res
 
     def get_interval_metrics(self) -> dict[str, Any]:
+        """
+        Mainly for hightlights; for drill down, avoid using this in case extra coupling
+        data structure if nested, depends on how you want to visualize it
+        If you want to show night_sleep and nap separately in overall piechart,
+            make them separte, here group them together in sleep_all
+        """
         return {
             "effective_output": {
                 "self_improving": time_spans_by_day_matching_label_minutes(
-                    # self improving can further breakdown into tech and non-tech(audible, bibliotherapy)
                     self.day_records,
-                    Match.from_dict({
-                        "bibliotherapy": None,
-                        "linkedin": None,
-                        "lyubishchev": None,
-                        "oj": None,
-                        "software": None,
-                        "audible": None,
-                    }),
+                    Match.from_dict(get_match_dict("self_improving")),
                 ),
                 "work": time_spans_by_day_matching_label_minutes(
                     self.day_records,
-                    Match.from_dict({
-                        "work": None,
-                    }),
+                    Match.from_dict(
+                        {
+                            "work": None,
+                        }
+                    ),
                 ),
             },
-            "sex": time_spans_by_day_matching_label_minutes(
-                self.day_records,
-                Match.from_dict({
-                    "sex": None,
-                    "mbate": None,
-                }),
-            ),
+            "sex_all": {
+                "sex": time_spans_by_day_matching_label_minutes(
+                    self.day_records, Match.from_dict({"sex": None})
+                ),
+                "mbate": time_spans_by_day_matching_label_minutes(
+                    self.day_records, Match.from_dict({"mbate": None})
+                ),
+            },
             "exercise": time_spans_by_day_matching_label_minutes(
                 self.day_records,
-                Match.from_dict({
-                    "jog": None,
-                    "swim": None,
-                    "anaerobic": None,
-                }),
+                Match.from_dict(get_match_dict("exercise")),
             ),
-            "sleep": {
+            "sleep_all": {
                 "night_sleep": time_spans_by_field_minutes(
                     self.day_records, "last_night_sleep_minutes"
                 ),
                 "nap": time_spans_by_day_matching_label_minutes(
                     self.day_records,
-                    Match.from_dict({
-                        "nap": None,
-                    }),
+                    Match.from_dict(
+                        {
+                            "nap": None,
+                        }
+                    ),
                 ),  # TYPE_SLEEP only means nap, night sleep is not recorded and derived from bed and wakeup time
             },
-            "peace": time_spans_by_day_matching_label_minutes(
+            "calm": time_spans_by_day_matching_label_minutes(
                 self.day_records,
-                Match.from_dict({
-                    "meditation": None,
-                    "walk": None,
-                })
+                Match.from_dict(get_match_dict("calm")),
             ),
-            "intangible ": time_spans_by_day_matching_label_minutes(
+            "intangible": time_spans_by_day_matching_label_minutes(
                 self.day_records,
-                Match.from_dict({
-                    "friends": None,
-                    "family": None,
-                    "lisha": None,
-                    "dating": None,
-                })
+                Match.from_dict(get_match_dict("intangible")),
             ),
-            "regret ": time_spans_by_day_matching_label_minutes(
+            "regret": time_spans_by_day_matching_label_minutes(
                 self.day_records,
-                Match.from_dict({
-                    "pmo": None,
-                    "numb": None,
-                    "dispute": None,
-                })
+                Match.from_dict(get_match_dict("regret")),
             ),
-            "routine": time_spans_by_day_matching_label_minutes(
+            "routine_all": time_spans_by_day_matching_label_minutes(
                 self.day_records,
-                Match.from_dict({
-                    "self_routine": None,
-                    "housework": None,
-                    "meal": None,
-                })
+                Match.from_dict(get_match_dict("routine_all")),
             ),
-            "self": time_spans_by_day_matching_label_minutes(
+            "solitude": time_spans_by_day_matching_label_minutes(
                 self.day_records,
-                Match.from_dict({
-                    "internet": None,
-                    "game": None,
-                    "solitude": None,
-                    "novel": None,
-                })
+                Match.from_dict(get_match_dict("solitude")),
             ),
-
         }
 
-    def get_time_stats(self) -> dict[str, int]:
+    def get_long_format_data_list(
+        self, tag: str, key_name_in_res: str
+    ) -> list[dict[str, Any]]:
         """
-        get_time_stats returns a dict of time stats
+        Given a single label or tag, return matched data, as long format dict
+        Return: list of dict, contain date and minutes, with key_name_in_res:tag
+        [
+            {'date': 'Monday', 'exercise': 'jog', 'minutes': 10},
+            {'date': 'Tuesday', 'exercise': 'jog', 'minutes': 10},
+        ]
         """
-        interval_metrics = self.get_interval_metrics()
+        must_tag(tag)
+        res = []
+        dates = self.dates(is_remove_year=True, is_add_weekday=True)
+        for i, day in enumerate(self.day_records):
+            day_res = {}
+            match = Match.from_dict({tag: None})
+            matched_time_intervals = match.match(day.time_intervals)
+            minutes_of_day = sum(
+                time_interval.duration_minutes
+                for time_interval in matched_time_intervals
+            )
+            # even no match, generate a record with 0 minutes for that day
+            #   to explicitly show that day has no such tag
+            day_res = {
+                "date": dates[i],
+                key_name_in_res: tag,
+                "minutes": minutes_of_day,
+            }
+            res.append(day_res)
 
+        return res
+
+    def get_total_minutes(self) -> int:
         minutes: int = total_minutes(
             self.day_records[0].date_str(),
             next_day(
@@ -214,20 +306,7 @@ class DayRangeReport:
                 date_str=self.day_records[-1].date_str(),
             ),
         )
-
-        return {
-            "total": minutes,
-            "sleep_all": sum(interval_metrics["sleep"]["night_sleep"])
-            + sum(interval_metrics["sleep"]["nap"]),
-            "sleep_night": sum(interval_metrics["sleep"]["night_sleep"]),
-            "sleep_nap": sum(interval_metrics["sleep"]["nap"]),
-            "work": sum(interval_metrics["effective_output"]["work"]),
-            "exercise": sum(interval_metrics["exercise"]),
-            "self_improving": sum(
-                interval_metrics["effective_output"]["self_improving"]
-            ),
-            "sex": sum(interval_metrics["sex"]),
-        }
+        return minutes
 
     def get_event_metrics(self) -> dict[str, list[Arrow]]:
         suffix = "_timestamp"
