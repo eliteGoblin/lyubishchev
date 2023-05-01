@@ -3,10 +3,8 @@
 set -eux
 
 reformat () {
-  isort ./lyubishchev/data_model
-  black ./lyubishchev/data_model
-  # isort ./lyubishchev ./time_report_notebook ./tests # sort imports
-  # black ./lyubishchev ./time_report_notebook ./tests # all other code formatting
+  isort ./lyubishchev ./time_report_notebook ./tests # sort imports
+  black ./lyubishchev ./time_report_notebook ./tests # all other code formatting
 }
 
 reformat

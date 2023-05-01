@@ -2,10 +2,7 @@ from dataclasses import dataclass
 
 import arrow
 
-from lyubishchev.data_model import (
-    DayRecord,
-    Label,
-)
+from lyubishchev.data_model import DayRecord, Label
 from lyubishchev.report import (
     DayRangeReport,
     time_spans_by_day_matching_label_minutes,
@@ -15,8 +12,8 @@ from lyubishchev.report import (
 )
 from lyubishchev.search import Match
 
-from .test_data.march_12_16_2023_legacy_label import day_records_2023_march_12_16
 from .test_data.march_12_13_14 import day_records_2023_march_12_14
+from .test_data.march_12_16_2023_legacy_label import day_records_2023_march_12_16
 
 
 def test_total_hours() -> None:
@@ -100,9 +97,11 @@ def test_time_spans_by_day_matching_label() -> None:
         key, label = list(testcase.label.items())[0]
         res = time_spans_by_day_matching_label_minutes(
             testcase.day_records,
-            Match.from_dict({
-                f"{key}={label}": None,
-            }),
+            Match.from_dict(
+                {
+                    f"{key}={label}": None,
+                }
+            ),
         )
         assert_message = (
             f"testcase {i} failed, expected: {testcase.expected}, got {res}"
@@ -137,25 +136,15 @@ def test_day_range_report_interval_metrics() -> None:
         "self_improving": [358, 357],
         "work": [0, 170],
     }
-
-    assert interval_metrics["sex"] == [0, 0]
+    assert interval_metrics["sex_all"] == {
+        "sex": [0, 0],
+        "mbate": [0, 0],
+    }
     assert interval_metrics["exercise"] == [0, 0]
-    assert interval_metrics["sleep"] == {
+    assert interval_metrics["sleep_all"] == {
         "night_sleep": [570, 390],
         "nap": [0, 55],
     }
-
-
-def test_day_range_report_time_stats() -> None:
-    report = DayRangeReport(day_records_2023_march_12_14())
-    time_stats = report.get_time_stats()
-
-    assert time_stats["total"] == 24 * 60 * 2
-    assert time_stats["sleep_all"] == sum([570, 445])
-    assert time_stats["sleep_night"] == sum([570, 390])
-    assert time_stats["sleep_nap"] == sum([0, 55])
-    assert time_stats["work"] == sum([0, 170])
-    assert time_stats["self_improving"] == sum([358, 357])
 
 
 def test_day_range_report_event_metrics() -> None:

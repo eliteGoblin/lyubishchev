@@ -1,22 +1,29 @@
+import re
 from dataclasses import dataclass
 from typing import Any, Callable, Optional, TypeAlias
-import re
 
-from lyubishchev.data_model import TimeInterval, Label
+from lyubishchev.data_model import Label, TimeInterval
 
 # Create an alias for the function type
 # label is dict[str, str]
 TimeIntervalMatchFunction: TypeAlias = Callable[[Label], bool]
 
 
+def must_tag(node_str: str) -> None:
+    pattern = r"^[a-zA-Z0-9-_]+$"
+
+    if not re.match(pattern, node_str):
+        raise ValueError(f"Invalid format: '{node_str}' contains invalid characters")
+
+
 def must_label_or_tag(node_str: str) -> None:
     """
     node key can be key=value(label) or key(tag)
     """
-    pattern = r'^[a-zA-Z0-9-_]+$'
+    pattern = r"^[a-zA-Z0-9-_]+$"
 
     # Split the input string on the '=' character
-    parts = node_str.split('=')
+    parts = node_str.split("=")
 
     # Check if there are at most two parts (key and value)
     if len(parts) > 2:
@@ -31,7 +38,8 @@ def must_label_or_tag(node_str: str) -> None:
 def must_match_tree(match_dict: dict[str, Any], depth: int = 0, path: str = "") -> None:
     """
     match_dict MUST follow:
-    key is a string, must be key=value format; key and value MUST not contain whitespace
+    key is a string, (must be key=value format if it's label otherwise be valid tag);
+    key and value MUST not contain whitespace
     value is a dict or None
     if it's a dict, it must follow the same rule
     Raise ValueError, specify where violate it , ideally visualize partial tree structure
@@ -43,7 +51,9 @@ def must_match_tree(match_dict: dict[str, Any], depth: int = 0, path: str = "") 
         must_label_or_tag(key)
         # Check if value is a dictionary or None
         if value is not None and not isinstance(value, dict):
-            raise ValueError(f"Invalid value at path '{current_path}'. Value must be a dictionary or None.")
+            raise ValueError(
+                f"Invalid value at path '{current_path}'. Value must be a dictionary or None."
+            )
         # Recursively check nested dictionaries
         if isinstance(value, dict):
             must_match_tree(value, depth=depth + 1, path=current_path)
@@ -70,7 +80,9 @@ def match_function_from_dict(match_dict: dict[str, Any]) -> TimeIntervalMatchFun
     """
     must_match_tree(match_dict)
 
-    def match_tree(label: Label, current_tree: Optional[dict[str, Optional[dict[str, Any]]]]) -> bool:
+    def match_tree(
+        label: Label, current_tree: Optional[dict[str, Optional[dict[str, Any]]]]
+    ) -> bool:
         if current_tree is None:
             return False
         for key, value in label.items():
@@ -93,6 +105,7 @@ class Match:
     """
     define condition when matching for TimeInterval
     """
+
     _match_func: Callable[[Label], bool] = lambda _: True
 
     @classmethod

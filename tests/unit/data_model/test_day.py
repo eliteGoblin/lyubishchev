@@ -50,8 +50,7 @@ def test_date_str() -> None:
     ]
 
     for case in testcases:
-        assert case.input_day.date_str() == case.expected_date_str\
-
+        assert case.input_day.date_str() == case.expected_date_str
 
 
 def test_recorded_minutes() -> None:
