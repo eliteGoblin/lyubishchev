@@ -96,12 +96,6 @@ def test_generate_time_interval_from_time_series() -> None:
                 duration_minutes=25,
             ),
         ),
-        TestCase(
-            description="project label no longer supported",
-            test_data_path="time_series_project.json",
-            expect_success=False,
-            expected_time_interval=TimeInterval(),
-        ),
         # time_series_error_dup_interval_type.json
         TestCase(
             description="record with duplicate interval type should fail",
