@@ -86,3 +86,16 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
           scripts/ci/intgtest
+  
+
+  run-notebook-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Lint Jupyter Notebooks
+        run: |
+          find . -name "*.ipynb" -exec git ls-files {} \; | xargs -I{} python ./scripts/ci/clear_outputs_and_widgets.py {}

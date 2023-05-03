@@ -114,11 +114,6 @@ def draw_bars_chart(
         title=title,
         xaxis_title="Dates",
         yaxis_title="Time Span in Hours",
-        barmode="group",
-        width=800,  # Set the chart width
-        height=500,  # Set the chart height
-        margin=dict(l=50, r=50, b=100, t=100, pad=4),
-        autosize=True,
     )
 
     fig.show()

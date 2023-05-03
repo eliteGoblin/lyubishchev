@@ -191,7 +191,11 @@ class DayRangeReport:
             dates_res = [
                 f"{date}\n{weekday}" for date, weekday in zip(dates_res, weekdays)
             ]
-        return dates_res
+        # fix bug seems in Jupyter: 05-01 plot won't show, changed to 05/01
+        dates_res_workaround = []
+        for date_str in dates_res:
+            dates_res_workaround.append(date_str.replace("-", "/"))
+        return dates_res_workaround
 
     def get_interval_metrics(self) -> dict[str, Any]:
         """

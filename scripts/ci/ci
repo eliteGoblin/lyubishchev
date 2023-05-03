@@ -7,4 +7,5 @@ script_dir=$(dirname "$0")
 ./${script_dir}/typecheck
 ./${script_dir}/unittest
 ./${script_dir}/intgtest
+./${script_dir}/check_notebook_output
 # ./${script_dir}/coverage_report
