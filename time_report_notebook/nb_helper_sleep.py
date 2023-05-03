@@ -20,7 +20,7 @@ def stack_bar_sleep_all(report: DayRangeReport) -> None:
 
     res_data_frame = pd.DataFrame(sleep_res)
 
-    res_data_frame["hours"] = (res_data_frame["minutes"] / 60).round(2)
+    res_data_frame["hours"] = (res_data_frame["minutes"] / 60).round(2)  # type: ignore
     res_data_frame.drop("minutes", axis=1, inplace=True)
 
     fig = px.bar(

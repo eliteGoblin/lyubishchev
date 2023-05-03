@@ -1,5 +1,7 @@
 from typing import Any
 
+import pandas as pd
+import plotly.express as px
 import plotly.graph_objects as go
 
 from lyubishchev.report import (
@@ -31,6 +33,45 @@ def draw_bars_effective_output(report: DayRangeReport) -> None:
             },
         },
     )
+
+
+def stack_bar_effective_output(report: DayRangeReport) -> None:
+    """
+    stack bar consists of work and self-improving
+    """
+
+    # get self_improving data
+    self_improving_match = get_match_dict("self_improving")
+    self_improving = report.get_long_format_data_list(
+        tag="self_improving",
+        key_name_in_res="effective_output",
+        match=Match.from_dict(self_improving_match),
+    )
+
+    # add work data
+    work_match = get_match_dict("work_all")
+    work = report.get_long_format_data_list(
+        tag="work_all",
+        key_name_in_res="effective_output",
+        match=Match.from_dict(work_match),
+    )
+
+    res_data_frame = pd.DataFrame(self_improving + work)
+
+    res_data_frame["hours"] = (res_data_frame["minutes"] / 60).round(2)  # type: ignore
+    res_data_frame.drop("minutes", axis=1, inplace=True)
+
+    fig = px.bar(
+        res_data_frame,
+        x="date",
+        y="hours",
+        color="effective_output",
+        text="hours",
+        title="Effective Output Hours by Weekday",
+        labels={"date": "Weekday", "hours": "Hours"},
+    )
+
+    fig.show()
 
 
 def get_effective_output_dict_tree(report: DayRangeReport) -> dict[str, Any]:
