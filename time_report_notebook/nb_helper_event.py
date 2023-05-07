@@ -39,6 +39,12 @@ def draw_wakeup_plot(report: DayRangeReport) -> None:
 
     fig.update_yaxes(title_text="Wakeup Hour Offset", secondary_y=False)
 
+    fig.update_layout(
+        # autosize=False,
+        # width=800,
+        # height=500
+    )
+
     # Display the plot
     fig.show()
 

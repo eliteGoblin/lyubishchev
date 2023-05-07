@@ -114,6 +114,10 @@ def draw_bars_chart(
         title=title,
         xaxis_title="Dates",
         yaxis_title="Time Span in Hours",
+        # autosize=False,  # Disable autosizing
+        # width=800,       # Set the plot width
+        # height=500,      # Set the plot height
+        # margin=dict(l=50, r=50, b=100, t=100, pad=4),
     )
 
     fig.show()
@@ -141,6 +145,13 @@ def stack_bar(report: DayRangeReport, match_dict_key: str) -> None:
         text="minutes",
         title=f"{match_dict_key} Duration by Weekday",
         labels={"date": "Weekday", "minutes": "Minutes"},
+    )
+
+    fig.update_layout(
+        # autosize=False,  # Disable autosizing
+        # width=800,       # Set the plot width
+        # height=500,      # Set the plot height
+        # margin=dict(l=50, r=50, b=100, t=100, pad=4),
     )
 
     fig.show()

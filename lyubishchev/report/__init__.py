@@ -1,5 +1,4 @@
 from .highlights import get_duration_highlights, get_habbits_highlight
-from .highlights_lagacy import get_highlights
 from .report import (
     DayRangeReport,
     get_match_dict,
