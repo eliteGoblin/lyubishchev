@@ -44,10 +44,15 @@ def test_must_events_cover_date_range() -> None:
             events=[
                 Event(
                     timestamp=timestamp_from_date_str(
-                        timezone_name, "2020-07-01"
+                        date_str="2020-07-01",
+                        timezone_name=timezone_name,
                     ).shift(minutes=-1)
                 ),
-                Event(timestamp=timestamp_from_date_str(timezone_name, "2020-07-02")),
+                Event(
+                    timestamp=timestamp_from_date_str(
+                        date_str="2020-07-02", timezone_name=timezone_name
+                    )
+                ),
             ],
             start_date="2020-07-01",
             end_date="2020-07-02",
@@ -94,7 +99,8 @@ def test_must_events_cover_date_range() -> None:
             events=[
                 Event(
                     timestamp=timestamp_from_date_str(
-                        timezone_name, "2024-07-01"
+                        date_str="2024-07-01",
+                        timezone_name=timezone_name,
                     ).shift(minutes=-1)
                 ),
                 Event(
@@ -112,7 +118,8 @@ def test_must_events_cover_date_range() -> None:
             events=[
                 Event(
                     timestamp=timestamp_from_date_str(
-                        timezone_name, "2024-07-01"
+                        date_str="2024-07-01",
+                        timezone_name=timezone_name,
                     ).shift(minutes=-1)
                 ),
                 Event(

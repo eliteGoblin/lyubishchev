@@ -1,173 +1,135 @@
-from lyubishchev import config
+import pandas as pd
+
 from lyubishchev.data_model import timestamp_from_date_str
+from lyubishchev.search import Match
 
-from .report import DayRangeReport
+from .report import DayRangeReport, get_match_dict, time_spans_matching_label_minutes
 
 
-def get_self_improving_highlights(day_range_report: DayRangeReport) -> str:
+def get_duration_highlights(report: DayRangeReport) -> pd.DataFrame:
     """
-    SE average is measured against every day, i.e there's no strict NON-SE days
+    Return:
+            daily   avg     total
+    work
+    SE
+    night_sleep
+    nap
+    exercise
+    calm
     """
-    interval_metrics = day_range_report.get_interval_metrics()
-
-    total_time: float = (
-        sum(interval_metrics["effective_output"]["self_improving"]) / 60.0
+    time_intervals = report.get_time_intervals()
+    work = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("work_all"))
     )
-
-    average_time: float = total_time / len(day_range_report)
-
-    return (
-        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
-    )
-
-
-def get_work_highlights(day_range_report: DayRangeReport) -> str:
-    """
-    Work average, is only measured against weekdays
-    """
-    interval_metrics = day_range_report.get_interval_metrics()
-
-    total_time: float = sum(interval_metrics["effective_output"]["work"]) / 60.0
     total_weekdays: int = 0
-
-    for day in day_range_report.day_records:
-        day_timestamp = timestamp_from_date_str(
-            timezone_name=config.get_iana_timezone_name(), date_str=day.date_str()
-        )
+    for day in report.day_records:
+        day_timestamp = timestamp_from_date_str(date_str=day.date_str())
         if day_timestamp.isoweekday() <= 5:
             total_weekdays += 1
 
-    average_time: float = total_time / total_weekdays
-
-    return (
-        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    self_improving = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("self_improving"))
+    )
+    night_sleep = [day.last_night_sleep_minutes for day in report.day_records]
+    nap = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict({"nap": None})
+    )
+    exercise = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("exercise"))
+    )
+    calm = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("calm"))
     )
 
+    data = {
+        "work": [
+            sum(work) / total_weekdays,
+            sum(work),
+        ],  # work is weekday average, instead of everyday average
+        "self_improving": [
+            sum(self_improving) / len(report.day_records),
+            sum(self_improving),
+        ],
+        "night_sleep": [sum(night_sleep) / len(report.day_records), sum(night_sleep)],
+        "nap": [sum(nap) / len(report.day_records), sum(nap)],
+        "exercise": [sum(exercise) / len(report.day_records), sum(exercise)],
+        "calm": [sum(calm) / len(report.day_records), sum(calm)],
+    }
+    # convert to hours, round to 2 decimal
+    data = {k: [round(e / 60, 2) for e in v] for k, v in data.items()}
+    index = ["daily_average", "total_hours"]
+    df_duration = pd.DataFrame(data=data, index=index).transpose()  # type: ignore
 
-def get_effective_output_highlights(day_range_report: DayRangeReport) -> str:
-    interval_metrics = day_range_report.get_interval_metrics()
+    return df_duration
 
-    effective_output = [
-        work + self_improving
-        for work, self_improving in zip(
-            interval_metrics["effective_output"]["work"],
-            interval_metrics["effective_output"]["self_improving"],
-        )
+
+def daily_count_to_str(daily_count: float) -> str:
+    if daily_count < 1:
+        return f"every {round(1 / daily_count, 1)} days"
+    return f"{round(daily_count, 1)} times per day"
+
+
+def get_habbits_highlight(report: DayRangeReport) -> pd.DataFrame:
+    """
+    Return:
+             count_per_day activity_avg  daily_avg total
+    sex_all
+    walk
+    meditation
+    nap
+    exericise
+    """
+    time_intervals = report.get_time_intervals()
+    sex_all = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("sex_all"))
+    )
+    walk = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict({"walk": None})
+    )
+    meditation = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict({"meditation": None})
+    )
+    nap = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict({"nap": None})
+    )
+    exercise = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("exercise"))
+    )
+
+    list_names = ["sex_all", "walk", "meditation", "nap", "exercise"]
+    list_of_lists = [sex_all, walk, meditation, nap, exercise]
+    index = [
+        "count_per_day",
+        "avg_minutes_per_activity",
+        "avg_minutes_per_day",
+        "total_minutes",
     ]
 
-    total_time: float = sum(effective_output) / 60.0
-    average_time: float = total_time / len(day_range_report)
+    data = {}
+    for i, name in enumerate(list_names):
+        data[name] = [
+            len(list_of_lists[i]) / len(report.day_records),
+            sum(list_of_lists[i]) / len(list_of_lists[i]),
+            sum(list_of_lists[i]) / len(report.day_records),
+            sum(list_of_lists[i]),
+        ]
 
-    return (
-        f"Total time: {round(total_time, 2)}h, daily average: {round(average_time, 2)}h"
+    df_habbits = pd.DataFrame(data=data, index=index).transpose()  # type: ignore
+
+    df_habbits["frequency"] = df_habbits["count_per_day"].apply(daily_count_to_str)
+    df_habbits = df_habbits.drop("count_per_day", axis=1)
+
+    df_habbits["avg_minutes_per_activity"] = (
+        df_habbits["avg_minutes_per_activity"] / 60
+    ).apply(lambda x: round(x, 2))
+
+    df_habbits["avg_minutes_per_day"] = (df_habbits["avg_minutes_per_day"] / 60).apply(
+        lambda x: round(x, 2)
     )
 
-
-def every(occur_ratio: float) -> str:
-    """
-    0.33 -> every 3 days
-    0.5 -> every 2 days
-    1 -> every day
-    """
-    if occur_ratio < 0.01:
-        return "rarely(< 0.01)"
-    if occur_ratio >= 1:
-        return "every day"
-    return f"every {round(1 / occur_ratio, 2)} days"
-
-
-def get_sex_highlights(day_range_report: DayRangeReport) -> str:
-    """
-    sex: use daily aggregated data to calculate count: 0 or 1 per day
-    """
-
-    interval_metrics = day_range_report.get_interval_metrics()
-    sex = [
-        x + y
-        for x, y in zip(
-            interval_metrics["sex_all"]["sex"], interval_metrics["sex_all"]["mbate"]
-        )
-    ]
-
-    sex_times: int = len([e for e in sex if e > 0])
-    sex_total_hours: float = sum(sex) / 60.0
-    sex_avg_duration: float = (
-        round(sex_total_hours / sex_times, 2) if sex_times > 0 else 0
+    df_habbits["total_hours"] = (df_habbits["total_minutes"] / 60).apply(
+        lambda x: round(x, 2)
     )
-    return (
-        f"day has sex: {sex_times}/{len(sex)}, happens {every(len([e for e in sex if e > 0]) / len(sex))}. "
-        f"total hour {round(sex_total_hours, 2)} every time avg {round(sex_avg_duration, 2)} h"
-    )
+    df_habbits = df_habbits.drop("total_minutes", axis=1)
 
-
-def get_sleep_highlights(day_range_report: DayRangeReport) -> str:
-
-    interval_metrics = day_range_report.get_interval_metrics()
-    night_sleep = interval_metrics["sleep_all"]["night_sleep"]
-    nap = interval_metrics["sleep_all"]["nap"]
-
-    average_nightly_sleep_hours: float = sum(night_sleep) / len(night_sleep) / 60.0
-    average_daily_nap_hours: float = sum(nap) / len(nap) / 60.0
-
-    nap_days = [e for e in nap if e > 0]
-
-    return (
-        f"average nap {round(average_daily_nap_hours, 2)}h, "
-        f"day has nap {len(nap_days)}/{len(nap)}, happens {every(len(nap_days) / len(nap))}. "
-        f"average nightly sleep {round(average_nightly_sleep_hours, 2)}h, "
-        f"average all sleep time {round(average_nightly_sleep_hours + average_daily_nap_hours, 2)}h"
-    )
-
-
-def get_calm_highlights(day_range_report: DayRangeReport) -> str:
-    meditations = day_range_report.get_interval_metrics()["calm"]
-    meditation_daily_aggregate = [e for e in meditations if e > 0]
-
-    daily_average_calm_hours = sum(meditations) / (60.0 * len(meditations))
-
-    return (
-        f"daily meditation: {round(daily_average_calm_hours, 2)}h "
-        f"days with meditation: {len(meditation_daily_aggregate)}/{len(meditations)}, "
-        f"happends {every(len(meditation_daily_aggregate) / len(meditations))}"
-    )
-
-
-def get_exercise_highlights(day_range_report: DayRangeReport) -> str:
-
-    exercises = day_range_report.get_interval_metrics()["exercise"]
-    exercise_daily_aggregate = [e for e in exercises if e > 0]
-
-    res = {
-        "daily_avg": round(sum(exercises) / len(exercises) / 60.0, 2),
-        "exercie_every": every(len(exercise_daily_aggregate) / len(exercises)),
-    }
-
-    return (
-        f"daily exercise: {res['daily_avg']}h, "
-        f"days with exercise: {len(exercise_daily_aggregate)}/{len(exercises)}, happens {res['exercie_every']}"
-    )
-
-
-def get_highlights(day_range_report: DayRangeReport) -> dict[str, str]:
-    """
-    get_highlights returns a dict of highlights
-    """
-    # effective output
-    self_improving = get_self_improving_highlights(day_range_report)
-    work = get_work_highlights(day_range_report)
-    effective_output = get_effective_output_highlights(day_range_report)
-    # supporting
-    sex = get_sex_highlights(day_range_report)
-    sleep = get_sleep_highlights(day_range_report)
-    calm = get_calm_highlights(day_range_report)
-    exercise = get_exercise_highlights(day_range_report)
-
-    return {
-        "self_improving": self_improving,
-        "work": work,
-        "effective_output": effective_output,
-        "sex": sex,
-        "sleep": sleep,
-        "calm": calm,
-        "exercise": exercise,
-    }
+    return df_habbits

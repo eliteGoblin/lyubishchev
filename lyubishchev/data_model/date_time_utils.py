@@ -53,7 +53,9 @@ def date_str_from_timestamp(
     return timestamp.to(timezone_name).format(date_fmt)
 
 
-def timestamp_from_date_str(timezone_name: str, date_str: str) -> Arrow:
+def timestamp_from_date_str(
+    date_str: str, timezone_name: str = config.get_iana_timezone_name()
+) -> Arrow:
     must_yyyy_mm_dd(date_str)
     return arrow.get(date_str, date_str_fmt, tzinfo=timezone_name)
 

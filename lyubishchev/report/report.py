@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from arrow import Arrow
 
@@ -8,6 +8,7 @@ from lyubishchev.data_model import (
     TYPE_GETUP,
     TYPE_WAKEUP,
     DayRecord,
+    TimeInterval,
     must_yyyy_mm_dd,
     next_day,
     time_diff_minutes,
@@ -25,10 +26,27 @@ def total_minutes(start_date_str: str, end_date_str: str) -> int:
     if start_date_str >= end_date_str:
         return 0
 
-    start = timestamp_from_date_str(config.get_iana_timezone_name(), start_date_str)
-    end = timestamp_from_date_str(config.get_iana_timezone_name(), end_date_str)
+    start = timestamp_from_date_str(date_str=start_date_str)
+    end = timestamp_from_date_str(date_str=end_date_str)
 
     return time_diff_minutes(start, end)
+
+
+def time_spans_matching_label_minutes(
+    time_intervals: list[TimeInterval], match: Match
+) -> list[int]:
+    """
+    Calculate time spans of time_intervals, matching label
+    Return:
+        list of original TimeInterval's time spans in minutes, not aggregated
+    """
+    time_spans = []
+
+    matched_time_intervals = match.match(time_intervals)
+    for time_interval in matched_time_intervals:
+        time_spans.append(time_interval.duration_minutes)
+
+    return time_spans
 
 
 def time_spans_by_day_matching_label_minutes(
@@ -101,6 +119,10 @@ def get_match_dict(name: str) -> dict[str, Any]:
         "self_improving": self_improving_dict,
         "self_improving_tech": self_improving_tech,
         "self_improving_non_tech": self_improving_non_tech,
+        "work_all": {
+            "work": None,
+            "job": None,
+        },
         "sex_all": {
             "sex": None,
             "mbate": None,
@@ -212,11 +234,7 @@ class DayRangeReport:
                 ),
                 "work": time_spans_by_day_matching_label_minutes(
                     self.day_records,
-                    Match.from_dict(
-                        {
-                            "work": None,
-                        }
-                    ),
+                    Match.from_dict(get_match_dict("work_all")),
                 ),
             },
             "sex_all": {
@@ -267,11 +285,13 @@ class DayRangeReport:
         }
 
     def get_long_format_data_list(
-        self, tag: str, key_name_in_res: str
+        self, tag: str, key_name_in_res: str, match: Optional[Match] = None
     ) -> list[dict[str, Any]]:
         """
         Given a single label or tag, return matched data, as long format dict
         Return: list of dict, contain date and minutes, with key_name_in_res:tag
+        e.g input: tag=jog key_name_in_res=exercise
+        res will contain exercise=jog also date and minutes keys
         [
             {'date': 'Monday', 'exercise': 'jog', 'minutes': 10},
             {'date': 'Tuesday', 'exercise': 'jog', 'minutes': 10},
@@ -282,7 +302,8 @@ class DayRangeReport:
         dates = self.dates(is_remove_year=True, is_add_weekday=True)
         for i, day in enumerate(self.day_records):
             day_res = {}
-            match = Match.from_dict({tag: None})
+            if match is None:  # if match not passed in,
+                match = Match.from_dict({tag: None})
             matched_time_intervals = match.match(day.time_intervals)
             minutes_of_day = sum(
                 time_interval.duration_minutes
@@ -308,6 +329,12 @@ class DayRangeReport:
             ),
         )
         return minutes
+
+    def get_time_intervals(self) -> list[TimeInterval]:
+        time_intervals: list[TimeInterval] = []
+        for day in self.day_records:
+            time_intervals.extend(day.time_intervals)
+        return time_intervals
 
     def get_event_metrics(self) -> dict[str, list[Arrow]]:
         suffix = "_timestamp"
