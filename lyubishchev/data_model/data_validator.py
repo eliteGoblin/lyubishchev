@@ -110,7 +110,9 @@ def must_single_day_events(single_day_events: list[Event]) -> None:
     diff = single_day_events[-1].timestamp - single_day_events[1].timestamp
     secs: int = diff.total_seconds()  # type: ignore
 
-    assert 8 * 60 * 60 < secs < 24 * 60 * 60
+    assert (
+        8 * 60 * 60 < secs < 24 * 60 * 60
+    ), f"single day events exception {single_day_events}"
 
     for i, event in enumerate(single_day_events):
         if i in (0, 1, len(single_day_events) - 1):

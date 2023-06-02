@@ -9,6 +9,7 @@ from lyubishchev.report import (
     DayRangeReport,
     get_match_dict,
     time_spans_by_day_matching_label_minutes,
+    time_spans_by_field_minutes,
 )
 from lyubishchev.search import Match
 
@@ -157,36 +158,97 @@ def stack_bar(report: DayRangeReport, match_dict_key: str) -> None:
     fig.show()
 
 
-def sunburst_tree_depth_2(report: DayRangeReport, match_dict_key: str) -> None:
+def sunburst_tree_depth_2(
+    report: DayRangeReport,
+    match_dict_key: str,
+    sleep_all_minutes: int = 0,
+    total_minutes: int = 0,
+) -> None:
     """
     plot sunburst graph based on 2 level dict tree(can not be more than 2 level)
-    e.g each leaf node's key means label to match time intervals
-    {
-        "calm": {
-            "walk": 10,
-            "meditation": 20,
+    e.g sunburst_tree_depth_2(report=report, match_dict_key="exercise")
+    1. got match_dict of "exercise":
+        {
+            "jog": None,
+            "swim": None,
+            "anaerobic": None,
         }
-    }
+    2. generate dict, representing tree structure of res:
+        {
+            "jog": 10,
+            "swim": 20,
+            "anaerobic": 30,
+        }
+    3. change dict tree to parent tree(not limited to depth 2):
+        labels = ["exercise", "jog", "swim", "anaerobic"]
+        parents = ["", "exercise", "exercise", "exercise"]
+        values = [60, 10, 20, 30]
     """
     match_dict = get_match_dict(match_dict_key)
-    res = {}
+    res: dict[str, Any] = {match_dict_key: {}}
 
     for key in match_dict:
-        res[key] = sum(
+        res[match_dict_key][key] = sum(
             time_spans_by_day_matching_label_minutes(
                 day_records=report.day_records,
                 match=Match.from_dict({key: None}),
             )
         )
 
-    labels, parents, values = dict_tree_to_parent_tree({match_dict_key: res})
+    if total_minutes > 0:
+        res["other"] = total_minutes - sleep_all_minutes - sum_dict_values(res)
+
+    labels, parents, values = dict_tree_to_parent_tree(res)
+
     fig = go.Figure(
         go.Sunburst(
             labels=labels,
             parents=parents,
             values=m2h(values),
             textinfo="label+percent entry",
+            maxdepth=3,
         )
     )
     fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
     fig.show()
+
+
+def sum_dict_values(dct: dict[str, Any]) -> int:
+    """
+    sum all values in a dict, if value is a dict, sum it recursively
+    """
+    if isinstance(dct, dict):
+        return sum(sum_dict_values(v) for v in dct.values())
+    return dct
+
+
+def sunburst_tree_depth_2_total_time(
+    report: DayRangeReport,
+    match_dict_key: str,
+) -> None:
+    """
+    Thin wrapper of sunburst_tree_depth_2, include total time and total sleep time
+        plot sunburst graph based on 2 level dict tree(can not be more than 2 level)
+    """
+
+    total_minutes = report.get_total_minutes()
+    nap_time_minutes = sum(
+        time_spans_by_day_matching_label_minutes(
+            day_records=report.day_records,
+            match=Match.from_dict({"nap": None}),
+        )
+    )
+    night_sleep_time_minutes = sum(
+        time_spans_by_field_minutes(
+            day_records=report.day_records, field_name="last_night_sleep_minutes"
+        )
+    )
+
+    sleep_all_minutes = nap_time_minutes + night_sleep_time_minutes
+
+    sunburst_tree_depth_2(
+        report=report,
+        match_dict_key=match_dict_key,
+        total_minutes=total_minutes,
+        sleep_all_minutes=sleep_all_minutes,
+    )

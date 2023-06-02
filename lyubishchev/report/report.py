@@ -146,6 +146,8 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "pmo": None,
             "numb": None,
             "dispute": None,
+            "video_game": None,
+            "internet": None,
         },
         "routine_all": {
             "cook": None,
@@ -154,9 +156,9 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "meal": None,
         },
         "solitude": {
-            "internet": None,
-            "game": None,
             "novel": None,
+            "karaoke": None,
+            "non-fiction": None,
         },
     }
     return abstract_label_match_dict[name]

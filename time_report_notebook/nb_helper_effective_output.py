@@ -8,6 +8,7 @@ from lyubishchev.report import (
     DayRangeReport,
     get_match_dict,
     time_spans_by_day_matching_label_minutes,
+    time_spans_by_field_minutes,
 )
 from lyubishchev.search import Match
 
@@ -137,7 +138,31 @@ def get_effective_output_dict_tree(report: DayRangeReport) -> dict[str, Any]:
             )
         )
 
-    res = {
+    total_time_minutes = report.get_total_minutes()
+    nap_time_minutes = sum(
+        time_spans_by_day_matching_label_minutes(
+            day_records=report.day_records,
+            match=Match.from_dict({"nap": None}),
+        )
+    )
+    night_sleep_time_minutes = sum(
+        time_spans_by_field_minutes(
+            day_records=report.day_records, field_name="last_night_sleep_minutes"
+        )
+    )
+
+    sleep_all_time_minutes = nap_time_minutes + night_sleep_time_minutes
+
+    def sum_dict_values(dct: dict[str, Any]) -> int:
+        """
+        sum all values in a dict, if value is a dict, sum it recursively
+        """
+        if isinstance(dct, dict):
+            return sum(sum_dict_values(v) for v in dct.values())
+        return dct
+
+    res: dict[str, Any] = {
+        # "sleep_all": sleep_all_time_minutes,
         "effective_output": {
             "self_improving": {
                 "tech": self_improving_tech_res,
@@ -151,6 +176,8 @@ def get_effective_output_dict_tree(report: DayRangeReport) -> dict[str, Any]:
             ),
         }
     }
+
+    res["other"] = total_time_minutes - sum_dict_values(res) - sleep_all_time_minutes
 
     return res
 
@@ -173,6 +200,7 @@ def sunburst_effective_output(report: DayRangeReport) -> None:
             parents=parents,
             values=f_values,
             textinfo="label+percent entry",
+            maxdepth=3,
         )
     )
     fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
