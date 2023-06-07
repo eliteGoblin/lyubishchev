@@ -171,7 +171,7 @@ def get_effective_output_dict_tree(report: DayRangeReport) -> dict[str, Any]:
             "work": sum(
                 time_spans_by_day_matching_label_minutes(
                     day_records=report.day_records,
-                    match=Match.from_dict({"work": None}),
+                    match=Match.from_dict(get_match_dict("work_all")),
                 )
             ),
         }

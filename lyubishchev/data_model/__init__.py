@@ -11,6 +11,7 @@ from .data_reader import DataReader
 from .data_validator import must_events_cover_date_range
 from .date_time_utils import (
     date_range_to_timestamp_range,
+    date_str_from_timestamp,
     day_start_timestamp_early_bound,
     get_day_range_from_relative_days,
     must_yyyy_mm_dd,
@@ -59,6 +60,7 @@ __all__ = [
     # util
     "time_diff_minutes",
     "timestamp_from_date_str",
+    "date_str_from_timestamp",
     "must_yyyy_mm_dd",
     "next_day",
     "get_day_range_from_relative_days",

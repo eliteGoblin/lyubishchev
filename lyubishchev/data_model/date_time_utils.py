@@ -48,7 +48,9 @@ def day_end_timestamp_late_bound(timezone_name: str, end_date: str) -> Arrow:
 
 
 def date_str_from_timestamp(
-    timezone_name: str, timestamp: Arrow, date_fmt: str = date_str_fmt
+    timestamp: Arrow,
+    date_fmt: str = date_str_fmt,
+    timezone_name: str = config.get_iana_timezone_name(),
 ) -> str:
     return timestamp.to(timezone_name).format(date_fmt)
 

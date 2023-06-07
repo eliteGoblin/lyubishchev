@@ -8,6 +8,7 @@ from .report import (
     timestamps_of_days_by_field,
     total_minutes,
 )
+from .time_intervals import get_time_interval_aggregation_dict_tree
 
 __all__ = [
     "get_match_dict",
@@ -19,4 +20,6 @@ __all__ = [
     "timestamps_of_days_by_field",
     "get_duration_highlights",
     "get_habbits_highlight",
+    # time intervals
+    "get_time_interval_aggregation_dict_tree",
 ]
