@@ -1,9 +1,5 @@
 from typing import Any
 
-import arrow
-from arrow import Arrow
-
-from lyubishchev.config import config
 from lyubishchev.data_model.time_interval import TimeInterval
 from lyubishchev.report.constants import (
     CALM,
@@ -49,10 +45,17 @@ def aggregate_time_interval_by_label_minutes(
 
 
 def get_time_interval_aggregation_dict_tree(
-    wakeup_timestamp: Arrow,
+    total_time_minutes: int,
     time_intervals: list[TimeInterval],
 ) -> dict[str, Any]:
     """
+    Aggregate time intervals by labels and return a dict tree,
+        where each leaf node is a label and value is a duration in minutes
+        Non leaf node means "virtual label"(e.g. "self_improving", just to group and tree structure real labels)
+    Args:
+        total_time_minutes: used for "other" label, to see how much time is not covered by recorded time intervals
+        time_intervals: list of time intervals to aggregate
+    Return:
     Hierarchy of effective_output:
     {
         "calm": {
@@ -146,9 +149,6 @@ def get_time_interval_aggregation_dict_tree(
             labels=list(get_match_dict(SOLITUDE).keys()),
         ),
     }
-    total_time_minutes: int = (
-        arrow.now(config.get_iana_timezone_name()) - wakeup_timestamp
-    ).total_seconds() // 60  # type: ignore
     res[OTHER] = total_time_minutes - sum_dict_values(res)
     # clean up: remove empty dict and 0 values
     prune_dict(res)
