@@ -39,6 +39,7 @@ nb.sh
 # ignore html report
 time_report_notebook/*.htm
 time_report_notebook/*.html
+html_reports/
 
 .idea/
 archived/

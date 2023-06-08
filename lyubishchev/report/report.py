@@ -97,6 +97,11 @@ def timestamps_of_days_by_field(
 
 
 def get_match_dict(name: str) -> dict[str, Any]:
+    """
+    get_match_dict is "source of truth" to aggregate and categorize data by label
+    dict only has 2 level: "virtual label"(not exist in data source, only for categorize data up 1 level)
+    and real label(which is leaf, it's label from data source, i.e Clockify)
+    """
     self_improving_dict = {
         "bibliotherapy": None,
         "linkedin": None,
@@ -116,6 +121,10 @@ def get_match_dict(name: str) -> dict[str, Any]:
     }
 
     abstract_label_match_dict = {
+        "calm": {
+            "meditation": None,
+            "walk": None,
+        },
         "self_improving": self_improving_dict,
         "self_improving_tech": self_improving_tech,
         "self_improving_non_tech": self_improving_non_tech,
@@ -131,10 +140,6 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "jog": None,
             "swim": None,
             "anaerobic": None,
-        },
-        "calm": {
-            "meditation": None,
-            "walk": None,
         },
         "intangible": {
             "friends": None,

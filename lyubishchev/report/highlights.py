@@ -64,6 +64,8 @@ def get_duration_highlights(report: DayRangeReport) -> pd.DataFrame:
 
 
 def daily_count_to_str(daily_count: float) -> str:
+    if daily_count == 0:
+        return "no activity found"
     if daily_count < 1:
         return f"every {round(1 / daily_count, 1)} days"
     return f"{round(daily_count, 1)} times per day"
@@ -109,7 +111,9 @@ def get_habbits_highlight(report: DayRangeReport) -> pd.DataFrame:
     for i, name in enumerate(list_names):
         data[name] = [
             len(list_of_lists[i]) / len(report.day_records),
-            sum(list_of_lists[i]) / len(list_of_lists[i]),
+            sum(list_of_lists[i]) / len(list_of_lists[i])
+            if len(list_of_lists[i]) > 0
+            else 0,
             sum(list_of_lists[i]) / len(report.day_records),
             sum(list_of_lists[i]),
         ]
