@@ -149,6 +149,30 @@ def get_day_range_from_relative_weeks(
     return start_of_res_week.format(date_str_fmt), end_of_res_week.format(date_str_fmt)
 
 
+def get_day_range_from_relative_months(
+    start_date_str: str, month_offset: int
+) -> tuple[str, str]:
+    """
+    0 means show current month(til yesterday: last recorded day)
+    -1 means last full month, etc
+    e.g For June 10, 2023, month_offset=0, return [2023-06-01, 2023-06-10)
+    e.g For June 10, 2023, month_offset=-1, return [2023-05-01, 2023-06-01)
+    Return:
+        res[0]: start date in YYYY-MM-DD format
+        res[1]: end date in YYYY-MM-DD format(exclusive)
+    """
+    if month_offset > 0:
+        raise ValueError(f"month_offset should be non-positive, got {month_offset}")
+
+    start_date = arrow.get(start_date_str).to(config.get_iana_timezone_name())
+    if month_offset == 0:
+        return (start_date.floor("month").format(date_str_fmt), start_date_str)
+
+    start_of_month = start_date.shift(months=month_offset).floor("month")
+    end_of_month = start_of_month.shift(months=1).format(date_str_fmt)
+    return (start_of_month.format(date_str_fmt), end_of_month)
+
+
 def date_range_to_timestamp_range(
     start_date: str, end_date: str, buffer_days: int = 0
 ) -> tuple[Arrow, Arrow]:

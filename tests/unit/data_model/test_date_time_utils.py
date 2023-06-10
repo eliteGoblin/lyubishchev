@@ -1,6 +1,9 @@
 import pytest
 
-from lyubishchev.data_model import get_day_range_from_relative_weeks
+from lyubishchev.data_model import (
+    get_day_range_from_relative_months,
+    get_day_range_from_relative_weeks,
+)
 
 
 # Test function for relative_week
@@ -56,3 +59,20 @@ def test_relative_week(
     )
     assert expected_start == result_start, description
     assert expected_end == result_end, description
+
+
+@pytest.mark.parametrize(
+    "start_date_str, month_offset, expected",
+    [
+        ("2023-06-10", 0, ("2023-06-01", "2023-06-10")),
+        ("2023-06-01", 0, ("2023-06-01", "2023-06-01")),
+        ("2023-06-01", -1, ("2023-05-01", "2023-06-01")),
+        ("2023-06-10", -1, ("2023-05-01", "2023-06-01")),
+        ("2023-01-15", 0, ("2023-01-01", "2023-01-15")),
+        ("2023-01-15", -1, ("2022-12-01", "2023-01-01")),
+    ],
+)
+def test_get_day_range_from_relative_months(
+    start_date_str: str, month_offset: int, expected: tuple[str, str]
+) -> None:
+    assert get_day_range_from_relative_months(start_date_str, month_offset) == expected
