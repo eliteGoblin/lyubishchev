@@ -14,6 +14,7 @@ from .date_time_utils import (
     date_str_from_timestamp,
     day_start_timestamp_early_bound,
     get_day_range_from_relative_days,
+    get_day_range_from_relative_weeks,
     must_yyyy_mm_dd,
     next_day,
     time_diff_minutes,
@@ -65,6 +66,7 @@ __all__ = [
     "next_day",
     "get_day_range_from_relative_days",
     "day_start_timestamp_early_bound",
+    "get_day_range_from_relative_weeks",
     # Event
     "VALID_EVENT_LABEL_KEY",
     "VALID_EVENT_TAG_KEY",

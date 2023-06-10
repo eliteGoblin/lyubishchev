@@ -8,9 +8,14 @@ WORK_ALL = "work_all"
 
 EXERCISE = "exercise"
 CALM = "calm"
-INTANGIGLE = "intangible"
+INTANGIBLE = "intangible"
 REGRET = "regret"
 ROUTINE_ALL = "routine_all"
 SOLITUDE = "solitude"
 SEX_ALL = "sex_all"
+
+SLEEP_ALL = "sleep_all"
+NAP = "nap"
+NIGHT_SLEEP = "night_sleep"
+
 OTHER = "other"

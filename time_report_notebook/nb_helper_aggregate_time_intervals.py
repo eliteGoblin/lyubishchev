@@ -7,9 +7,16 @@ from time_report_notebook.nb_helper_util import dict_tree_to_parent_tree, m2h
 
 
 def sunburst_time_intervals(
-    total_time_minutes: int, time_intervals: list[TimeInterval]
+    total_time_minutes: int,
+    time_intervals: list[TimeInterval],
+    total_night_sleep_minutes: int = 0,
 ) -> None:
+    """
+    Param:
+        total_sleep_minutes, if 0, usually means we have total_sleep_minutes in total_time_minutes
+    """
     aggregation_dict_tree = get_time_interval_aggregation_dict_tree(
+        total_night_sleep_minutes=total_night_sleep_minutes,
         total_time_minutes=total_time_minutes,
         time_intervals=time_intervals,
     )
