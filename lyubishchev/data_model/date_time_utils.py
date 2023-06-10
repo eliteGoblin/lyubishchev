@@ -119,6 +119,36 @@ def get_day_range_from_relative_days(
     return the_other_date, start_date
 
 
+def get_day_range_from_relative_weeks(
+    start_date_str: str, week_offset: int
+) -> tuple[str, str]:
+    """
+    0 means show current week(til yesterday: last recorded day)
+    -1 means last week, etc
+    Return:
+        res[0]: start date in YYYY-MM-DD format
+        res[1]: end date in YYYY-MM-DD format(exclusive)
+    Info:
+        arrow treat Monday as first day of week, instead of Sunday
+    """
+    if week_offset > 0:
+        raise ValueError(f"week_offset should be non-positive, got {week_offset}")
+
+    start_date = arrow.get(start_date_str).to(config.get_iana_timezone_name())
+
+    if start_date.format("d") == "7":  # '7' represents Sunday in the 'd' format
+        start_of_start_date_week = start_date
+    else:
+        start_of_start_date_week = start_date.floor("week").shift(days=-1)  # Sunday
+
+    start_of_res_week = start_of_start_date_week.shift(weeks=week_offset)
+    end_of_res_week = (
+        start_of_res_week.shift(weeks=1) if week_offset != 0 else start_date
+    )
+
+    return start_of_res_week.format(date_str_fmt), end_of_res_week.format(date_str_fmt)
+
+
 def date_range_to_timestamp_range(
     start_date: str, end_date: str, buffer_days: int = 0
 ) -> tuple[Arrow, Arrow]:

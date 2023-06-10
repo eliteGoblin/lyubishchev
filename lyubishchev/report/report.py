@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 from arrow import Arrow
 
@@ -226,6 +226,21 @@ class DayRangeReport:
             dates_res_workaround.append(date_str.replace("-", "/"))
         return dates_res_workaround
 
+    def get_sleep_spans_minute(self) -> Tuple[list[int], list[int]]:
+        night_sleeps = time_spans_by_field_minutes(
+            self.day_records, "last_night_sleep_minutes"
+        )
+        naps = time_spans_by_day_matching_label_minutes(
+            self.day_records,
+            Match.from_dict(
+                {
+                    "nap": None,
+                }
+            ),
+        )
+
+        return night_sleeps, naps
+
     def get_interval_metrics(self) -> dict[str, Any]:
         """
         Mainly for hightlights; for drill down, avoid using this in case extra coupling
@@ -233,6 +248,7 @@ class DayRangeReport:
         If you want to show night_sleep and nap separately in overall piechart,
             make them separte, here group them together in sleep_all
         """
+        night_sleeps, naps = self.get_sleep_spans_minute()
         return {
             "effective_output": {
                 "self_improving": time_spans_by_day_matching_label_minutes(
@@ -257,17 +273,8 @@ class DayRangeReport:
                 Match.from_dict(get_match_dict("exercise")),
             ),
             "sleep_all": {
-                "night_sleep": time_spans_by_field_minutes(
-                    self.day_records, "last_night_sleep_minutes"
-                ),
-                "nap": time_spans_by_day_matching_label_minutes(
-                    self.day_records,
-                    Match.from_dict(
-                        {
-                            "nap": None,
-                        }
-                    ),
-                ),  # TYPE_SLEEP only means nap, night sleep is not recorded and derived from bed and wakeup time
+                "night_sleep": night_sleeps,
+                "nap": naps,
             },
             "calm": time_spans_by_day_matching_label_minutes(
                 self.day_records,

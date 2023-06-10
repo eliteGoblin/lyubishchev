@@ -2,7 +2,10 @@ import arrow
 import typer
 
 from lyubishchev import config
-from lyubishchev.data_model import get_day_range_from_relative_days
+from lyubishchev.data_model import (
+    get_day_range_from_relative_days,
+    get_day_range_from_relative_weeks,
+)
 from lyubishchev.report import DayRangeReport
 
 from .report import get_report
@@ -41,6 +44,25 @@ def last(last_days: int) -> DayRangeReport:
         days_delta=-last_days,
         lower_bound_applied=True,
     )
+    report = get_report(
+        start_date=start_date,
+        end_date=end_date,
+    )
+
+    return report
+
+
+@report_app.command()
+def relative_week(week_offset: int) -> DayRangeReport:
+    """
+    get DayRangeReport from last Sunday to yesterday
+    """
+    today_str = arrow.now(config.get_iana_timezone_name()).format("YYYY-MM-DD")
+
+    start_date, end_date = get_day_range_from_relative_weeks(
+        start_date_str=today_str, week_offset=week_offset
+    )
+
     report = get_report(
         start_date=start_date,
         end_date=end_date,

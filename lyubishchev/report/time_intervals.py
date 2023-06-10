@@ -5,7 +5,9 @@ from lyubishchev.report.constants import (
     CALM,
     EFFECTIVE_OUTPUT,
     EXERCISE,
-    INTANGIGLE,
+    INTANGIBLE,
+    NAP,
+    NIGHT_SLEEP,
     OTHER,
     REGRET,
     ROUTINE_ALL,
@@ -13,10 +15,11 @@ from lyubishchev.report.constants import (
     SELF_IMPROVING_NONTECH,
     SELF_IMPROVING_TECH,
     SEX_ALL,
+    SLEEP_ALL,
     SOLITUDE,
     WORK_ALL,
 )
-from lyubishchev.report.report import get_match_dict
+from lyubishchev.report.report import get_match_dict, time_spans_matching_label_minutes
 from lyubishchev.report.report_utils import prune_dict, sum_dict_values
 from lyubishchev.search import Match
 
@@ -47,6 +50,7 @@ def aggregate_time_interval_by_label_minutes(
 def get_time_interval_aggregation_dict_tree(
     total_time_minutes: int,
     time_intervals: list[TimeInterval],
+    total_night_sleep_minutes: int = 0,
 ) -> dict[str, Any]:
     """
     Aggregate time intervals by labels and return a dict tree,
@@ -104,7 +108,7 @@ def get_time_interval_aggregation_dict_tree(
     }
     """
 
-    res = {
+    res: dict[str, Any] = {
         CALM: aggregate_time_interval_by_label_minutes(
             time_intervals=time_intervals, labels=list(get_match_dict(CALM).keys())
         ),
@@ -128,9 +132,9 @@ def get_time_interval_aggregation_dict_tree(
             time_intervals=time_intervals,
             labels=list(get_match_dict(EXERCISE).keys()),
         ),
-        INTANGIGLE: aggregate_time_interval_by_label_minutes(
+        INTANGIBLE: aggregate_time_interval_by_label_minutes(
             time_intervals=time_intervals,
-            labels=list(get_match_dict(INTANGIGLE).keys()),
+            labels=list(get_match_dict(INTANGIBLE).keys()),
         ),
         REGRET: aggregate_time_interval_by_label_minutes(
             time_intervals=time_intervals,
@@ -148,8 +152,21 @@ def get_time_interval_aggregation_dict_tree(
             time_intervals=time_intervals,
             labels=list(get_match_dict(SOLITUDE).keys()),
         ),
+        SLEEP_ALL: {
+            NAP: sum(
+                time_spans_matching_label_minutes(
+                    time_intervals=time_intervals,
+                    match=Match.from_dict({NAP: None}),
+                )
+            ),
+        },
     }
-    res[OTHER] = total_time_minutes - sum_dict_values(res)
+    if total_night_sleep_minutes != 0:
+        sleep_all = res[SLEEP_ALL]
+        sleep_all[NIGHT_SLEEP] = total_night_sleep_minutes
+    time_recorded_minutes = sum_dict_values(res)
+
+    res[OTHER] = total_time_minutes - time_recorded_minutes - total_night_sleep_minutes
     # clean up: remove empty dict and 0 values
     prune_dict(res)
     return res
