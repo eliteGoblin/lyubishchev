@@ -22,16 +22,29 @@ pip install -r requirements-dev.txt
 
 ## Run 
 
+save following env in .dotenv/myenv
+
 ```s
-export CLOCKIFY_USER_ID=xxx    
+export CLOCKIFY_USER_ID=xxx
 export CLOCKIFY_WORKSPACE_ID=xxx
 export CLOCKIFY_API_KEY=xxx
+```
 
-jupyter notebook
+then run
+
+```s
+# start server in a terminal
+./scripts/notebook_server_run.sh
+# open browser pages in another terminal
+./scripts/report.sh
+# in each page, click: Restart kernal and run all cells...
 ```
 
 ## Develop
 
-```s
+setup pre-commit hook
 
+```s
+cd .git/hooks
+ln -s ../../scripts/precommit_check.sh  pre-commit -f
 ```
