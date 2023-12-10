@@ -148,5 +148,5 @@ def must_single_day_time_intervals(
     diff = (
         single_day_time_intervals[-1].timestamp - single_day_time_intervals[0].timestamp
     )
-    assert diff.total_seconds() <= 24 * 60 * 60
+    assert diff.total_seconds() <= 24 * 60 * 60  # type: ignore
     # mypy seems can't infer Arrow - Arrow is a datetime.timedelta

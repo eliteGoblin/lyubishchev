@@ -76,7 +76,7 @@ def sunburst_time_intervals_single_day(report: DayRangeReport, day_shift: int) -
 
     time_intervals = day_record.time_intervals
     total_time_minutes_non_sleep: int = int(
-        (day_record.bed_timestamp - day_record.wakeup_timestamp).total_seconds() // 60
+        (day_record.bed_timestamp - day_record.wakeup_timestamp).total_seconds() // 60  # type: ignore
     )
 
     sunburst_time_intervals(

@@ -15,14 +15,10 @@ sudo rm -rf .venv
 python3 -m venv .venv
 source .venv/bin/activate
 which python
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
-## Run CI locally
-
-```sh
-# skip integration test
-./local.sh
-```
 
 ## Run 
 
@@ -30,9 +26,12 @@ which python
 export CLOCKIFY_USER_ID=xxx    
 export CLOCKIFY_WORKSPACE_ID=xxx
 export CLOCKIFY_API_KEY=xxx
-# Generate day range report
-python -m lyubishchev dayrange 2023-03-12 2023-03-18
-# Generate report of last N days
-python -m lyubishchev last 5
+
+jupyter notebook
 ```
 
+## Develop
+
+```s
+
+```

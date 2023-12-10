@@ -1,5 +1,7 @@
 # .gitignore
 
+gitignore/
+
 # Python files
 *.pyc
 *.pyo

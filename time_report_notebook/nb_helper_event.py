@@ -16,7 +16,7 @@ def timestamp_diff(timestamp: Arrow, base_timestamp: Optional[Arrow] = None) -> 
     else:
         start_of_day = base_timestamp.floor("day")
 
-    difference: datetime.timedelta = timestamp - start_of_day
+    difference: datetime.timedelta = timestamp - start_of_day  # type: ignore
     offset_hours = difference.total_seconds() / 3600.0
 
     return round(offset_hours, 2)
