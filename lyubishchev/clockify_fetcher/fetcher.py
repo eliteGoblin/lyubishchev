@@ -264,7 +264,6 @@ class ClockifyFetcher(TimeIntervalFetcher):
                 "https://" + urllib.request.pathname2url(query),
                 headers=headers,
                 params=params,
-                verify=False,  # disable ssl verify for cert issue
             )
             if response.status_code != 200:
                 raise Exception(

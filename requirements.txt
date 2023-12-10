@@ -1,7 +1,7 @@
 click==8.0.1
 typer==0.7.0
-python-dateutil==2.8.1
-requests==2.26.0
+python-dateutil~=2.8.2
+requests~=2.31
 arrow==1.2.2
 urllib3==1.26.9
 typed-ast==1.4.3
@@ -14,3 +14,7 @@ numpy~=1.24.2
 pandas~=1.5.3
 plotly~=5.14.0
 data-science-types~=0.2.23
+jinja2==3.1.2
+jupyter-client==8.6.0
+traitlets==5.9.0 # fix No module named 'jupyter_server.contents' 
+                 # https://github.com/microsoft/azuredatastudio/issues/24436

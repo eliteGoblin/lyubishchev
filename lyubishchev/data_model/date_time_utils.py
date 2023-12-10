@@ -17,7 +17,7 @@ def must_yyyy_mm_dd(date_str: str) -> None:
 
 
 def time_diff_minutes(start: Arrow, end: Arrow) -> int:
-    return int((end - start).total_seconds() / 60)  # type: ignore
+    return int((end - start).total_seconds() / 60)
 
 
 def day_start_timestamp_early_bound(

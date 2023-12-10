@@ -19,7 +19,8 @@ def must_time_order(entries: Sequence[Union[Event, TimeInterval]]) -> None:
     for i in range(1, len(entries)):
         if entries[i].timestamp <= entries[i - 1].timestamp:
             raise ValueError(
-                f"entry {entries[i]} at {entries[i].timestamp} earlier than previous entry: {entries[i-1].timestamp}"
+                f"entry {entries[i]} at {entries[i].timestamp} earlier than \
+                    previous entry: {entries[i-1]} start at {entries[i-1].timestamp}"
             )
 
 
@@ -147,5 +148,5 @@ def must_single_day_time_intervals(
     diff = (
         single_day_time_intervals[-1].timestamp - single_day_time_intervals[0].timestamp
     )
-    assert diff.total_seconds() <= 24 * 60 * 60  # type: ignore
+    assert diff.total_seconds() <= 24 * 60 * 60
     # mypy seems can't infer Arrow - Arrow is a datetime.timedelta
