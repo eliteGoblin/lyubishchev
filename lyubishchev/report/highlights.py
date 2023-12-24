@@ -43,7 +43,7 @@ def get_duration_highlights(report: DayRangeReport) -> pd.DataFrame:
 
     data = {
         "work": [
-            sum(work) / total_weekdays,
+            sum(work) / total_weekdays if total_weekdays > 0 else 0,
             sum(work),
         ],  # work is weekday average, instead of everyday average
         "self_improving": [
