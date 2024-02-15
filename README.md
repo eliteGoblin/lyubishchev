@@ -22,6 +22,19 @@ pip install -r requirements-dev.txt
 
 ## Run 
 
+Find APIKEY in [profile setting](https://app.clockify.me/user/settings)  
+
+Get workspaceID and 
+
+```s
+curl -H "X-Api-Key: ${CLOCKIFY_API_KEY}" https://api.clockify.me/api/v1/user -o /tmp/clockify_user.json
+export CLOCKIFY_USER_ID=$(jq -r '.id' clockify_user.json)
+export CLOCKIFY_WORKSPACE_ID=$(jq -r '.activeWorkspace' clockify_user.json)
+
+echo "CLOCKIFY_USER_ID ${CLOCKIFY_USER_ID}"
+echo "CLOCKIFY_WORKSPACE_ID ${CLOCKIFY_WORKSPACE_ID}"
+```
+
 save following env in .dotenv/myenv
 
 ```s

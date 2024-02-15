@@ -12,5 +12,6 @@ pages=(
 # Iterate over the array and open each page
 for page in "${pages[@]}"
 do
-   /mnt/c/Windows/System32/cmd.exe /c start "$page" > /dev/null 2>&1
+#    /mnt/c/Windows/System32/cmd.exe /c start "$page" > /dev/null 2>&1
+    xdg-open "$page" > /dev/null 2>&1
 done
