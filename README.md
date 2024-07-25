@@ -7,6 +7,10 @@ Personal time and metric tracking system, inspired by [Alexander Alexandrovich L
 > In any field, any profession, this method can help you achieve significant results!   
 > Even if your talent is quite mediocre, this method can still guarantee you the greatest achievements.
 
+It show how your time been spent in past in Jupyter Notebook:
+
+![alt text](image.png)
+
 ## Setup
 
 Setup venv:

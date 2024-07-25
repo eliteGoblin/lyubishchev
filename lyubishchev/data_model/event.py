@@ -7,8 +7,6 @@ from arrow import Arrow
 from lyubishchev.data_model.core_data_structure import InvalidLabelTag, Label, Metadata
 from lyubishchev.data_model.event_data import (
     EVENT_TYPE,
-    TYPE_RECOVER_UNWELL,
-    TYPE_UNWELL,
     VALID_EVENT_LABEL_KEY,
     VALID_EVENT_TAG_KEY,
     VALID_RECOVER_UNWELL_TAGS,

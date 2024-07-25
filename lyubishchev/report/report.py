@@ -103,15 +103,14 @@ def get_match_dict(name: str) -> dict[str, Any]:
     and real label(which is leaf, it's label from data source, i.e Clockify)
     """
     self_improving_dict = {
-        "bibliotherapy": None,
-        "linkedin": None,
         "lyubishchev": None,
         "oj": None,
         "software": None,
         "audible": None,
+        "reading": None,
     }
     self_improving_tech = {
-        "linkedin": None,
+        "job": None,
         "lyubishchev": None,
         "oj": None,
         "software": None,
@@ -151,7 +150,9 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "pmo": None,
             "numb": None,
             "dispute": None,
-            "video_game": None,
+            "video": None,
+            "game": None,
+            "novel": None,
             "internet": None,
         },
         "routine_all": {
@@ -161,9 +162,7 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "meal": None,
         },
         "solitude": {
-            "novel": None,
             "karaoke": None,
-            "non-fiction": None,
         },
     }
     return abstract_label_match_dict[name]

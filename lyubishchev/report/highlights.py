@@ -30,6 +30,9 @@ def get_duration_highlights(report: DayRangeReport) -> pd.DataFrame:
     self_improving = time_spans_matching_label_minutes(
         time_intervals, Match.from_dict(get_match_dict("self_improving"))
     )
+    regret = time_spans_matching_label_minutes(
+        time_intervals, Match.from_dict(get_match_dict("regret"))
+    )
     night_sleep = [day.last_night_sleep_minutes for day in report.day_records]
     nap = time_spans_matching_label_minutes(
         time_intervals, Match.from_dict({"nap": None})
@@ -50,6 +53,7 @@ def get_duration_highlights(report: DayRangeReport) -> pd.DataFrame:
             sum(self_improving) / len(report.day_records),
             sum(self_improving),
         ],
+        "regret": [sum(regret) / len(report.day_records), sum(regret)],
         "night_sleep": [sum(night_sleep) / len(report.day_records), sum(night_sleep)],
         "nap": [sum(nap) / len(report.day_records), sum(nap)],
         "exercise": [sum(exercise) / len(report.day_records), sum(exercise)],
