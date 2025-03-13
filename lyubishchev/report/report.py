@@ -154,6 +154,7 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "game": None,
             "novel": None,
             "internet": None,
+            "distracted":None,
         },
         "routine_all": {
             "cook": None,

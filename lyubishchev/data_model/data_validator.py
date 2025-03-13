@@ -112,7 +112,7 @@ def must_single_day_events(single_day_events: list[Event]) -> None:
     secs: int = diff.total_seconds()  # type: ignore
 
     assert (
-        8 * 60 * 60 < secs < 24 * 60 * 60
+        8 * 60 * 60 < secs < 26 * 60 * 60 # TODO: change to warning? let user manually check, e.g Feb. 4 2025, TUE, stay up all night, over 24 hrs.
     ), f"single day events exception {single_day_events}"
 
     for i, event in enumerate(single_day_events):
@@ -148,5 +148,5 @@ def must_single_day_time_intervals(
     diff = (
         single_day_time_intervals[-1].timestamp - single_day_time_intervals[0].timestamp
     )
-    assert diff.total_seconds() <= 24 * 60 * 60  # type: ignore
+    assert diff.total_seconds() <= 26 * 60 * 60  # type: ignore
     # mypy seems can't infer Arrow - Arrow is a datetime.timedelta
