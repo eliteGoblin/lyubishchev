@@ -2,7 +2,7 @@
 
 if [ -z "$is_CI" ]; then
   echo "Environment variable is_CI is NOT set, skipping integration test"
-  return
+  exit 0
 fi
 
 py.test -rX -vv tests/integration $@

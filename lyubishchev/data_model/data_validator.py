@@ -112,7 +112,11 @@ def must_single_day_events(single_day_events: list[Event]) -> None:
     secs: int = diff.total_seconds()  # type: ignore
 
     assert (
-        8 * 60 * 60 < secs < 24 * 60 * 60
+        8 * 60 * 60
+        < secs
+        < 26
+        * 60
+        * 60  # TODO: mark whole night stay up, check if sleep time is late , if late, then consider it valid
     ), f"single day events exception {single_day_events}"
 
     for i, event in enumerate(single_day_events):

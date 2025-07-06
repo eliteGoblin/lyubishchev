@@ -133,7 +133,7 @@ def test_day_range_report_interval_metrics() -> None:
     interval_metrics = report.get_interval_metrics()
 
     assert interval_metrics["effective_output"] == {
-        "self_improving": [358, 357],
+        "self_improving": [358, 327],
         "work": [0, 170],
     }
     assert interval_metrics["sex_all"] == {

@@ -56,7 +56,7 @@ def test_validate_event() -> None:
         TestCase(
             name="with valid required type, compatible tag should fail",
             input={
-                "event_type": "recover-unwell",
+                "event_type": "recover_unwell",
                 "cold": "",
             },
             expect_is_valid=True,

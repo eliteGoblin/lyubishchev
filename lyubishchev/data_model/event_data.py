@@ -11,12 +11,16 @@ TYPE_GETUP = "getup"
 TYPE_BED = "bed"
 TYPE_PARTNER_PERIOD = "partner_period"
 
+TYPE_UNWELL = "unwell"
+TYPE_RECOVER_UNWELL = "recover_unwell"
 # type means mutual exclusive
 VALID_TYPE: List[str] = [
     TYPE_WAKEUP,
     TYPE_GETUP,
     TYPE_BED,
     TYPE_PARTNER_PERIOD,
+    TYPE_UNWELL,
+    TYPE_RECOVER_UNWELL,
 ]
 
 # Tag: key only label; provide extra info for certain Event
