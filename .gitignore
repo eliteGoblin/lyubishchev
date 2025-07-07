@@ -2,6 +2,7 @@
 .dotenv/
 gitignore/
 
+
 # Python files
 *.pyc
 *.pyo
