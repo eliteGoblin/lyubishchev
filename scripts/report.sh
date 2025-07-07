@@ -7,6 +7,7 @@ pages=(
     "http://127.0.0.1:8888/notebooks/time_report_notebook/SingleDay.ipynb" 
     "http://127.0.0.1:8888/notebooks/time_report_notebook/WeekReport.ipynb" 
     "http://127.0.0.1:8888/notebooks/time_report_notebook/MonthReport.ipynb"
+    "http://127.0.0.1:8888/notebooks/time_report_notebook/habit.ipynb"
 )
 
 # Function to open URLs in the default browser

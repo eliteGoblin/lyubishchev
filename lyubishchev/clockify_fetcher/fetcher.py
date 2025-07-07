@@ -4,6 +4,7 @@ from typing import Any, Optional
 
 import arrow
 import requests
+import urllib3
 from arrow import Arrow
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -20,6 +21,8 @@ from lyubishchev.data_model import (
     time_diff_minutes,
     validate_event_label_and_tag,
 )
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  # type: ignore
 
 TimeSeries = dict[str, Any]
 
