@@ -209,7 +209,7 @@ def sunburst_tree_depth_2(
             maxdepth=3,
         )
     )
-    fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
+    fig.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
     fig.show()
 
 

@@ -30,7 +30,7 @@ def sunburst_time_intervals(
             # maxdepth=3,
         )
     )
-    fig.update_layout(margin=dict(t=0, l=0, r=0, b=0))
+    fig.update_layout(margin={"t": 0, "l": 0, "r": 0, "b": 0})
     fig.show()
 
 
@@ -50,7 +50,9 @@ def time_intervals_to_gantt_data_frame(
                 minutes=+time_interval.duration_minutes
             ).format("YYYY-MM-DD HH:mm:ss")
 
-            res.append(dict(Task=key + value, Start=start_time, Finish=finish_time))
+            res.append(
+                {"Task": key + value, "Start": start_time, "Finish": finish_time}
+            )
 
     return res
 
