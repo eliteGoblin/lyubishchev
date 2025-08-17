@@ -20,7 +20,7 @@ def must_time_order(entries: Sequence[Union[Event, TimeInterval]]) -> None:
         if entries[i].timestamp <= entries[i - 1].timestamp:
             raise ValueError(
                 f"entry {entries[i]} at {entries[i].timestamp} earlier than \
-                    previous entry: {entries[i-1]} start at {entries[i-1].timestamp}"
+                    previous entry: {entries[i - 1]} start at {entries[i - 1].timestamp}"
             )
 
 
