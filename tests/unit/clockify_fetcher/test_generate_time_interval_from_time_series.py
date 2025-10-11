@@ -120,9 +120,9 @@ def test_generate_time_interval_from_time_series() -> None:
         assert_message: str = f"case {index} failed!"
         with open_utf8(test_data_folder + case.test_data_path) as test_data:
             try:
-                time_interval: Optional[
-                    TimeInterval
-                ] = generate_time_interval_from_time_series(json.load(test_data))
+                time_interval: Optional[TimeInterval] = (
+                    generate_time_interval_from_time_series(json.load(test_data))
+                )
             except ValueError as exp:
                 print(exp)
                 assert not case.expect_success, assert_message

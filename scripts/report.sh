@@ -18,8 +18,8 @@ open_in_browser() {
         # Linux/Ubuntu
         xdg-open "$url" > /dev/null 2>&1
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        open "$url" > /dev/null 2>&1
+        # macOS - use -g to open in background and -n to open new instance
+        open -g "$url" > /dev/null 2>&1
     else
         echo "Unsupported OS: $OSTYPE"
         exit 1
@@ -29,6 +29,9 @@ open_in_browser() {
 # Iterate over the array and open each page
 for page in "${pages[@]}"
 do
+    echo "Opening: $page"
     open_in_browser "$page"
+    # Add a small delay to ensure tabs open properly
+    sleep 0.5
 done
 

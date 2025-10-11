@@ -34,7 +34,7 @@ def remove_year_add_weekday(dates: list[str], day_timestamps: list[Arrow]) -> li
 
 
 def dict_tree_to_parent_tree(
-    dict_tree: dict[str, Any]
+    dict_tree: dict[str, Any],
 ) -> Tuple[list[str], list[str], list[int]]:
     """
     Convert a dict tree to a parent tree

@@ -39,7 +39,6 @@ class Event:
 
 
 def validate_event_label_and_tag(label: Label) -> None:
-
     """
     throw InvalidLabelTag in event label and tag validation fail
     """

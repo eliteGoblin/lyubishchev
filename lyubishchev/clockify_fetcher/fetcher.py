@@ -211,9 +211,9 @@ class ClockifyFetcher(TimeIntervalFetcher):
         # ClockifyAPI returned time entry in order: latest record at first,
         # here we want asc order by timestamp, so need to reverse the result list
         for index, time_series_entry in enumerate(reversed(time_series)):
-            time_interval: Optional[
-                TimeInterval
-            ] = generate_time_interval_from_time_series(time_series_entry)
+            time_interval: Optional[TimeInterval] = (
+                generate_time_interval_from_time_series(time_series_entry)
+            )
             if (
                 time_interval is None
             ):  # we reach the record still counting, i.e not stopped
@@ -270,7 +270,7 @@ class ClockifyFetcher(TimeIntervalFetcher):
                 verify=False,
             )
             if response.status_code != 200:
-                raise Exception(
+                raise ValueError(
                     f"Clockify return non 200: {response.status_code}, content{response.text}"
                 )
             resp_json = response.json()

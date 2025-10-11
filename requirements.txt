@@ -13,6 +13,7 @@ numpy>=1.26.0
 pandas>=2.0.0
 plotly~=5.14.0
 data-science-types~=0.2.23
+calplot==0.1.7.5
 jinja2==3.1.2
 jupyter-client==8.6.0
 traitlets==5.9.0 # fix No module named 'jupyter_server.contents' 

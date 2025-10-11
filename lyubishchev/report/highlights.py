@@ -115,9 +115,11 @@ def get_habbits_highlight(report: DayRangeReport) -> pd.DataFrame:
     for i, name in enumerate(list_names):
         data[name] = [
             len(list_of_lists[i]) / len(report.day_records),
-            sum(list_of_lists[i]) / len(list_of_lists[i])
-            if len(list_of_lists[i]) > 0
-            else 0,
+            (
+                sum(list_of_lists[i]) / len(list_of_lists[i])
+                if len(list_of_lists[i]) > 0
+                else 0
+            ),
             sum(list_of_lists[i]) / len(report.day_records),
             sum(list_of_lists[i]),
         ]
