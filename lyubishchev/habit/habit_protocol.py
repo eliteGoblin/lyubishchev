@@ -9,4 +9,5 @@ class Habit(Protocol):
     Implementations must provide a data() method returning a pandas Series.
     """
 
-    def data(self) -> "pandas.Series[int]": ...
+    def data(self) -> "pandas.Series[int]":
+        ...
