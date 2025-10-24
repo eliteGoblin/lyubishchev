@@ -1,0 +1,3 @@
+class GetupHabit(Habit) I want you change it : to support Bed habit. which I want to use bed_timestamp to generate series. Seems most of code can shared. just the field is
+  bed_timestamp. and delta I need bed - target: e.g if sleep at 19:00 but target is 20:00, meanss good habit. I want good habit with higher "score", i.e int value. similar for
+  Getup. where : if getup earlier, score is higher. think of way todo DRY, reuse, keep it simple. implement another class BedHabit

@@ -1,59 +1,103 @@
 import re
+from abc import ABC, abstractmethod
 from datetime import timedelta
 from typing import cast
 
 import pandas as pd
 from arrow import Arrow
 
+from lyubishchev.data_model.day import DayRecord
 from lyubishchev.report.report import DayRangeReport
 
 from .habit_protocol import Habit
 
-# Use builtins.int to avoid mypy false positive and module indexing error
 
-
-class GetupHabit(Habit):
+class TimeHabit(ABC, Habit):
     """
-    GetupHabit computes the difference in minutes between a target getup time (in "HH:MM" 24hr format)
-    and the actual getup time for each day in a DayRangeReport.
-    The score is (target - actual) in minutes, positive if earlier than target, negative if later.
-    Returns a pandas Series with a DatetimeIndex.
+    Base class for time-based habits (GetupHabit, BedHabit).
+    Computes the difference in minutes between a target time and actual time.
+    Implements Habit protocol while providing shared logic for
+    time-based habits.
     """
 
     def __init__(self, report: DayRangeReport, target_time: str) -> None:
         """
         Args:
             report: DayRangeReport containing day records.
-            target_time: Target getup time in "HH:MM" 24hr format (e.g., "07:00").
+            target_time: Target time in "HH:MM" 24hr format (e.g., "07:00").
         Raises:
             ValueError: If target_time is not in valid 24hr 'HH:MM' format.
         """
         self.report = report
         if not re.match(r"^(?:[01]\d|2[0-3]):[0-5]\d$", target_time):
             raise ValueError(
-                f"target_time '{target_time}' is not in valid 24hr 'HH:MM' format"
+                f"target_time '{target_time}' is not in valid 24hr " f"'HH:MM' format"
             )
         self.target_time = target_time
+        self.target_hour, self.target_minute = map(int, target_time.split(":"))
+
+    @abstractmethod
+    def get_timestamp(self, day: DayRecord) -> Arrow:
+        """Get the relevant timestamp from the day record."""
+
+    @abstractmethod
+    def calculate_score(self, target: Arrow, actual: Arrow) -> int:
+        """Calculate the habit score. Higher score = better habit."""
 
     def data(self) -> "pd.Series[int]":
         """
         Returns:
-            pd.Series: Index is date string, value is (target - actual getup) in minutes (signed).
+            pd.Series: Index is date string, value is habit score in minutes.
         """
         dates: list[str] = []
         values: list[int] = []
-        target_hour, target_minute = map(int, self.target_time.split(":"))
 
         for day in self.report.day_records:
-            getup: Arrow = day.getup_timestamp
-            # Construct target time on the same day as getup
-            target_today = getup.replace(
-                hour=target_hour, minute=target_minute, second=0, microsecond=0
+            actual_time: Arrow = self.get_timestamp(day)
+            # Construct target time on the same day as actual
+            target_today = actual_time.replace(
+                hour=self.target_hour,
+                minute=self.target_minute,
+                second=0,
+                microsecond=0,
             )
-            delta: timedelta = cast(timedelta, target_today - getup)
-            diff = int(delta.total_seconds() // 60)
-
+            score = self.calculate_score(target_today, actual_time)
             dates.append(day.date_str())
-            values.append(diff)
+            values.append(score)
         # Ensure DatetimeIndex for calplot compatibility
         return pd.Series(values, index=pd.to_datetime(dates))  # type: ignore[attr-defined]
+
+
+class GetupHabit(TimeHabit):
+    """
+    GetupHabit computes the difference in minutes between a target getup time
+    and actual getup time. Score = (target - actual) in minutes,
+    positive if earlier than target (good habit).
+    """
+
+    def get_timestamp(self, day: DayRecord) -> Arrow:
+        """Get the getup timestamp from the day record."""
+        return day.getup_timestamp
+
+    def calculate_score(self, target: Arrow, actual: Arrow) -> int:
+        """Earlier getup (actual < target) gives positive score."""
+        delta: timedelta = cast(timedelta, target - actual)
+        return int(delta.total_seconds() // 60)
+
+
+class BedHabit(TimeHabit):
+    """
+    BedHabit computes the difference in minutes between actual bed time and
+    target bed time. Score = (actual - target) in minutes,
+    positive if earlier than target (good habit).
+    """
+
+    def get_timestamp(self, day: DayRecord) -> Arrow:
+        """Get the bed timestamp from the day record."""
+        return day.bed_timestamp
+
+    def calculate_score(self, target: Arrow, actual: Arrow) -> int:
+        """Earlier bed time (actual < target) gives positive score."""
+        delta: timedelta = cast(timedelta, actual - target)
+        # Invert: earlier bed time (actual < target) = positive score
+        return -int(delta.total_seconds() // 60)

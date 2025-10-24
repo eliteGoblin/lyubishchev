@@ -1,4 +1,4 @@
-from .getup_habit import GetupHabit
+from .getup_habit import BedHabit, GetupHabit
 from .habit_protocol import Habit
 from .time_event_habit import TimeEventHabit
 from .time_interval_counter_habit import TimeIntervalCounterHabit
@@ -12,4 +12,5 @@ __all__ = [
     "TimeIntervalOneofHabit",
     "TimeEventHabit",
     "GetupHabit",
+    "BedHabit",
 ]
