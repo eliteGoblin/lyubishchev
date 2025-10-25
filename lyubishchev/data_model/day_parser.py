@@ -224,11 +224,11 @@ def parse_and_generate_day_records(
             date_range_events=events, date=to_parse_date
         )
 
-        time_intervals_for_current_day: list[
-            TimeInterval
-        ] = get_time_intervals_for_single_day(
-            date_range_intervals=time_intervals,
-            current_day_events=events_for_current_day,
+        time_intervals_for_current_day: list[TimeInterval] = (
+            get_time_intervals_for_single_day(
+                date_range_intervals=time_intervals,
+                current_day_events=events_for_current_day,
+            )
         )
 
         day_record: DayRecord = parse_and_generate_day_record(
