@@ -71,3 +71,20 @@ def test_bed_habit_invalid_time(
 ) -> None:
     with pytest.raises(ValueError):
         BedHabit(sample_dayrangereport, bad_time)
+
+
+def test_bed_habit_past_midnight(sample_dayrangereport: DayRangeReport) -> None:
+    """
+    Test that bed times past midnight are correctly scored as late.
+    If someone goes to bed at 01:30 AM (next calendar day), with target 21:00,
+    they should get a negative score (4.5 hours late = -270 min).
+    """
+    day_record = sample_dayrangereport.day_records[0]
+    # Wakeup is on Jan 1, bed_timestamp is 01:30 AM on Jan 2 (past midnight)
+    day_record.bed_timestamp = day_record.wakeup_timestamp.shift(days=1).replace(
+        hour=1, minute=30
+    )
+    habit = BedHabit(sample_dayrangereport, "21:00")
+    result_series = habit.data()
+    # 01:30 next day vs 21:00 same day = 4.5 hours late = -270 minutes
+    assert result_series.iloc[0] == -270

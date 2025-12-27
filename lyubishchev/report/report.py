@@ -153,6 +153,7 @@ def get_match_dict(name: str) -> dict[str, Any]:
             "video": None,
             "game": None,
             "internet": None,
+            "novel": None,
         },
         "routine_all": {
             "cook": None,

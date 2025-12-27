@@ -44,6 +44,14 @@ class TimeHabit(ABC, Habit):
     def calculate_score(self, target: Arrow, actual: Arrow) -> int:
         """Calculate the habit score. Higher score = better habit."""
 
+    def get_target_reference_timestamp(self, day: DayRecord) -> Arrow:
+        """
+        Get the reference timestamp for constructing target time.
+        Subclasses can override to use a different reference.
+        Default: use the actual timestamp (from get_timestamp).
+        """
+        return self.get_timestamp(day)
+
     def data(self) -> "pd.Series[int]":
         """
         Returns:
@@ -54,8 +62,9 @@ class TimeHabit(ABC, Habit):
 
         for day in self.report.day_records:
             actual_time: Arrow = self.get_timestamp(day)
-            # Construct target time on the same day as actual
-            target_today = actual_time.replace(
+            # Construct target time based on reference timestamp
+            reference = self.get_target_reference_timestamp(day)
+            target_today = reference.replace(
                 hour=self.target_hour,
                 minute=self.target_minute,
                 second=0,
@@ -95,6 +104,13 @@ class BedHabit(TimeHabit):
     def get_timestamp(self, day: DayRecord) -> Arrow:
         """Get the bed timestamp from the day record."""
         return day.bed_timestamp
+
+    def get_target_reference_timestamp(self, day: DayRecord) -> Arrow:
+        """
+        Use wakeup_timestamp for target reference since bed_timestamp may be
+        past midnight (next calendar day) but still belongs to the same logical day.
+        """
+        return day.wakeup_timestamp
 
     def calculate_score(self, target: Arrow, actual: Arrow) -> int:
         """Earlier bed time (actual < target) gives positive score."""
