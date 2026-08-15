@@ -47,3 +47,5 @@ html_reports/
 
 .idea/
 archived/
+# Encrypted DB backup outputs (never commit dumps)
+*.sql.gz.gpg
