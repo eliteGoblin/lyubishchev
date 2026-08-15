@@ -1,6 +1,6 @@
 # ADR-009: Persistence — SQLite now; multi-laptop via file sync; cloud DB deferred
 
-Date: 2026-08-15. Status: accepted.
+Date: 2026-08-15. Status: SUPERSEDED by ADR-010 (same day). The owner rejected any design with a manual sync step: two-laptop use is on the daily logging path, and forgetting to sync blocks or forks the log. Storage moves to a shared-by-default managed cloud Postgres; provider selection in ADR-010.
 
 ## Context
 

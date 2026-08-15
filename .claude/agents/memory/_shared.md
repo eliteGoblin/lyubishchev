@@ -1,0 +1,4 @@
+# Shared lessons — all roles
+
+- **Daily-path requirements are hard constraints, whatever the user's initial label.** 2026-08-15: owner said "two laptops, minor, ignore for now"; the SQLite+manual-sync design that followed had a daily blocking/forking failure mode (forget to sync → cannot log safely) and was rejected by the owner as naive. Rule: rank storage/infra options first by "can this ever block or fork the daily habit path in the owner's actual life pattern (multi-device)", before cost, data ownership, offline, or vendor purity.
+- **Owner's decision style (this repo): key decisions fast, then use it.** He rejects perfect-seeking and long option lists; he wants short spoken-style answers, one decision at a time, and cost stated in real dollars. $10–20/mo is acceptable for the DB — do not optimize for $0.
