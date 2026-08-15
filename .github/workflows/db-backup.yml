@@ -5,10 +5,6 @@ on:
     # 17:00 UTC = 03:00 Sydney (AEST, UTC+10); 04:00 during daylight saving (AEDT).
     - cron: '0 17 * * *'
   workflow_dispatch:
-  # TEMPORARY: e2e-test trigger while the workflow is not yet on the default
-  # branch (workflow_dispatch only resolves there). Remove before merge.
-  push:
-    branches: [feature/db-backup]
 
 permissions:
   contents: read
