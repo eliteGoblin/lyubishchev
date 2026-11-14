@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Log page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+body{margin:0;background:#f4f3ee;color:#22251f;font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px}
+a{color:#2f6f5e}a:hover{color:#1f4f43}
+.row{display:grid;grid-template-columns:110px 1fr auto;gap:6px 14px;align-items:center;padding:9px 0;border-bottom:1px solid #ecebe4}
+.t{font-family:"IBM Plex Mono",monospace;color:#6b6f63;font-size:13px;white-space:nowrap}
+.d{font-family:"IBM Plex Mono",monospace;font-size:13px;white-space:nowrap}
+.tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0}
+.type{font-weight:600}
+.chip{padding:2px 8px;border-radius:10px;background:#e9e8e1;color:#4a4e45;font-size:12px;font-family:"IBM Plex Mono",monospace}
+.chip.m{background:#dcebe4;color:#1f4f43}
+.note{color:#6b6f63;font-size:13px}
+.gap{display:grid;grid-template-columns:110px 1fr auto;gap:6px 14px;align-items:center;padding:7px 0;border-bottom:1px dashed #d9a39b;background:#fbf3f2}
+.gap .t,.gap .d{color:#a0472f}
+.gap .g{color:#a0472f;font-weight:500;font-size:13px}
+.day{padding:10px 0 4px;font-size:12px;font-weight:600;color:#6b6f63;letter-spacing:0.04em;text-transform:uppercase;border-bottom:1px solid #d9d8cf}
+</style>
+</helmet>
+
+<div style="max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 24px; display: flex; flex-direction: column; gap: 20px">
+
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+    <div style="font-size: 20px; font-weight: 600">Lyubishchev</div>
+    <nav style="display: flex; gap: 8px">
+      <a href="Main.dc.html" style="padding: 8px 14px; border-radius: 6px; background: #22251f; color: #ffffff; text-decoration: none; font-weight: 500">Log</a>
+      <a href="Stats.dc.html" style="padding: 8px 14px; border-radius: 6px; color: #22251f; text-decoration: none">Stats</a>
+    </nav>
+  </header>
+
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; background: #ffffff; border: 1px solid #e3e2da">
+    <label for="timer-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Current activity</label>
+    <input id="timer-input" type="text" value="work · project=cba" style="flex: 999 1 320px; min-width: 0; padding: 10px 12px; border-radius: 6px; border: 1px solid transparent; font: inherit; font-size: 15px; background: #ffffff; color: #22251f">
+    <div style="font-size: 13px; color: #6b6f63; white-space: nowrap">since 13:20</div>
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 500; white-space: nowrap; font-variant-numeric: tabular-nums">00:42:15</div>
+    <button type="button" style="padding: 10px 22px; border-radius: 6px; border: 0; background: #c0554d; color: #ffffff; font: inherit; font-weight: 600; cursor: pointer; letter-spacing: 0.04em">STOP</button>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch">
+
+    <section style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; border-radius: 8px; background: #ffffff">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px">
+        <div style="display: flex; align-items: center; gap: 6px">
+          <button type="button" aria-label="Previous day" style="width: 30px; height: 30px; border-radius: 6px; border: 1px solid #c9cbc2; background: #ffffff; color: #22251f; font: inherit; cursor: pointer">‹</button>
+          <label for="day-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Day</label>
+          <input id="day-input" type="date" value="2026-11-08" style="padding: 5px 8px; border-radius: 6px; border: 1px solid #c9cbc2; font: inherit; font-size: 14px; font-weight: 600; background: #ffffff; color: #22251f">
+          <button type="button" aria-label="Next day" style="width: 30px; height: 30px; border-radius: 6px; border: 1px solid #c9cbc2; background: #ffffff; color: #22251f; font: inherit; cursor: pointer">›</button>
+        </div>
+        <div style="font-size: 13px; color: #6b6f63; font-family: 'IBM Plex Mono', monospace">wakeup 06:30 · logged 5 h 37 of 7 h 32 · 75% · 3 gaps</div>
+      </div>
+      <div style="height: 6px; border-radius: 3px; background: #e3e8e3; overflow: hidden; display: flex">
+        <div style="width: 3%; background: #d9a39b"></div>
+        <div style="width: 41%; background: #2f6f5e"></div>
+        <div style="width: 7%; background: #d9a39b"></div>
+        <div style="width: 24%; background: #2f6f5e"></div>
+        <div style="width: 15%; background: #d9a39b"></div>
+        <div style="width: 10%; background: #2f6f5e"></div>
+      </div>
+
+      <div style="display: flex; flex-direction: column">
+        <div class="day">Sat 7 Nov</div>
+        <div class="row"><div class="t">22:30–23:30</div><div class="tags"><span class="type">read</span><span class="chip">book=deep_work</span><span class="chip m">chapters 1</span></div><div class="d">1:00</div></div>
+        <div class="row"><div class="t">23:30</div><div class="tags"><span class="type">bed</span><span class="chip">event</span></div><div class="d"></div></div>
+        <div class="row"><div class="t">23:30–06:30</div><div class="tags"><span class="type">night_sleep</span></div><div class="d">7:00</div></div>
+        <div class="day">Sun 8 Nov</div>
+        <div class="row"><div class="t">06:30</div><div class="tags"><span class="type">wakeup</span><span class="chip">event</span></div><div class="d"></div></div>
+        <div class="gap"><div class="t">06:30–06:45</div><div class="g">gap · nothing logged</div><div class="d">0:15</div></div>
+        <div class="row"><div class="t">06:45–07:30</div><div class="tags"><span class="type">self_routine</span></div><div class="d">0:45</div></div>
+        <div class="row"><div class="t">07:30–08:30</div><div class="tags"><span class="type">jog</span><span class="chip m">km 8</span></div><div class="d">1:00</div></div>
+        <div class="row"><div class="t">08:30–09:00</div><div class="tags"><span class="type">meal</span></div><div class="d">0:30</div></div>
+        <div class="row"><div class="t">09:00–09:50</div><div class="tags"><span class="type">lyu</span><span class="chip">item=gap_finder</span><span class="note">fixed off-by-one in gap finder</span></div><div class="d">0:50</div></div>
+        <div class="gap"><div class="t">09:50–10:20</div><div class="g">gap · nothing logged</div><div class="d">0:30</div></div>
+        <div class="row"><div class="t">10:20–11:00</div><div class="tags"><span class="type">walk</span></div><div class="d">0:40</div></div>
+        <div class="row"><div class="t">11:00–11:40</div><div class="tags"><span class="type">read</span><span class="chip">book=deep_work</span><span class="chip m">chapters 2</span><span class="note">on the train</span></div><div class="d">0:40</div></div>
+        <div class="row"><div class="t">11:40–12:10</div><div class="tags"><span class="type">meal</span></div><div class="d">0:30</div></div>
+        <div class="gap"><div class="t">12:10–13:20</div><div class="g">gap · nothing logged</div><div class="d">1:10</div></div>
+        <div class="row" style="border-bottom: 0"><div class="t">13:20–now</div><div class="tags"><span class="type">work</span><span class="chip">project=cba</span></div><div class="d" style="color: #2f6f5e">running</div></div>
+      </div>
+      <div style="box-sizing: border-box; width: 100%; height: 110px; background-color: #b6b0a7; border-radius: 8px"></div>
+    </section>
+
+    <aside style="flex: 1 1 320px; min-width: 0; max-width: 400px; display: flex; flex-direction: column; border-radius: 8px; background: #ffffff">
+      <div style="padding: 12px 16px; border-bottom: 1px solid #ecebe4; font-size: 13px; font-weight: 600; color: #4a4e45">Chat</div>
+      <div style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 10px; padding: 16px; overflow-y: auto">
+
+        <div style="align-self: flex-end; max-width: 90%; padding: 8px 10px; border-radius: 10px 10px 2px 10px; background: #22251f; color: #ffffff; font-size: 13px">read 2 chapters of deep work on the train, 11 to 11:40</div>
+
+        <div style="align-self: flex-start; max-width: 95%; display: flex; flex-direction: column; gap: 8px; padding: 10px; border-radius: 8px; border: 1px solid #c9d9d2; background: #f7faf8; font-size: 13px">
+          <div><span class="t">11:00–11:40</span> <strong>read</strong> · book=deep_work · chapters 2</div>
+          <div style="display: flex; gap: 8px">
+            <button type="button" style="padding: 6px 12px; border-radius: 6px; border: 0; background: #2f6f5e; color: #ffffff; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer">Add</button>
+            <button type="button" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #c9cbc2; background: #ffffff; color: #22251f; font: inherit; font-size: 13px; cursor: pointer">Edit</button>
+          </div>
+        </div>
+
+        <div style="align-self: flex-end; max-width: 90%; padding: 8px 10px; border-radius: 10px 10px 2px 10px; background: #22251f; color: #ffffff; font-size: 13px">start work on cba</div>
+
+        <div style="align-self: flex-start; max-width: 90%; padding: 8px 10px; border-radius: 10px 10px 10px 2px; background: #f4f3ee; font-size: 13px">Started <strong>work · project=cba</strong> at 13:20.</div>
+      </div>
+
+      <form style="display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid #ecebe4">
+        <label for="chat-input" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Message</label>
+        <input id="chat-input" type="text" placeholder="What did you do?" style="flex: 1 1 auto; min-width: 0; padding: 9px 10px; border-radius: 6px; border: 1px solid #c9cbc2; font: inherit; font-size: 13px; background: #ffffff; color: #22251f">
+        <button type="button" style="padding: 9px 12px; border-radius: 6px; border: 0; background: #22251f; color: #ffffff; font: inherit; font-size: 13px; cursor: pointer">Send</button>
+      </form>
+    </aside>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1120}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

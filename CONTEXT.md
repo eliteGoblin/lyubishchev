@@ -84,7 +84,7 @@ Lyubishchev is a personal time tracker in the style of Alexander Lyubishchev. It
 ### What was built
 
 - Docs only: the three ADRs, this glossary, and the design docs in `docs/requirements/` and `topics/`.
-- A clickable UI mock was published as a Claude artifact (version 10 on 2026-11-08). It is not part of the repo. Its source files are in a temporary folder and may be gone (not verified).
+- Latest UI design: Claude design artifact "Lyubishchev UI Mock" (https://claude.ai/artifact/RxiHGsjwjEtUjPtH7P3ADy, last updated 2026-11-08; private, owner only). Its source (Log and Stats artboards, example data only) is saved in [`docs/design/ui-mock/`](docs/design/ui-mock/) on 2026-11-14.
 - No TypeScript code exists yet. `apps/` and `packages/` are not in the repo, and the Python code has not been moved to `archive/python/` (checked 2026-11-14 by listing the repo root).
 - The old Python code and the Python CI still exist in place. `CLAUDE.md` still describes the Python system and is stale for the new direction.
 
