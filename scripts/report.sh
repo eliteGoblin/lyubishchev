@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -uo pipefail
 
 # Define an array of pages
 pages=(
@@ -18,8 +18,14 @@ open_in_browser() {
         # Linux/Ubuntu
         xdg-open "$url" > /dev/null 2>&1
     elif [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS - use -g to open in background and -n to open new instance
-        open -g "$url" > /dev/null 2>&1
+        # macOS - open URL (try multiple methods)
+        if command -v google-chrome &> /dev/null || [ -d "/Applications/Google Chrome.app" ]; then
+            # Use Chrome directly if available
+            /usr/bin/open -a "Google Chrome" "$url" 2>&1 || true
+        else
+            # Fall back to default browser
+            /usr/bin/open "$url" 2>&1 || true
+        fi
     else
         echo "Unsupported OS: $OSTYPE"
         exit 1
@@ -31,7 +37,7 @@ for page in "${pages[@]}"
 do
     echo "Opening: $page"
     open_in_browser "$page"
-    # Add a small delay to ensure tabs open properly
-    sleep 0.5
+    # Longer delay to ensure Chrome processes each tab
+    sleep 1.5
 done
 
